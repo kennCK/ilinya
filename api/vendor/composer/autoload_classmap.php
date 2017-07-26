@@ -24,8 +24,6 @@ return array(
     'CreateCompanyBranchesTable' => $baseDir . '/database/migrations/2017_06_29_024842_create_company_branches_table.php',
     'CreateCompanyLogoTable' => $baseDir . '/database/migrations/2017_06_29_024649_create_company_logo_table.php',
     'CreateModulesTable' => $baseDir . '/database/migrations/2017_06_29_023543_create_modules_table.php',
-    'CreateQueueForm' => $baseDir . '/database/migrations/2017_07_26_030742_create_queue_form.php',
-    'CreateQueueFormFields' => $baseDir . '/database/migrations/2017_07_26_033226_create_queue_form_fields.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',

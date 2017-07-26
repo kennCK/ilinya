@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                     <i class="fa fa-copyright" aria-hidden="true"></i> 
-                    <b>Go</b>Digit2017 by <b>Go</b>Central Software Solutions Corporation
+                    <b>i</b>Linya2017 by <b>Go</b>Central Software Solutions
                     </div>
                 </div>
             </div>
