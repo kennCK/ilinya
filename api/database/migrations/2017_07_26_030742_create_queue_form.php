@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateDepartmentMembersTableAdd extends Migration
+class CreateQueueForm extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class UpdateDepartmentMembersTableAdd extends Migration
      */
     public function up()
     {
-        Schema::table('department_members', function (Blueprint $table) {
-            $table->boolean('is_head')->after('position')->default(0);
+        Schema::create('queue_forms', function (Blueprint $table) {
+          $table->increments('id');
+          $table->integer('company_id');
+          $table->string('title',100);
+          $table->timestamps();
+          $table->softDeletes();
         });
     }
 
@@ -25,8 +29,6 @@ class UpdateDepartmentMembersTableAdd extends Migration
      */
     public function down()
     {
-        Schema::table('departments_members', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

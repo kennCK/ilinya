@@ -13,12 +13,9 @@
       </div>
       <div class="col-sm-12 col-md-4">
         <div class="login-wrapper">
-          <div class="text-center app-logo">
-            <span class="app-img">
-              <img src="../../assets/img/godigit.png" height="100%" width="100%">
-            </span>
-            <span class="app-title primary-color">
-              <label>Go<b>Digit</b></label>
+          <div class="app-logo">
+            <span class="app-title primary-color text-center ">
+              <label><b>i</b>Linya</label>
             </span>
           </div>
           <div class="login-header">
@@ -54,7 +51,6 @@
                   or
               </div>
               <br>
-              <button class="btn btn-primary btn-block btn-login login-spacer">Create Account</button>
               <button class="btn btn-primary btn-block btn-login login-spacer" v-on:click="redirect('registration')">Register New Company</button>
             </form>
           </div>

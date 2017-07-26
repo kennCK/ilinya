@@ -292,7 +292,7 @@ class APIController extends Controller
       //     $this->model = $this->model->leftJoin($pluralForeignTable, $pluralForeignTable.'.id', '=', $tableName.'.'.$singularForeignTable.'_id');
       //   }
       // }
-      $condition = $this->initCondition($request['condition']);
+      $condition = isset($request['condition']) ? $this->initCondition($request['condition']) : array();
       if(isset($request['with_foreign_table'])){
         $foreignTable = array();
         foreach($request['with_foreign_table'] as $tempForeignTable){

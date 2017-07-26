@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class RenamePositionHistoryToAccountPositions extends Migration
+class CreateQueueFormFields extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,14 @@ class RenamePositionHistoryToAccountPositions extends Migration
      */
     public function up()
     {
-        Schema::rename('position_history','account_positions');
+      Schema::create('queue_form_fields', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('queue_form_id');
+        $table->string('description');
+        $table->char('type', 20);
+        $table->timestamps();
+        $table->softDeletes();
+      });
     }
 
     /**
