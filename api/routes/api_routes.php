@@ -12,9 +12,7 @@ $apiResources = [
   'account',
   'account_type',
   'account_information',
-  'queue_form',
-  'queue_form_field'
-
+  'account_profile_picture'
 ];
 api_resource($apiResources);
 

@@ -342,8 +342,6 @@ class ComposerStaticInit610d1b27b32c78b0d014325eefb9dc8e
         'CreateCompanyBranchesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_29_024842_create_company_branches_table.php',
         'CreateCompanyLogoTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_29_024649_create_company_logo_table.php',
         'CreateModulesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_29_023543_create_modules_table.php',
-        'CreateQueueForm' => __DIR__ . '/../..' . '/database/migrations/2017_07_26_030742_create_queue_form.php',
-        'CreateQueueFormFields' => __DIR__ . '/../..' . '/database/migrations/2017_07_26_033226_create_queue_form_fields.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
