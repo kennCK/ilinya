@@ -7,8 +7,7 @@
       -->
     <div class="system-header">
       <a class="navbar-brand" href="#">
-        <img src="../../assets/img/godigit-white.png" height="40" width="40">
-        <label class="navbar-brand">Go<b>Digit</b></label>
+        <label class="navbar-brand"><b>i</b>Linya</label>
       </a>
     </div>
     <nav class="header-navbar">
@@ -17,52 +16,23 @@
       </span>
       <!--- 
 
-              Header icons 
-
-      -->
-      <span class="margin-in-full"></span>
-      <span class="nav-item dropdown">
-        <span data-toggle="dropdown" id="#myBranches" v-on:click="getBranches()">
-          <i class="fa fa-th-large"></i>
-          <span class="label">{{branches.length}}</span>
-        </span>
-        <span class="dropdown-menu" id="myBranches">
-          <span class="dropdown-header">Work In</span>
-          <span class="dropdown-item" v-for="(item,index) in branches" v-on:click="loadBranch(index)">
-              <img src="../../assets/img/godigit.png" height="20" width="20">
-              {{item.company_branch.name}}
-          </span>
-        </span>
-      </span>
-      <span class="nav-item dropdown">
-        <span data-toggle="dropdown" id="#messages">
-          <i class="fa fa-envelope-o"></i>
-          <span class="label">4</span>
-        </span>
-        <span class="dropdown-menu" id="messages">
-          <span class="dropdown-item"></span>
-        </span>
-      </span>
-      <span class="nav-item dropdown">
-        <span data-toggle="dropdown" id="#notifications">
-          <i class="fa fa-bell-o"></i>
-          <span class="label">4</span>
-        </span>
-        <span class="dropdown-menu" id="notifications">
-          <span class="dropdown-item"></span>
-        </span>
-      </span>
-
-      <!--- 
-
               Header Profile 
 
       -->
-      <div class="header-navbar-nav" data-toggle="modal" data-target="#logoutModal">
-         <span>
+      <div class="header-navbar-nav dropdown">
+         <span data-toggle="dropdown" id="#account">
             <i class="fa fa-user-circle" aria-hidden="true"></i>
             <label>Hi {{user.username}}!</label>
-         </span>  
+         </span> 
+         <span class="dropdown-menu" id="account">
+          <span class="dropdown-item-profile">
+            <span class="account-picture text-center">
+              <img src="../../assets/img/sample.jpg" class="rounded-circle" height="125" width="125">
+            </span>
+            <span class="account-info text-center">{{user.username}}</span>
+          </span>
+          <span class="dropdown-item-button text-center"><button class="btn btn-danger-hallow" v-on:click="logOut()">Logout</button></span>
+        </span> 
       </div>
       <!--- 
 
@@ -70,30 +40,6 @@
 
       -->
     </nav>
-   <!--- 
-
-              Header Modal
-
-      -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="logoutModalLabel">Hi {{user.username}}</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to logout?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger-hallow" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i> No</button>
-            <button type="button" class="btn btn-primary-hallow" v-on:click="logOut()" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i> Yes</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -196,7 +142,7 @@ export default {
 -----------------------------------------------*/
   .header-navbar-nav{
       height: 50px;
-      float: left;
+      float: right;
       color: #fff;
       width: 20%;
   }
@@ -236,49 +182,16 @@ export default {
     background: #006600;
   }
 
-/*---------------------------------------------
- 
- 
-        HEADER NAVBAR MENU
-
-
------------------------------------------------*/
-
-.nav-item{
-  width: 5%;
-  height: 50px;
-  text-align: center;
-  float: left;
-  color: #fff;
-  display: inline;
-}
-
-.nav-item span i{
-  padding: 12px 0 15px 0;
-  font-size: 16px;
-}
-
-.nav-item .label{
-  z-index: 1000;
-  background: #ff0000;
-  padding: 5px;
-  font-size: 8px;
-  margin: -10px 0 0 -10px;
-  border-radius: 2px;
-  border-color: solid 1px #ff0000;
-}
-
-.nav-item:hover{
-  background: #006600;
-  cursor: pointer;
-}
-
 .dropdown-menu{
-  min-height: 250px;
-  overflow: hidden;
-  width: 250px;
-  margin-top: -1px;
+  width: 300px;
   border-radius: 0px !important;
+}
+#account{
+  height: 250px;
+  right: 0;
+  left: auto;
+  background: #009900;
+  border: 0px;
 }
 .dropdown-item{
   width: 100%;
@@ -291,6 +204,41 @@ export default {
   width: 100%;
   text-align: center;
   border-bottom: solid 1px #ccc;
+}
+.dropdown-item-profile{
+  height: 200px;
+  width: 100%;
+  float: left;
+  top: 0;
+}
+.account-picture{
+  height: 150px;
+  width: 100%;
+  float: left;
+}
+.account-info{
+  height: 50px;
+  width: 100%;
+  float: left;
+  color: #fff;
+}
+.dropdown-item-button{
+  height: 50px;
+  width: 100%;
+  border-top:solid 1px #ccc;
+  float: left;
+  background: #fff;
+  border: solid 1px #009900;
+}
+.dropdown-item-button button{
+  height: 40px;
+  border-radius: 0;
+  width: 100px;
+  margin-top: 5px;  
+}
+.dropdown-item-button button:hover{
+  background: #ff0000;
+  color: #fff;
 }
 
 
@@ -311,9 +259,6 @@ export default {
     .header-navbar{
       width: 77%;
     }
-    .nav-item{
-      width: 5%
-    }
     .header-navbar-nav{
       width: 15%;
     }
@@ -332,10 +277,7 @@ export default {
    .margin-in-full{
       display: none;
    }
-    .nav-item{
-      width: 6%
-    }
-    .header-navbar-nav{
+   .header-navbar-nav{
       width: 20%;
     }
     .navbar-menu-toggler-md{
@@ -356,7 +298,7 @@ export default {
     .margin-in-full{
       display: none;
    }
-    .nav-item,.navbar-menu-toggler-md{
+   .navbar-menu-toggler-md{
       width: 15%
     }
     .header-navbar-nav{
