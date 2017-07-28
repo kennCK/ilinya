@@ -11,6 +11,8 @@ class QueueFormController extends APIController
       $this->editableForeignTable = array(
         'queue_form_fields'
       );
-      
+      $this->defaultValue = array(
+        'company_id' => $this->getUserCompanyID()
+      );
     }
 }
