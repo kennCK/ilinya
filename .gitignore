@@ -7,8 +7,6 @@ test/e2e/reports
 selenium-debug.log
 api/vendor/
 api/composer.lock
-
-
 src/modules/test/Casera.vue
 src/modules/test/Plenos.vue
 api/app/Department.php
