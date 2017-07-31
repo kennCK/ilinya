@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ModifyQueueFormField extends Migration
+class QueueForm extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class ModifyQueueFormField extends Migration
      */
     public function up()
     {
-      Schema::table('queue_form_fields', function (Blueprint $table){
-        $table->boolean('main_field')->after('type');
-        $table->string('setting')->after('type');
+      Schema::create('queue_forms', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('company_id');
+        $table->string('title');
+        $table->timestamps();
+        $table->softDeletes();
       });
     }
 

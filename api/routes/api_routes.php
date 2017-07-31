@@ -13,7 +13,9 @@ $apiResources = [
   'account_type',
   'account_information',
   'queue_form',
-  'queue_form_field'
+  'queue_form_field',
+  'queue_card',
+  'queue_card_field'
 
 ];
 api_resource($apiResources);
