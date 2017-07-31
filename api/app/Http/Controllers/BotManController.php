@@ -77,7 +77,7 @@ class BotManController extends APIController
      $this->categories($ilinya);
   }
 
-  public function categories(Botman $ilinya){
+  public function categories(BotMan $ilinya){
     $buttons = [];
     $categories = BusinessType::get();
     if($categories){
