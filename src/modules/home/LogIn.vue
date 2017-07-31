@@ -99,11 +99,7 @@ export default {
         ]
       }
       this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
-        let route = (response.data.length > 1) ? 'company_selection' : '/'
-        if(response.data.length === 1){
-          AUTH.setCompany(response.data[0].company_branch.company_id, response.data[0].company_branch_id)
-        }
-        ROUTER.push(route)
+        ROUTER.go('/')
       })
     },
     redirect(parameter){
