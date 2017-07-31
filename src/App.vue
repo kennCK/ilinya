@@ -3,8 +3,8 @@
     <div v-bind:style="(globalVariables.showModal) ? 'overflow-y:hidden; height:'+deviceHeight+'px!important': ''">
       <div v-if="!tokenData.verifyingToken && tokenData.token">
        <system-header></system-header>
-       <system-sidebar v-if="user.company_branch_id !== null"></system-sidebar>
-       <system-content v-if="user.company_branch_id === null"></system-content>
+       <system-sidebar></system-sidebar>
+       <system-content></system-content>
       </div>
       <div v-else>
         <login-header></login-header>
