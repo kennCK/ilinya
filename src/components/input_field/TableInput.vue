@@ -126,7 +126,7 @@
         for(let dbName in columnSetting){
           this.columnCount++
           let column = columnSetting[dbName]
-          Vue.set(column, 'db_name', dbName)
+          Vue.set(column, 'db_name', typeof column['db_name'] !== 'undefined' ? column['db_name'] : dbName)
           this.initColumn(column)
           this.columnSetting[0].push(column)
           if(!column['sub_columns']){

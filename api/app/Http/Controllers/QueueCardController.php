@@ -11,6 +11,9 @@ class QueueCardController extends APIController
     $this->editableForeignTable = array(
       'queue_card_fields'
     );
+    $this->foreignTable = array(
+      'facebook_user'
+    );
     $this->defaultValue = array(
       'company_id' => $this->getUserCompanyID()
     );

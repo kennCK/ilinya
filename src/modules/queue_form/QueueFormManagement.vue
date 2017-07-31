@@ -37,14 +37,13 @@
               column_setting: {
                 description: {
                 },
-                type: {
-
-                },
+                // type: {
+                //
+                // },
                 additional_option: {
                   db_name: 'setting'
                 },
                 main_field: {
-                  db_name: 'on_summary',
                   input_type: 'select',
                   default_value: 1,
                   select_option: [
