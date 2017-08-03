@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\Cache;
 use App\Ilinya\ServiceProvider;
 use App\Ilinya\Webhook\Messaging;
 use App\Ilinya\User;
+use App\Ilinya\Facebook\QuickReplyTemplate;
+use App\Ilinya\Facebook\QuickReplyElement;
+use App\Ilinya\Facebook\ButtonTemplate;
+use App\Ilinya\Facebook\ButtonElement;
+use App\Ilinya\Facebook\GenericTemplate;
+
+
+//@models
 use App\BusinessType;
 
 class Ilinya{
@@ -38,53 +46,23 @@ class Ilinya{
     }
     
     public function categories(){
-        $response = [
-            "attachment" => [
-                "type" => "template",
-                "payload" => [
-                    "template_type" => "button",
-                    "text" => "Select Categories:",
-                    "buttons" => []
-                ]
-            ]
-        ];
-
         $categories = BusinessType::get();
+        $buttons = [];
         if($categories){
             foreach ($categories as $category) {
-                $response['attachment']['payload']['buttons'][] = [
-                    "title" => $category['title'],
-                    "type"  => "postback",
-                    "payload" => 'categories@'.strtolower($category['title'])
-                ];
+                $buttons[] = ButtonElement::title($category['title'])->type('postback')->payload('categories@'.strtolower($category['title']));
             }
         }
 
-        return $response;
+        return ButtonTemplate::toArray('Select Categories:',$buttons);
     }
 
     public function conversation($category){
-        $response = [
-            "text"  => "Search by Name or Location:",
-            "quick_replies" => []
-        ];
+        $quickReplies[] = QuickReplyElement::title('Company Name')->contentType('text')->payload('@company_name');
+        $quickReplies[] = QuickReplyElement::title('Company Location')->contentType('text')->payload('@location');
+        $quickReplies[] = QuickReplyElement::title('')->contentType('location')->payload('');
 
-        $response['quick_replies'] = array(
-            array(
-                'title' => "Company Name",
-                'content_type' => "text",
-                'payload' => "@companyname"
-            ),         
-            array(
-                'title' => "Type Location",
-                'content_type' => "text",
-                'payload' => "@location"
-            ),
-            array(
-                'content_type' => "location"
-            )
-        );
-        return $response;
+        return QuickReplyTemplate::toArray('Select options for search:', $quickReplies);
     } 
 
     public function myQueueCards(){
