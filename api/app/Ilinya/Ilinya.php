@@ -16,6 +16,7 @@ class Ilinya{
     public  $MY_QUEUE_CARDS   = "@my_queue_cards";
     public  $USER_GUIDE       = "@users_guide";
     public  $CONVERSATION     = "@conversation";
+    public $ERROR             = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
     private $serviceProvider;
@@ -23,7 +24,7 @@ class Ilinya{
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
         $this->serviceProvider = new ServiceProvider();
-        $this->user();
+        
     }   
 
     public function user(){
@@ -32,6 +33,7 @@ class Ilinya{
     }
 
     public function start(){
+        $this->user();
         return "Hi ".$this->user->getFirstName()."! My Name is Ilinya, I can help to get your reservations or tickets easily. Just follow my instructions and you will be good to go!";
     }
     
@@ -63,18 +65,25 @@ class Ilinya{
 
     public function conversation($category){
         $response = [
-            "message" => [
-                "text"  => "Enter your Location:",
-                "quick_replies" => [
-                    array(
-                        "content_type"  => "text",
-                        "title"         => "Red",
-                        "payload"       => "@conversation"
-                    )
-                ]
-            ]
+            "text"  => "Search by Name or Location:",
+            "quick_replies" => []
         ];
-        echo json_encode($response);
+
+        $response['quick_replies'] = array(
+            array(
+                'title' => "Company Name",
+                'content_type' => "text",
+                'payload' => "@companyname"
+            ),         
+            array(
+                'title' => "Type Location",
+                'content_type' => "text",
+                'payload' => "@location"
+            ),
+            array(
+                'content_type' => "location"
+            )
+        );
         return $response;
     } 
 
