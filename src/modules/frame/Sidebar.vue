@@ -8,18 +8,17 @@
       <div class="sidebar">
         <ul class="sidebar-menu">
             <li class="header">
-              <label class="sr-only " v-bind:class="hide" for="search">Search Module</label>
-              <div class="input-group">
+              <!-- <label class="sr-only " v-bind:class="hide" for="search">Search Module</label> -->
+              <!-- <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
                 <input type="text" class="form-control" id="search"  v-model="search" placeholder="Search Module">
-              </div>
-              <span class="pull-right switch">
-                <i v-bind:class="toggleSidebar" aria-hidden="true" v-on:click="changeToggleSidebarIcon()"></i>
-              </span>
+              </div> -->
+                Main Tasks
+                <i v-bind:class="toggleSidebar + ' pull-right'" aria-hidden="true" v-on:click="changeToggleSidebarIcon()"></i>
             </li>
-            <li v-for="(item,index) in filteredModules" v-if="item.parent_id === 0 && search === ''" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
-                <a v-on:click="navigateTo(item.path, (item.id === filteredModules[index+1].parent_id) ? false : true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
-                  <i class="fa fa-chevron-down" v-if="item.id === filteredModules[index+1].parent_id"></i>
+           <!--  <li v-for="(item,index) in menu" v-if="item.parent_id === 0 && search === ''" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
+                <a v-on:click="navigateTo(item.path, (item.id === menu[index+1].parent_id) ? false : true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
+                  <i class="fa fa-chevron-down" v-if="item.id === menu[index+1].parent_id"></i>
                   <i v-else></i>
                   <span v-bind:class="'sm-title'" >{{item.description}}
                   </span>
@@ -38,8 +37,8 @@
                     </a>
                   </li>
                 </ul>
-              </li>
-              <li v-for="(item,index) in filteredModules" v-if="search !== ''" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
+              </li> -->
+              <li v-for="(item,index) in menu" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
                 <a v-on:click="navigateTo(item.path, true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
                   <i></i> 
                   <span v-bind:class="'sm-title'" >{{item.description}}
@@ -49,11 +48,11 @@
                   </span>
                 </a>
               </li>
-              <li v-if="filteredModules.length === 0" class="text-center">
+              <!-- <li v-if="filteredModules.length === 0" class="text-center">
                 <a>
                   <span class="text-danger">Opps! Module <b>{{search}}</b> was not found. :'( </span>
                 </a>
-              </li>
+              </li> -->
           </ul>
         </div>
       </div>
@@ -92,6 +91,7 @@ export default {
       }
       this.APIRequest('modules/retrieve', parameter).then(response => {
         this.menu = response.data
+        console.log(this.menu)
       })
     },
     isActive(menuItem){
