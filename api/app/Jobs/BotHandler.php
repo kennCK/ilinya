@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Ilinya\Bot;
 use App\Ilinya\Ilinya;
 use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Message\Attachments;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -61,7 +62,41 @@ class BotHandler implements ShouldQueue{
             }
         }
         else if($custom['type'] == "message"){
-             $bot->reply($custom['text'], true);
+            /*
+                
+                @Check if Message Contains Attachments, Quick Reply or Text
+            
+            */
+
+            $response = "";
+            if($custom['attachments']){
+                /*
+
+                    @Check type of attachments
+
+                */
+                $attachments = new Attachments($custom['attachments']);
+                $response;
+                if($attachments->getType() == "location"){
+                    $response = $ilinya->location($attachments);
+                }
+                else{
+
+                }
+                $bot->reply($response, false);
+            }
+            else if($custom['quick_reply']){
+
+            }
+            else if($custom['text']){
+                $bot->reply($custom['text'], true);
+            } 
+        }
+        else if($custom['type'] == "read"){
+            //Code Here
+        }
+        else if($custom['type'] == "delivery"){
+            //Code here
         }
         
     }

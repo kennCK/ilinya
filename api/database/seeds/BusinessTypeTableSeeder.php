@@ -12,9 +12,11 @@ class BusinessTypeTableSeeder extends Seeder
     public function run()
     {
         DB:: table('business_types') -> insert(array(
-          array("id" => "1","title" => "KTV", "description" => "KTV Bar"),
-          array("id" => "2","title" => "School", "description" => "Universities and Public Schools"),
-          array("id" => "3","title" => "Shippings", "description" => "Shipping Lines")
+          array("id" => "1","category" => "Entertainment", "sub_category" => "KTV"),
+          array("id" => "2","category" => "Entertainment", "sub_category" => "Restaurant"),
+          array("id" => "3","category" => "Transportation", "sub_category" => "Shippings Lines"),
+          array("id" => "4","category" => "Payment", "sub_category" => "School"),
+          array("id" => "5","category" => "Entertainment", "sub_category" => "Cinema")
         ));
     }
 }

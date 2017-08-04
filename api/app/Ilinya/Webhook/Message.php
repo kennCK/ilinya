@@ -12,9 +12,9 @@ class Message{
 
     public function __construct(array $data){
      $this->mId = $data["mid"];
-     $this->text = isset($data["text"]) ? $data["text"] : "";
-     $this->attachments = isset($data["attachments"]) ? $data["attachments"] : "";
-     $this->quickReply = isset($data["quick_reply"]) ? $data["quick_reply"] : "";
+     $this->text = isset($data["text"]) ? $data["text"] : null;
+     $this->attachments = isset($data["attachments"]) ? $data["attachments"] : null;
+     $this->quickReply = isset($data["quick_reply"]) ? $data["quick_reply"] : null;
     }
 
     public function getId(){

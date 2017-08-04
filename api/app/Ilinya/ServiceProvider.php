@@ -22,6 +22,7 @@ class ServiceProvider{
         ],
         "message" => $message
     ];
+    echo json_encode($parameter);
     $url = 'https://graph.facebook.com/v2.6/me/messages';
     $this->curl->post($url,$parameter);
   }

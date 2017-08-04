@@ -16,8 +16,8 @@ class CreateBusinessTypesTable extends Migration
         Schema::dropIfExists('business_types');
         Schema::create('business_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title',100);
-            $table->longText('description');
+            $table->string('category',100);
+            $table->string('sub_category',100);
             $table->timestamps();
             $table->softDeletes();
         });

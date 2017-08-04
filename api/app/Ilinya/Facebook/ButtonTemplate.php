@@ -21,6 +21,8 @@ class ButtonTemplate{
         ]
       ]
     ];
+
+    echo json_encode($response);
     return $response;
   }
 
