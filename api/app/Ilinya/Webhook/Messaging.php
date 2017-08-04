@@ -24,14 +24,25 @@ class Messaging
         $this->senderId = $data["sender"]["id"];
         $this->recipientId = $data["recipient"]["id"];
         $this->timestamp = $data["timestamp"];
+        
         if(isset($data["message"])) {
             $this->type = "message";
             $this->messageArray = $data['message'];
             $this->message = new Message($data["message"]);
-        } else if (isset($data["postback"])) {
+        }
+        else if (isset($data["postback"])) {
             $this->type = "postback";
             $this->postback = new Postback($data["postback"]);
         }
+        else if(isset($data['read'])){
+            //Code Here
+            $this->type = "read";
+        } 
+        else if(isset($data['delivery'])){
+            $this->type = "delivery";
+            //Code Here
+        }
+        
     }
 
     public function getSenderId(){

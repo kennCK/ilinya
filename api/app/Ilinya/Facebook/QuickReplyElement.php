@@ -3,8 +3,23 @@
 namespace App\Ilinya\Facebook;
 
 class QuickReplyElement{
+  
+  /*
+    @String
+    @N
+  */
   protected $title;
+  
+  /*
+    @Enum
+    @R
+  */
   protected $contentType;
+
+  /*
+    @String
+    @N
+  */
   protected $payload;
 
 

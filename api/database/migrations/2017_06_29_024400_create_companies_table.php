@@ -21,8 +21,8 @@ class CreateCompaniesTable extends Migration
             $table->string('address');
             $table->string('contact_number',  20);
             $table->string('email',  100);
-            $table->double('lat',15,8);
-            $table->double('lng',15,8);
+            $table->double('lat',15,12);
+            $table->double('lng',15,12);
             $table->timestamps();
             $table->softDeletes();
         });

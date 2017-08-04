@@ -4,17 +4,42 @@
 namespace App\Ilinya;
 
 use Illuminate\Support\Facades\Cache;
+
+/*
+    @Providers
+*/
 use App\Ilinya\ServiceProvider;
 use App\Ilinya\Webhook\Messaging;
 use App\Ilinya\User;
+
+/*
+    @Template
+*/
 use App\Ilinya\Facebook\QuickReplyTemplate;
-use App\Ilinya\Facebook\QuickReplyElement;
 use App\Ilinya\Facebook\ButtonTemplate;
-use App\Ilinya\Facebook\ButtonElement;
 use App\Ilinya\Facebook\GenericTemplate;
+use App\Ilinya\Facebook\LocationTemplate;
+use App\Ilinya\Facebook\ListTemplate;
+
+/*
+    @Elements
+*/
+
+use App\Ilinya\Facebook\ButtonElement;
+use App\Ilinya\Facebook\GenericElement;
+use App\Ilinya\Facebook\QuickReplyElement;
 
 
-//@models
+/*
+    @Message
+*/
+
+use App\Ilinya\Message\Attachments;
+
+
+/*
+    @Models
+*/
 use App\BusinessType;
 
 class Ilinya{
@@ -46,15 +71,47 @@ class Ilinya{
     }
     
     public function categories(){
-        $categories = BusinessType::get();
+        $categories = BusinessType::orderBy('category')->get();
+        $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
+        $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
+        $elements = [];
+
         if($categories){
+            $prev = $categories[0]['category'];
+            $i = 0;
             foreach ($categories as $category) {
-                $buttons[] = ButtonElement::title($category['title'])->type('postback')->payload('categories@'.strtolower($category['title']));
+                $buttons[] = ButtonElement::title($category['sub_category'])
+                    ->type('postback')
+                    ->payload('categories@'.strtolower($category['sub_category']))
+                    ->toArray();
+                if($i < sizeof($categories) - 1){
+                    if($prev != $categories[$i + 1]['category']){
+                        $title = $category['category'];
+                        $elements[] = GenericElement::title($title)
+                            ->imageUrl($imgUrl)
+                            ->subtitle($subtitle)
+                            ->buttons($buttons)
+                            ->toArray();
+                        $prev = $category['category'];
+                        $buttons = null;
+                    }
+                }
+                else{
+                    $title = $category['category'];
+                    $elements[] = GenericElement::title($title)
+                        ->imageUrl($imgUrl)
+                        ->subtitle($subtitle)
+                        ->buttons($buttons)
+                        ->toArray();
+                }
+                
+                $i++;
             }
         }
 
-        return ButtonTemplate::toArray('Select Categories:',$buttons);
+        $response =  GenericTemplate::toArray($elements);
+        return $response;
     }
 
     public function conversation($category){
@@ -64,6 +121,10 @@ class Ilinya{
 
         return QuickReplyTemplate::toArray('Select options for search:', $quickReplies);
     } 
+
+    public function location(Attachments $attachments){
+        return LocationTemplate::toArray("Your Location", $attachments->getLat(), $attachments->getLong());
+    }
 
     public function myQueueCards(){
         return "My Queue Cards";

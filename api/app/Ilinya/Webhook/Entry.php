@@ -10,14 +10,22 @@ class Entry{
     private $time;
     private $id;
     private $messagings;
+    private $standByMode;
 
     private function __construct(array $data){
         $this->id = $data["id"];
         $this->time = $data["time"];
         $this->messagings = [];
-        foreach ($data["messaging"] as $datum) {
-            $this->messagings[] = new Messaging($datum);
+        $this->standByMode = [];
+        if(isset($data['messaging'])){
+            foreach ($data["messaging"] as $datum) {
+                $this->messagings[] = new Messaging($datum);
+            }     
         }
+        else if(isset($data['standby'])){
+            $this->standByMode = $data['standby'];
+        }
+       
     }
     
     //extracts entries from a Messenger callback
