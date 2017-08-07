@@ -4,7 +4,6 @@
       <div v-if="!tokenData.verifyingToken && tokenData.token">
        <system-header></system-header>
        <system-sidebar></system-sidebar>
-       <system-content></system-content>
       </div>
       <div v-else>
         <login-header></login-header>
