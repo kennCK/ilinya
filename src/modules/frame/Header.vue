@@ -65,26 +65,7 @@ export default {
   methods: {
     logOut(){
       AUTH.deaunthenticate()
-      ROUTER.push('/')
-    },
-    loadBranch(index){
-      AUTH.setCompany(this.branches[index].company_branch.company_id, this.branches[index].company_branch_id)
-      ROUTER.push('/')
-    },
-    getBranches(){
-      let parameter = {
-        'condition': [{
-          'column': 'account_id',
-          'value': this.user.userID,
-          'clause': '='
-        }],
-        'with_foreign_table': [
-          'company_branch'
-        ]
-      }
-      this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
-        this.branches = response.data
-      })
+      ROUTER.go('/')
     }
   }
 }
