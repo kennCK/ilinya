@@ -36,7 +36,6 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 
 use App\Ilinya\Message\Attachments;
 
-
 /*
     @Models
 */
@@ -49,7 +48,7 @@ class Ilinya{
     public  $MY_QUEUE_CARDS   = "@my_queue_cards";
     public  $USER_GUIDE       = "@users_guide";
     public  $CONVERSATION     = "@conversation";
-    public $ERROR             = "I'm sorry but I can't do what you want me to do :'(";
+    public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
     private $curl;
@@ -114,9 +113,9 @@ class Ilinya{
         return $response;
     }
 
-    public function conversation($category){
-        $quickReplies[] = QuickReplyElement::title('Company Name')->contentType('text')->payload('@company_name');
-        $quickReplies[] = QuickReplyElement::title('Company Location')->contentType('text')->payload('@location');
+    public function search($category){
+        $quickReplies[] = QuickReplyElement::title('Company Name')->contentType('text')->payload('search@company_name');
+        $quickReplies[] = QuickReplyElement::title('Company Location')->contentType('text')->payload('search@company_location');
         $quickReplies[] = QuickReplyElement::title('')->contentType('location')->payload('');
 
         return QuickReplyTemplate::toArray('Select options for search:', $quickReplies);
