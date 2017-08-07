@@ -35,9 +35,7 @@ export default {
   methods: {
     logOut(){
       AUTH.deaunthenticate()
-      ROUTER.push({
-        path: '/'
-      })
+      ROUTER.go('/')
     }
   },
   components: {

@@ -63,7 +63,6 @@
 import ROUTER from '../../router'
 import AUTH from '../../services/auth'
 export default {
-  name: 'LogIn',
   mounted(){
   },
   data(){
@@ -87,6 +86,7 @@ export default {
       })
     },
     redirect(parameter){
+      alert('Parameter')
       ROUTER.push(parameter)
     }
   }
