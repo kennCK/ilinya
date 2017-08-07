@@ -81,25 +81,9 @@ export default {
       this.isLoading = true
       AUTH.authenticate(this.username, this.password, (response) => {
         this.isLoading = false
-        this.checkBranch()
       }, (response, status) => {
-        this.errorMessage = (status === 401) ? 'Your Username and password didnot matched.' : 'Cannot log in? Contact us through email: official@godigit.ph'
+        this.errorMessage = (status === 401) ? 'Your Username and password didnot matched.' : 'Cannot log in? Contact us through email: support@ilinya.com'
         this.isLoading = false
-      })
-    },
-    checkBranch(){
-      let parameter = {
-        'condition': [{
-          'column': 'account_id',
-          'value': this.user.userID,
-          'clause': '='
-        }],
-        'with_foreign_table': [
-          'company_branch'
-        ]
-      }
-      this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
-        ROUTER.go('/')
       })
     },
     redirect(parameter){
