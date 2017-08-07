@@ -40,7 +40,11 @@ use App\Ilinya\Message\Attachments;
     @Models
 */
 use App\BusinessType;
-use App\BotStatusTracker;
+
+/*
+    @Database
+*/
+use App\Ilinya\Database\DBManager as DB;
 
 class Ilinya{
   
@@ -54,15 +58,9 @@ class Ilinya{
     private $messaging;
     private $curl;
 
-    protected $botStatus  = array(
-        "facebook_identification" => null,
-        "status"      => null
-    );
-    protected $tracker;
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
-        $this->tracker = new BotStatusTracker();
         $this->curl = new Curl();
     }   
 
@@ -73,10 +71,7 @@ class Ilinya{
 
     public function start(){
         $this->user();
-        $this->botStatus['status'] = $this->GET_STARTED;
-        $this->botStatus['facebook_identification'] = $this->messaging->getSenderId();
-        echo json_encode($this->botStatus);
-        $this->tracker->save($this->botStatus);
+        DB::saveStatus($this->messaging->getSenderId(),$this->GET_STARTED);
         return "Hi ".$this->user->getFirstName()."! My Name is Ilinya, I can help to get your reservations or tickets easily. Just follow my instructions and you will be good to go!";
     }
     
@@ -120,6 +115,7 @@ class Ilinya{
             }
         }
 
+        DB::updateStatus($this->messaging->getSenderId(),$this->USER_GUIDE);
         $response =  GenericTemplate::toArray($elements);
         return $response;
     }
