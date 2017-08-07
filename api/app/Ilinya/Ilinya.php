@@ -8,26 +8,26 @@ use Illuminate\Support\Facades\Cache;
 /*
     @Providers
 */
-use App\Ilinya\ServiceProvider;
+use App\Ilinya\Http\Curl;
 use App\Ilinya\Webhook\Messaging;
 use App\Ilinya\User;
 
 /*
     @Template
 */
-use App\Ilinya\Facebook\QuickReplyTemplate;
-use App\Ilinya\Facebook\ButtonTemplate;
-use App\Ilinya\Facebook\GenericTemplate;
-use App\Ilinya\Facebook\LocationTemplate;
-use App\Ilinya\Facebook\ListTemplate;
+use App\Ilinya\Templates\Facebook\QuickReplyTemplate;
+use App\Ilinya\Templates\Facebook\ButtonTemplate;
+use App\Ilinya\Templates\Facebook\GenericTemplate;
+use App\Ilinya\Templates\Facebook\LocationTemplate;
+use App\Ilinya\Templates\Facebook\ListTemplate;
 
 /*
     @Elements
 */
 
-use App\Ilinya\Facebook\ButtonElement;
-use App\Ilinya\Facebook\GenericElement;
-use App\Ilinya\Facebook\QuickReplyElement;
+use App\Ilinya\Templates\Facebook\ButtonElement;
+use App\Ilinya\Templates\Facebook\GenericElement;
+use App\Ilinya\Templates\Facebook\QuickReplyElement;
 
 
 /*
@@ -52,16 +52,16 @@ class Ilinya{
     public $ERROR             = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
-    private $serviceProvider;
+    private $curl;
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
-        $this->serviceProvider = new ServiceProvider();
+        $this->curl = new Curl();
         
     }   
 
     public function user(){
-        $user = $this->serviceProvider->getUser($this->messaging->getSenderId());
+        $user = $this->curl->getUser($this->messaging->getSenderId());
         $this->user = new User($this->messaging->getSenderId(), $user['first_name'], $user['last_name']);
     }
 

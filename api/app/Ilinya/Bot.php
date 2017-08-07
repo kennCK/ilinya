@@ -7,15 +7,17 @@ use App\Ilinya\Webhook\Message;
 use Illuminate\Support\Facades\Log;
 use App\Ilinya\ServiceProvider;
 
+use App\Ilinya\Http\Curl;
+
 
 class Bot{  
   
     private     $messaging;
-    protected   $serviceProvider;
+    protected   $curl;
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
-        $this->serviceProvider = new ServiceProvider();
+        $this->curl = new Curl();
     }
 
     public function extractData(){
@@ -67,7 +69,17 @@ class Bot{
 
     public function reply($data, $flag){
         $message = ($flag == true)?["text" => $data] : $data;
-        $id = $this->messaging->getSenderId();
-        $this->serviceProvider->send($id, $message);
+        $this->send($message);
     }
+
+    public function ask($question){
+        $message = ['text' => $question];
+        $this->send($message);
+    }
+
+    public function send($message){
+        $id = $this->messaging->getSenderId();
+        $this->curl->send($id, $message);
+    }
+
 }

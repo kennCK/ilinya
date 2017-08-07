@@ -19,7 +19,18 @@ class IlinyaController extends Controller
                 dispatch(new BotHandler($messaging));
             }
         }
-        //print_r($entries);
         return response("", 200);
+    }
+
+    public function broadcast($companyId, $message){
+
+    }
+
+    public function paging($queueCardId){
+
+    }
+
+    public function reminder($userId, $message){
+
     }
 }

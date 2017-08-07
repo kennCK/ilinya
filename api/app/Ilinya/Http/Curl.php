@@ -6,6 +6,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Curl{
 
+    public function getUser($userId){
+      $url = "https://graph.facebook.com/v2.6/".$userId."?fields=first_name,last_name,profile_pic,locale,timezone,gender";
+      return $this->get($url, true);
+    }
+
+    public function send($recipientId, $message){
+      $parameter = [
+          "recipient" => [
+              "id" => $recipientId
+          ],
+          "message" => $message
+      ];
+      $url = 'https://graph.facebook.com/v2.6/me/messages';
+      $this->post($url,$parameter);
+    }
+
+
     public function post($url, $parameter){
      $request = $this->prepare($url, false);
 
