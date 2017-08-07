@@ -42,7 +42,7 @@ class Bot{
         return [
             "type"          => "message",
             "text"          => $message->getText(),
-            "attachments"    => $message->getAttachments(),
+            "attachments"   => $message->getAttachments(),
             "quick_reply"   => $message->getQuickReply()
         ];
     }

@@ -2,7 +2,11 @@
 
 namespace App\Ilinya\Templates\Facebook;
 
-class ButtonTemplate{
+/**
+* 
+*/
+class BoardingPassTemplate
+{
 
   public static function toArray($text, $buttons){
     
@@ -15,13 +19,12 @@ class ButtonTemplate{
       "attachment"  => [
         "type"      => 'template',
         "payload"   =>  [
-          "template_type" => "button",
-          "text"          => $text,
+          "template_type" => "airline_boardingpass",
+          "intro_message" => null,
           "buttons"       => $resultButtons
         ]
       ]
     ];
-
     return $response;
   }
 

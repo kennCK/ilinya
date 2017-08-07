@@ -7,6 +7,14 @@ use App\Ilinya\Ilinya;
 use App\Ilinya\Message\Attachments;
 use App\Ilinya\Webhook\Messaging;
 
+
+/*
+    @Coversation
+*/
+
+use App\Ilinya\Conversation\SearchCompany;
+use App\Ilinya\Conversation\Conversation;
+
 class ServiceProvider{
   protected $curl;
   protected $messaging;
@@ -53,7 +61,7 @@ class ServiceProvider{
                $this->bot->reply($this->ilinya->userGuide(), true);
             }
             else if($priority == 'categories'){
-                $this->bot->reply($this->ilinya->conversation($category), false);
+                $this->bot->reply($this->ilinya->search($category), false);
             }
             else{
                 $this->bot->reply($this->ilinya->ERROR, true);
@@ -76,18 +84,28 @@ class ServiceProvider{
                 $response = $this->ilinya->location($attachments);
             }
             else{
-
             }
-            $this->bot->reply($response, false);
+            $this->bot->reply($response, true);
         }
         else if($this->custom['quick_reply']){
-            $this->bot->reply();  
+            $this->quickReply();
         }
         else if($this->custom['text']){
             $this->bot->reply($this->custom['text'], true);
         } 
   }
 
+
+  public function quickReply(){
+    list($type, $value) = explode('@', $this->custom['quick_reply']['payload']);
+
+    if($type == "search"){
+      $this->bot->reply(SearchCompany::search($value), true);
+    }
+    else{
+
+    }
+  }
   public function read(){
     //
   }
