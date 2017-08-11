@@ -58,6 +58,9 @@ class Ilinya{
     private $messaging;
     private $curl;
 
+    protected $db_bTypes      = "business_types";
+
+
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
@@ -71,12 +74,12 @@ class Ilinya{
 
     public function start(){
         $this->user();
-        DB::saveStatus($this->messaging->getSenderId(),$this->GET_STARTED);
+
         return "Hi ".$this->user->getFirstName()."! My Name is Ilinya, I can help to get your reservations or tickets easily. Just follow my instructions and you will be good to go!";
     }
     
     public function categories(){
-        $categories = BusinessType::orderBy('category')->get();
+        $categories = DB::retrieve($this->db_bTypes,null, ['category', 'asc']);
         $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
@@ -115,7 +118,7 @@ class Ilinya{
             }
         }
 
-        DB::updateStatus($this->messaging->getSenderId(),$this->USER_GUIDE);
+
         $response =  GenericTemplate::toArray($elements);
         return $response;
     }
@@ -139,4 +142,11 @@ class Ilinya{
     public function userGuide(){
         return "User Guide";
     }
+
+    public function priority(){
+        $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('priority@yes');
+        $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('priority@no');
+        return QuickReplyTemplate::toArray('Are you sure you want cancel your current conversation?', $quickReplies);
+    }
+   
 }

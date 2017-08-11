@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class IlinyaController extends Controller
 {
-    public function receive(Request $request){
+    public function hook(Request $request){
         $entries = Entry::getEntries($request);
         Log::info(print_r($entries, true));
         foreach ($entries as $entry) {
@@ -22,15 +22,18 @@ class IlinyaController extends Controller
         return response("", 200);
     }
 
-    public function broadcast($companyId, $message){
-
+    public function broadcast(Request $request){
+        $data = $request->all();
+        return "broadcast";
     }
 
-    public function paging($queueCardId){
-
+    public function paging(Request $request){
+        $data = $request->all();
+        return "paging";
     }
 
-    public function reminder($userId, $message){
-
+    public function reminder(Request $request){
+        $data = $request->all();
+        return "reminder";
     }
 }

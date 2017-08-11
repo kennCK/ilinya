@@ -2,34 +2,40 @@
 
 namespace App\Ilinya\Database;
 
-use App\TempCustomFieldsStorage as DBFields;
-use App\QueueFormField as FormFields;
-use App\BotStatusTracker;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DBManager{
-  public static function get($queueFormId){
-    return FormFields::where('queue_form_id', $queueFormId)->orderBy('sequence')->get();
+
+  public static function insert($name, $data){
+    $data['created_at'] = Carbon::now();
+    return DB::table($name)->insert($data);
   }
 
-  public static function save($facebookId, $fieldName, $fieldValue){
-    $data = array(
-      "facebook_id"   => $facebookId,
-      "field_name"   => $fieldName,
-      "field_value"   => $fieldValue
-    );
-
-    return DBFields::save($data);
+  public static function update($name, $condition, $data){
+    $data['updated_at'] = Carbon::now();
+    return DB::table($name)->where($condition)->whereNull("deleted_at")->update($data);
   }
 
-  public static function saveStatus($userId, $status){
-    $tracker = new BotStatusTracker();
-    $tracker->facebook_id = $userId;
-    $tracker->status = $status;
-    $tracker->save();
+  public static function retrieve($name, $condition = null, $order = null){
+    $result = null;
+    if($condition && $order){
+      $result =  DB::table($name)->where($condition)->whereNull('deleted_at')->orderBy($order[0], $order[1])->get();
+    }
+    else if($condition && $order == null){
+      $result =  DB::table($name)->where($condition)->whereNull('deleted_at')->get();
+    }
+    else if($condition == null && $order){
+      $result =  DB::table($name)->whereNull('deleted_at')->orderBy($order[0], $order[1])->get();
+    }
+    else{
+
+    }
+
+    return json_decode($result, true);
   }
 
-  public static function updateStatus($userId, $status){
-    $data = array("status" => $status);
-    $tracker = BotStatusTracker::where('facebook_id', $userId)->update($data);
+  public static function delete($name, $condition){
+    return DB::table($name)->where($condition)->whereNull("deleted_at")->update(["deleted_at" => Carbon::now()]);
   }
 }
