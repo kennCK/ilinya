@@ -27,4 +27,20 @@ class QueueCardController extends APIController
       'user_id' => 0
     );
   }
+  public function update(Request $request){
+    $reqArray = $request->toArray();
+    if(isset($reqArray['status'])){
+      $this->response['debug'][] = $reqArray['status'];
+      switch($reqArray['status'] * 1){
+        case 2:
+          $reqArray['datetime_served'] = date('Y-m-d H:i:s', time());
+          break;
+        case 3:
+          $reqArray['datetime_finished'] = date('Y-m-d H:i:s', time());
+          break;
+      }
+    }
+    $this->updateEntry($reqArray);
+    return $this->output();
+  }
 }

@@ -1,20 +1,25 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col-sm-6 text-center"></div>
+    <div class="row mb-5">
       <div class="col-sm-6">
+        <annoucement></annoucement>
+      </div>
+      <div class="col-sm-6 text-center">
         <button @click="showQueueCard" class="btn btn-lg btn-primary"><i class="fa fa-vcard-o" aria-hidden="true"></i> Create Queue Entry</button>
       </div>
     </div>
-    <table-component
-      ref="queueCardTable"
-      :api="'queue_card'"
-      :filter_setting="filterSetting"
-      :column_setting="column_setting"
-      v-on:row_clicked="rowClicked"
-    >
-    </table-component>
-
+    <div class="row">
+      <div class="col-sm-12">
+        <table-component
+          ref="queueCardTable"
+          :api="'queue_card'"
+          :filter_setting="filterSetting"
+          :column_setting="column_setting"
+          v-on:row_clicked="rowClicked"
+        >
+        </table-component>
+      </div>
+    </div>
     <modal ref="queueCardManagement" v-on:change-state="queueCardModalChangeState">
       <div slot="header">
         <i class="fa fa-vcard-o" aria-hidden="true"></i> Queue Card
@@ -28,13 +33,14 @@
             :input_setting="formSelectInputSetting"
             :form_status="queue_card_id ? 'view' : formStatus"
             :default_value="0"
-            :form_data="select_queue_card"
+            :form_data="selected_queue_card"
             v-on:value_changed="formChanged"
           ></input-cell>
           <input-cell
             :input_name="'Number'"
             :db_name="'number'"
-            :form_data="select_queue_card"
+            :form_data="selected_queue_card"
+            :form_status="formStatus"
           ></input-cell>
           <template v-for="(queueFormField, index) in queueFormFields">
             <input type="hidden" v-bind:name="'queue_card_fields['+index+'][queue_form_field_id]'" v-bind:value="queueFormField['id']">
@@ -44,13 +50,15 @@
               :default_value="queueFormField['value']"
             ></input-cell>
           </template>
-          <div v-if="queue_card_id" class="row">
+          <div v-if="queue_card_id && selected_queue_card['status'] !== 3" class="row">
             <div class="col-sm-12 text-center">
-              <button v-bind:disabled="select_queue_card['status'] === 2"@click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "><i class="fa fa-bell-o" aria-hidden="true"></i> {{select_queue_card['status'] === 2 ? 'Serving' : 'Serve'}}</button>
+              <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
+              <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
+              <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "><i class="fa fa-bell-o" aria-hidden="true"></i> Serve</button>
               <button @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
             </div>
           </div>
-          <div v-else class="row">
+          <div v-else-if="selected_queue_card['status'] !== 3" class="row">
             <div class="col-sm-12 text-right">
               <button @click="submitQueueCard" type="button" class="btn btn-primary ">Submit</button>
               <button @click="closeQueueCardModal" type="button" class="btn btn-default">Close</button>
@@ -59,6 +67,7 @@
         </form>
       </div>
     </modal>
+
   </div>
 </template>
 <script>
@@ -67,7 +76,8 @@
     components: {
       'table-component': require('components/table/TableComponent.vue'),
       'modal': require('components/modal/Modal.vue'),
-      'input-cell': require('components/input_field/InputCell.vue')
+      'input-cell': require('components/input_field/InputCell.vue'),
+      'annoucement': require('./Announcement.vue')
     },
     create(){
 
@@ -99,7 +109,7 @@
       return {
         queue_card_id: 0,
         rowIndex: -1,
-        select_queue_card: {
+        selected_queue_card: {
 
         },
         filterSetting: {
@@ -115,6 +125,7 @@
               ]
             }
           }
+
         },
         column_setting: {
           number: {},
@@ -142,6 +153,14 @@
     props: {
     },
     methods: {
+      removeQueueCard(){
+        this.APIRequest('queue_card/delete', {id: this.queue_card_id}, (response) => {
+          if(response['data']){
+            this.$refs.queueCardTable.deleteRow(this.rowIndex)
+            this.closeQueueCardModal()
+          }
+        })
+      },
       changeQueueCardStatus(status){
         let requestParam = {
           id: this.queue_card_id,
@@ -149,8 +168,8 @@
         }
         this.APIRequest('queue_card/update', requestParam, (response) => {
           if(response['data']){
-            console.log(status)
-            if(status * 1 === 2){
+            this.selected_queue_card['status'] = status
+            if(status * 1 === 2 || status * 1 === 1){
               this.$refs.queueCardTable.updateRow(this.rowIndex, this.queue_card_id)
             }else{
               this.$refs.queueCardTable.deleteRow(this.rowIndex)
@@ -169,13 +188,14 @@
         this.APIRequest('queue_card/retrieve', requestoption, (response) => {
           if(response['data']){
             this.queue_card_id = response['data']['id']
-            this.select_queue_card = response['data']
+            this.selected_queue_card = response['data']
             this.queueFormFields = response['data']['queue_card_fields']
             for(let x = 0; x < this.queueFormFields.length; x++){
               this.queueFormFields[x]['description'] = this.queueFormFields[x]['queue_form_field']['description']
               this.queueFormFields[x]['queue_card_field_id'] = this.queueFormFields[x]['id']
               this.queueFormFields[x]['id'] = this.queueFormFields[x]['queue_form_field_id']
             }
+            this.formStatus = (response['data']['status'] * 1 === 3) ? 'view' : 'editing'
             this.showQueueCard(this.queue_card_id)
 
           }
@@ -218,12 +238,14 @@
         if(typeof queueCardID !== 'number'){
           this.queue_card_id = 0
           this.formStatus = 'create'
+          this.selected_queue_card = {
+            queue_form_id: 0
+          }
+          this.queueFormFields = []
         }
         this.$refs.queueCardManagement.showModal()
-
       }
     }
-
   }
 </script>
 <style scoped>

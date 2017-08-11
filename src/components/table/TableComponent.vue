@@ -45,6 +45,27 @@
         </tr>
       </tbody>
     </table>
+    <nav >
+      <ul class="pagination justify-content-end ">
+        <li class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
+          <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+            Previous
+          </button>
+        </li>
+        <li class="page-item">
+          <!-- <input class="form-control text-right" size="5"> -->
+          <select v-model="currentPage" class="form-control select-rtl">
+            <option v-for="x in this.totalPage" >{{x}}</option>
+          </select>
+        </li>
+        <li class="page-item"></li>
+        <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
+        <li class="page-item">
+          <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 <script>
@@ -66,7 +87,10 @@
         ],
         linearColumnSetting: [],
         tableEntries: [],
-        currentSort: null
+        currentSort: null,
+        currentPage: 1,
+        totalPage: 1,
+        prevRetrieveType: null
       }
     },
     props: {
@@ -78,9 +102,22 @@
         default(){
           return {}
         }
+      },
+      entry_per_page: {
+        default: 5,
+        type: Number
+      }
+    },
+    watch: {
+      currentPage(value){
+        if(value === 0){
+          this.currentPage = 1
+        }
+        this.retrieveData(this.prevRetrieveType)
       }
     },
     methods: {
+
       changeSort(rowIndex, columnIndex){
         (this.currentSort !== null && this.currentSort['db_name'] !== this.columnSetting[rowIndex][columnIndex]['db_name']) ? this.currentSort['sort'] = 0 : null
         this.columnSetting[rowIndex][columnIndex]['sort'] = (this.columnSetting[rowIndex][columnIndex]['sort'] < 2)
@@ -88,7 +125,7 @@
         this.currentSort = this.columnSetting[rowIndex][columnIndex]
         this.retrieveData()
       },
-      retrieveData(retrieveType){
+      retrieveData(retrieveType, resetPage){
         let requestOption = {} // this.retrieve_parameter
         for(let x in this.retrieve_parameter){
           requestOption[x] = this.retrieve_parameter[x]
@@ -98,6 +135,8 @@
           requestOption['sort'] = {}
           requestOption['sort'][this.currentSort['db_name']] = orderLookUp[this.currentSort['sort']]
         }
+        requestOption['limit'] = this.entry_per_page
+        requestOption['offset'] = this.entry_per_page * (this.currentPage - 1)
         if(retrieveType === 'filter'){
           typeof requestOption.condition === 'undefined' ? requestOption.condition = [] : null
           let formInputs = $(this.$refs.tableFilter.$refs.form).serializeArray()
@@ -116,10 +155,12 @@
             }
           }
         }
+        this.prevRetrieveType = retrieveType
         this.APIRequest(this.api + '/retrieve', requestOption, (response) => {
           if(response['data']){
-            this.tableEntries = response['data']
+            response['data'].length > 0 ? this.tableEntries = response['data'] : this.currentPage--
           }
+          this.totalPage = Math.ceil(response['total_entries'] / this.entry_per_page)
         })
       },
       updateRow(rowIndex, entryID){
@@ -188,5 +229,11 @@
   }
 </script>
 <style scoped>
+  .select-rtl{
+    text-align-last: right;
 
+  }
+  .select-rtl option{
+    direction: rtl;
+  }
 </style>

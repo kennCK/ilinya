@@ -55,6 +55,7 @@ class APIController extends Controller
     **/
     protected $editableForeignTable = array();
     protected $foreignTable = array();
+    protected $useUserCompanyID = true;
 
     public function test(){
       $user = $this->getAuthenticatedUser();
@@ -101,6 +102,19 @@ class APIController extends Controller
       ouput : true - if no errors
               output() - if errors found.
     */
+    public function filterRequest($request){
+      foreach($this->tableColumns as $column){
+        $this->request['debug'][] = $column;
+        switch($column){
+          case "company_id":
+            if($this->useUserCompanyID){
+              $request[$column] = $this->getUserCompanyID();
+            }
+            break;
+        }
+      }
+      return $request;
+    }
     public function isValid($request, $action = "create"){
       /*Require all fields*/
       unset($this->tableColumns[0]);
@@ -108,7 +122,8 @@ class APIController extends Controller
       array_pop($this->tableColumns);//updated at
       array_pop($this->tableColumns);//created at
       foreach($this->tableColumns as $column){
-        $this->validation[$column] = (isset($this->validation[$column])) ? $this->validation[$column] : "";
+        // $column == 'company_id' ? $request['company_id'] = $this->getUserCompanyID() : '';
+        $this->validation[$column] = (isset($this->validation[$column])) ? $this->validation[$column] : '';
         if(!in_array($column, $this->notRequired) && !isset($this->defaultValue[$column])){//requiring all field by default
           if($action !== "update"){
             $this->validation[$column] = $this->validation[$column].($this->validation[$column] ? "| ":"")."required";
@@ -166,6 +181,9 @@ class APIController extends Controller
     public function createEntry($request){
       $tableColumns = $this->model->getTableColumns();
       $this->tableColumns = $tableColumns;
+      $request = $this->filterRequest($request);
+      $this->response['debug'][] = $request;
+
       if(!$this->isValid($request, "create")){
         return $this->output();
       }
@@ -324,12 +342,10 @@ class APIController extends Controller
             }
           }
         }
-
         if(count($foreignTable)){
           $this->model = $this->model->with($foreignTable);
         }
       }
-      $this->response['debug'][] = $condition['main_table'];
       if(count($condition['main_table'])){
         $this->addCondition($condition['main_table']);
       }
@@ -338,8 +354,16 @@ class APIController extends Controller
       }else{
         // (isset($request['condition'])) ? $this->addCondition($request['condition']) : null;
         (isset($request['sort'])) ? $this->addOrderBy($request['sort']) : null;
-        (isset($request['offset'])) ? $this->model->offset($request['offset']) : null;
-        (isset($request['limit'])) ? $this->model = $this->model->limit($request['limit']) : null;
+        if(isset($request['limit'])){
+          $this->response['total_entries'] = $this->model->count();
+          $this->model = $this->model->limit($request['limit']);
+        }
+        if(isset($request['offset'])){
+
+          $this->response['debug'][] = $request['offset'];
+        }
+        (isset($request['offset'])) ?  $this->model = $this->model->offset($request['offset'] * 1) : null;
+
       }
       if(isset($request['with_soft_delete'])){
         $this->model = $this->model->withTrashed();
@@ -348,6 +372,7 @@ class APIController extends Controller
       for($x = 0; $x < count($tableColumns); $x++){
         $tableColumns[$x] = $tableName.'.'.$tableColumns[$x];
       }
+
       $result = $this->model->get($tableColumns);
       if($result){
         $this->response["data"] = $result->toArray();
@@ -363,6 +388,7 @@ class APIController extends Controller
       return $result;
     }
     public function updateEntry($request, $noFile = false){
+      $request = $this->filterRequest($request);
       $tableColumns = $this->model->getTableColumns();
 
       $this->tableColumns = $tableColumns;
