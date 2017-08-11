@@ -47,12 +47,6 @@ use App\BusinessType;
 use App\Ilinya\Database\DBManager as DB;
 
 class ResponseHandler{
-  
-    public  $GET_STARTED      = "@start";
-    public  $CATEGORIES       = "@categories";
-    public  $MY_QUEUE_CARDS   = "@my_queue_cards";
-    public  $USER_GUIDE       = "@users_guide";
-    public  $CONVERSATION     = "@conversation";
     public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
@@ -143,7 +137,7 @@ class ResponseHandler{
         return "User Guide";
     }
 
-    public function priority(){
+    public function priorityError(){
         $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('priority@yes');
         $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('priority@no');
         return QuickReplyTemplate::toArray('Are you sure you want cancel your current conversation?', $quickReplies);
