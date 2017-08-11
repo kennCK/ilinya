@@ -46,7 +46,7 @@ use App\BusinessType;
 */
 use App\Ilinya\Database\DBManager as DB;
 
-class Ilinya{
+class ResponseHandler{
   
     public  $GET_STARTED      = "@start";
     public  $CATEGORIES       = "@categories";

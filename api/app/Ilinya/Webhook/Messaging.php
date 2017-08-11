@@ -2,7 +2,6 @@
 
 namespace App\Ilinya\Webhook;
 use App\Ilinya\Webhook\Postback;
-use App\Ilinya\User;
 use App\Ilinya\Webhook\Message;
 
 
@@ -17,7 +16,6 @@ class Messaging
     private $messageArray;
     private $type;
     private $postback;
-    private $user;
 
     public function __construct(array $data)
     {

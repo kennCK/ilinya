@@ -16,7 +16,7 @@ class DBManager{
     $data['updated_at'] = Carbon::now();
     return DB::table($name)->where($condition)->whereNull("deleted_at")->update($data);
   }
-
+  
   public static function retrieve($name, $condition = null, $order = null){
     $result = null;
     if($condition && $order){

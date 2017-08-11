@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 
 use App\Ilinya\Webhook\Messaging;
-use App\Ilinya\ServiceProvider as SP;
+use App\Ilinya\MessageHandler;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +32,7 @@ class BotHandler implements ShouldQueue{
      * @param Messaging $messaging
      */
     public function handle(){
-        $sp  = new SP($this->messaging);
-        $sp->manage();
+        $messageHandler  = new MessageHandler($this->messaging);
+        $messageHandler->manage();
     }
 }
