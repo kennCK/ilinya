@@ -15,9 +15,7 @@ $apiResources = [
   'queue_form',
   'queue_form_field',
   'queue_card',
-  'queue_card_field',
-  'botman',
-  'ilinya'
+  'queue_card_field'
 ];
 api_resource($apiResources);
 
