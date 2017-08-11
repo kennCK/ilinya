@@ -1,6 +1,7 @@
 <?php
 namespace App\Ilinya;
 
+use App\Ilinya\Message\Codes;
 use App\Ilinya\Bot;
 use App\Ilinya\ResponseHandler;
 use App\Ilinya\StatusChecker;
@@ -14,94 +15,88 @@ class MessageHandler{
   protected $bot;
   protected $custom;
 
+  protected $types = array('postback', 'message', 'read', 'delivery');
+
+  protected $code;
+
   function __construct(Messaging $messaging){
     $this->checker    = new StatusChecker($messaging);
     $this->response   = new ResponseHandler($messaging); 
     $this->bot        = new Bot($messaging);
+    $this->code       = new Codes();
     $messageExtractor = new MessageExtractor($messaging); 
     $this->custom     = $messageExtractor->extractData();
   }
 
-  public function manage(){
-    //Save Tracker
-        if($this->custom['type'] == "postback"){
-          $this->postback();
-        }
-        else if($this->custom['type'] == "message"){
-          $this->message();
-        }
-        else if($this->custom['type'] == "read"){
-          $this->read();
-        }
-        else if($this->custom['type'] == "delivery"){
-          $this->delivery();
-        }
-    //Update Tracker
+  public function checkMessage(){
+    //Save tracker here
+    $status = $this->checker->getStatus($this->custom);
+    switch ($status) {
+      case 0:
+        $this->read();
+        break;
+      case 1000:
+        $this->delivery();
+        break;
+      case 2000:
+        $this->postback();
+        $this->checker->insert($this->code->getCodeByUnknown($this->custom));
+        break;
+      case 2001:
+        $this->postback();
+        $this->checker->update($this->code->getCodeByUnknown($this->custom));
+        break;
+      case 3000:
+        $this->message();
+        $this->checker->update($this->code->getCodeByUnknown($this->custom));
+        break;
+      case 4000:
+        $this->bot->reply($this->response->priorityError(), false);
+        break;
+      default:
+        //
+        break;
+    }
   }
 
   public function postback(){
         list($priority, $category) = explode('@', $this->custom['payload']);
-        $status = $this->checker->getStatus();
-
-            if($this->custom['payload'] == $this->response->GET_STARTED){
-                if($status < 140){
-                  $this->bot->reply($this->response->start(), true);
-                  $this->bot->reply($this->response->categories(), false);
-                  $this->checker->insert(130);
-                }
-                else{
-                  $this->bot->reply($this->response->priority(), false);
-                }
-            }
-            else if($this->custom['payload'] == $this->response->CATEGORIES){
-                if($status < 140){
-                  $this->bot->reply($this->response->categories(), false);
-                  $this->checker->update(130);
-                }
-                else{
-                  $this->bot->reply($this->response->priority(), false);
-                }
-            }
-            else if($this->custom['payload'] == $this->response->MY_QUEUE_CARDS){
-                if($status < 140){
-                  $this->bot->reply($this->response->myQueueCards(), true);
-                  $this->checker->update(120);
-                }
-                else{
-                  $this->bot->reply($this->response->priority(), false);
-                }
-            }
-            else if($this->custom['payload'] == $this->response->USER_GUIDE){
-                if($status < 140){
-                  $this->bot->reply($this->response->userGuide(), true);
-                  $this->checker->update(110);
-                }
-                else{
-                  $this->bot->reply($this->response->priority(), false);
-                }
-            }
-            else if($priority == 'categories'){
-                if($status < 140)
-                  $this->bot->reply($this->response->search($category), false);
-                else{
-                  $this->bot->reply($this->response->priority(), false);
-                }
-            }
-            else{
-                $this->bot->reply($this->response->ERROR, true);
-            }
+        if(!$priority){
+          $action = $this->code->getCode($this->custom['payload']);
+          switch ($action) {
+            case $this->code->P_START:
+              $this->bot->reply($this->response->start(), true);
+              $this->bot->reply($this->response->categories(), false);
+              break;
+            case $this->code->P_USERGUIDE:
+              $this->bot->reply($this->response->userGuide(), true);
+              break;
+            case $this->code->P_QUEUECARDS:
+              $this->bot->reply($this->response->myQueueCards(), true);
+              break;
+            case $this->code->P_CATEGORIES:
+              $this->bot->reply($this->response->categories(), false);
+              break;
+            default:
+              $this->bot->reply($this->response->ERROR, true);
+              break;
+          }
+        }
+        else{
+          switch ($priority) {
+            case 'categories':
+              $this->bot->reply($this->response->search($category), false);
+              break;
+            default:
+              $this->bot->reply($this->response->ERROR, true);
+              break;
+          }
+        }     
   }
 
   public function message(){
-        /*
-            @Check if Message Contains Attachments, Quick Reply or Text
-        */
-
         $response = "";
         if($this->custom['attachments']){
-            /*
-                @Check type of attachments
-            */
             $attachments = new Attachments($this->custom['attachments']);
             $response;
             if($attachments->getType() == "location"){
@@ -121,30 +116,26 @@ class MessageHandler{
 
 
   public function quickReply(){
-    list($type, $value) = explode('@', $this->custom['quick_reply']['payload']);
-    $status = $this->checker->getStatus();
-    if($type == "search"){
-      $this->bot->reply(SearchCompany::search($value), true);
-    }
-    else if($type == "priority"){
-      if($value == "yes"){
-        $this->checker->delete();
+      list($type, $value) = explode('@', $this->custom['quick_reply']['payload']);
+
+      switch ($type) {
+        case 'search':
+          $this->bot->reply(SearchCompany::search($value), true);
+          break;
+        case 'priority':
+          //Statement Here
+          break;
+        default:
+          //Statement Here
+          break;
       }
-      else{
-
-      }
-
-    }
-    else{
-
-    }
   }
   public function read(){
-    //
+      //
   }
 
   public function delivery(){
-    //
+      //
   }
   
 }

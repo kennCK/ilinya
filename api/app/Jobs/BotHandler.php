@@ -33,6 +33,6 @@ class BotHandler implements ShouldQueue{
      */
     public function handle(){
         $messageHandler  = new MessageHandler($this->messaging);
-        $messageHandler->manage();
+        $messageHandler->checkMessage();
     }
 }
