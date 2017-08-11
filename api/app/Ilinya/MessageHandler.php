@@ -1,38 +1,29 @@
 <?php
 namespace App\Ilinya;
 
-use App\Ilinya\Http\Curl;
 use App\Ilinya\Bot;
-use App\Ilinya\Ilinya;
+use App\Ilinya\ResponseHandler;
 use App\Ilinya\StatusChecker;
-use App\Ilinya\Message\Attachments;
+use App\Ilinya\MessageExtractor;
 use App\Ilinya\Webhook\Messaging;
 
 
-/*
-    @Coversation
-*/
-
-use App\Ilinya\Conversation\SearchCompany;
-use App\Ilinya\Conversation\Conversation;
-
-class ServiceProvider{
-  protected $curl;
-  protected $messaging;
-  protected $bot;
-  protected $ilinya;
-  protected $custom;
+class MessageHandler{
   protected $checker;
+  protected $response;
+  protected $bot;
+  protected $custom;
 
   function __construct(Messaging $messaging){
-    $this->curl = new Curl();
-    $this->bot = new Bot($messaging);
-    $this->ilinya = new Ilinya($messaging); 
-    $this->custom = $this->bot->extractData();
-    $this->checker = new StatusChecker($messaging);
+    $this->checker    = new StatusChecker($messaging);
+    $this->response   = new ResponseHandler($messaging); 
+    $this->bot        = new Bot($messaging);
+    $messageExtractor = new MessageExtractor($messaging); 
+    $this->custom     = $messageExtractor->extractData();
   }
 
-  public function manage(){       
+  public function manage(){
+    //Save Tracker
         if($this->custom['type'] == "postback"){
           $this->postback();
         }
@@ -45,58 +36,59 @@ class ServiceProvider{
         else if($this->custom['type'] == "delivery"){
           $this->delivery();
         }
+    //Update Tracker
   }
 
   public function postback(){
         list($priority, $category) = explode('@', $this->custom['payload']);
         $status = $this->checker->getStatus();
 
-            if($this->custom['payload'] == $this->ilinya->GET_STARTED){
+            if($this->custom['payload'] == $this->response->GET_STARTED){
                 if($status < 140){
-                  $this->bot->reply($this->ilinya->start(), true);
-                  $this->bot->reply($this->ilinya->categories(), false);
+                  $this->bot->reply($this->response->start(), true);
+                  $this->bot->reply($this->response->categories(), false);
                   $this->checker->insert(130);
                 }
                 else{
-                  $this->bot->reply($this->ilinya->priority(), false);
+                  $this->bot->reply($this->response->priority(), false);
                 }
             }
-            else if($this->custom['payload'] == $this->ilinya->CATEGORIES){
+            else if($this->custom['payload'] == $this->response->CATEGORIES){
                 if($status < 140){
-                  $this->bot->reply($this->ilinya->categories(), false);
+                  $this->bot->reply($this->response->categories(), false);
                   $this->checker->update(130);
                 }
                 else{
-                  $this->bot->reply($this->ilinya->priority(), false);
+                  $this->bot->reply($this->response->priority(), false);
                 }
             }
-            else if($this->custom['payload'] == $this->ilinya->MY_QUEUE_CARDS){
+            else if($this->custom['payload'] == $this->response->MY_QUEUE_CARDS){
                 if($status < 140){
-                  $this->bot->reply($this->ilinya->myQueueCards(), true);
+                  $this->bot->reply($this->response->myQueueCards(), true);
                   $this->checker->update(120);
                 }
                 else{
-                  $this->bot->reply($this->ilinya->priority(), false);
+                  $this->bot->reply($this->response->priority(), false);
                 }
             }
-            else if($this->custom['payload'] == $this->ilinya->USER_GUIDE){
+            else if($this->custom['payload'] == $this->response->USER_GUIDE){
                 if($status < 140){
-                  $this->bot->reply($this->ilinya->userGuide(), true);
+                  $this->bot->reply($this->response->userGuide(), true);
                   $this->checker->update(110);
                 }
                 else{
-                  $this->bot->reply($this->ilinya->priority(), false);
+                  $this->bot->reply($this->response->priority(), false);
                 }
             }
             else if($priority == 'categories'){
                 if($status < 140)
-                  $this->bot->reply($this->ilinya->search($category), false);
+                  $this->bot->reply($this->response->search($category), false);
                 else{
-                  $this->bot->reply($this->ilinya->priority(), false);
+                  $this->bot->reply($this->response->priority(), false);
                 }
             }
             else{
-                $this->bot->reply($this->ilinya->ERROR, true);
+                $this->bot->reply($this->response->ERROR, true);
             }
   }
 
@@ -113,7 +105,7 @@ class ServiceProvider{
             $attachments = new Attachments($this->custom['attachments']);
             $response;
             if($attachments->getType() == "location"){
-                $response = $this->ilinya->location($attachments);
+                $response = $this->response->location($attachments);
             }
             else{
             }
