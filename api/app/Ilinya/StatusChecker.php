@@ -27,9 +27,9 @@ class StatusChecker{
   public function getStatus($custom){
     $prev = $this->status;
     $current = $this->code->getCodeByUnknown($custom);
-    
-
+  
     if(!$prev){
+      //@start if user not exist
       return 2000;
     }
     else if($current == $this->code->READ){
@@ -42,7 +42,6 @@ class StatusChecker{
       return 2001;
     }
     else if($current >= $this->code->MESSAGE){
-      echo $current;
       return 3000;
     }
     else{
@@ -51,23 +50,33 @@ class StatusChecker{
 
   }
 
-  public function insert($status){
+  public function insert($status, $category = null){
       $data = [
         "facebook_id" => $this->messaging->getSenderId(),
         "status"      => $status
       ];
+      if($category)$data['category'] = $category;
       DB::insert($this->db_tracker, $data);
   }
 
-  public function update($status){
+  public function update($status, $category = null){
+        
         $condition = [
             ['facebook_id','=',$this->messaging->getSenderId()]
         ];
-        $data      = ["status" => $status];
+
+        $data      = [
+            "status"    => $status
+        ];
+
+        if($category)$data["category"] = $category;
         DB::update($this->db_tracker, $condition, $data);
   }
 
   public function retrieve(){
+    $pageID = "133610677239344";
+
+    if($this->messaging->getSenderId() != $pageID){
       $condition = [
           ['facebook_id','=',$this->messaging->getSenderId()]
       ];
@@ -79,6 +88,10 @@ class StatusChecker{
               $this->category = $key['category'];
           }
       }
+    }
+    else{
+      $this->status = 1000;
+    }
   }
 
   public function delete(){

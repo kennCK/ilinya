@@ -31,7 +31,9 @@ class Codes{
 
   public $P_CATEGORIES  = 204;
 
-  public $P_LIMIT       = 204;
+  public $P_CATEGORY_SELECTED = 205;
+
+  public $P_LIMIT       = 205;
 
   /**
     Message Priority Codes
@@ -45,6 +47,7 @@ class Codes{
 
   public $M_TEXT        = 303;
 
+  public $QR_SEARCH     = 304;
 
 
   protected $PREDEFINED   = array();
@@ -58,9 +61,12 @@ class Codes{
       "@users_guide"        => $this->P_USERGUIDE,
       "@my_queue_cards"     => $this->P_QUEUECARDS,
       "@categories"         => $this->P_CATEGORIES,
+      "@categoryselected"   => $this->P_CATEGORY_SELECTED,
       "message"             => $this->MESSAGE,
       "quick_reply"         => $this->M_QR,
-      "attachments"         => $this->M_ATTACHMENT
+      "attachments"         => $this->M_ATTACHMENT,
+      "text"                => $this->M_TEXT,
+      "@search"             => $this->QR_SEARCH
     );
   }
 
@@ -101,6 +107,9 @@ class Codes{
         case '@categories':
           $code = $this->P_CATEGORIES;
           break;
+        case '@categoryselected':
+          $code = $this->P_CATEGORY_SELECTED;
+          break;
         default:
           $code = $this->POSTBACK;
           break;
@@ -110,9 +119,17 @@ class Codes{
 
   public function getCodeInMessage($messageType){
     if($messageType['attachments'])return $this->M_ATTACHMENT;
-    else if($messageType['quick_reply'])return $this->M_QR;
+    else if($messageType['quick_reply'])return $this->getCodeInQuickReply($messageType['quick_reply']['payload']);
     else if($messageType['text'])return $this->M_TEXT;
     else return $this->MESSAGE;
+  }
+
+  public function getCodeInQuickReply($payload){
+    switch ($payload) {
+      case '@search':
+        return $this->QR_SEARCH;
+        break;
+    }
   }
 
 
