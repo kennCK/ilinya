@@ -15,6 +15,9 @@
       <i v-if="value * 1 === 0" class="fa fa-close text-danger" aria-hidden="true"></i>
       <i v-else class="fa fa-check text-success" aria-hidden="true"></i>
     </div>
+    <div v-else-if="type === 'button'" >
+      <button @click="setting['on_click']($event, row_data)" v-html="setting['label']" v-bind:class="setting['class']" @click.stop type="button" class="btn"></button>
+    </div>
     <div v-else>
       {{value}}
     </div>
@@ -27,13 +30,12 @@
 
     },
     mounted(){
-
     },
     data(){
       return {
       }
     },
-    props: ['type', 'value'],
+    props: ['type', 'value', 'setting', 'row_data'],
     methods: {
     }
   }

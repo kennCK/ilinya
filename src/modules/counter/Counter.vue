@@ -53,7 +53,7 @@
           <div v-if="queue_card_id && selected_queue_card['status'] !== 3" class="row">
             <div class="col-sm-12 text-center">
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
-              <button @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call</button>
+              <button v-if="selected_queue_card.user_id" v-bind:disabled="isCalling" @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
@@ -72,6 +72,7 @@
   </div>
 </template>
 <script>
+  import CONFIG from '../../config'
   export default{
     name: '',
     components: {
@@ -139,6 +140,19 @@
                 '<span class="badge badge-success">FINISHED</span>']
               return status[row['status'] - 1]
             }
+          },
+          call: {
+            type: 'button',
+            setting: {
+              on_click: (event, row) => {
+                $(event.target).attr('disabled', true)
+                $.post(CONFIG.BACKEND_URL + '/bot/paging/' + row['user_id'], {}, (response) => {
+                  $(event.target).attr('disabled', false)
+                })
+              },
+              class: 'btn-primary btn-sm',
+              label: '<i class="fa fa-bell-o" aria-hidden="true"></i> Call'
+            }
           }
         },
         retrieveParameter: {
@@ -148,14 +162,18 @@
         },
         formStatus: 'close',
         formSelectInputSetting: formSelectInputSetting,
-        queueFormFields: []
+        queueFormFields: [],
+        isCalling: false
       }
     },
     props: {
     },
     methods: {
       pageUser(){
-        // Code here for paging user
+        this.isCalling = true
+        $.post(CONFIG.BACKEND_URL + '/bot/paging/' + this.selected_queue_card.user_id, {}, (response) => {
+          this.isCalling = false
+        })
       },
       removeQueueCard(){
         this.APIRequest('queue_card/delete', {id: this.queue_card_id}, (response) => {
@@ -169,6 +187,9 @@
         let requestParam = {
           id: this.queue_card_id,
           status: status
+        }
+        if(status * 1 === 2){
+          this.pageUser()
         }
         this.APIRequest('queue_card/update', requestParam, (response) => {
           if(response['data']){

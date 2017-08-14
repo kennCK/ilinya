@@ -39,6 +39,8 @@
           <td v-for="columnSetting in linearColumnSetting">
             <table-cell :type="columnSetting['type']"
               :value="columnSetting['value_function'](tableEntry, columnSetting['db_name'])"
+              :setting="columnSetting['setting']"
+              :row_data="tableEntry"
               >
             </table-cell>
           </td>
