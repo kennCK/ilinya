@@ -1,5 +1,5 @@
 <?php
-namespace App\Ilinya\Conversation;
+namespace App\Ilinya\Response;
 
 use App\Ilinya\Database\CustomFields as Fields;
 

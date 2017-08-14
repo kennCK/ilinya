@@ -1,9 +1,10 @@
 <?php
 
 
-namespace App\Ilinya;
+namespace App\Ilinya\Response;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
 
 /*
     @Providers
@@ -37,16 +38,17 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 use App\Ilinya\Message\Attachments;
 
 /*
-    @Models
+    @Controller
 */
-use App\BusinessType;
+use App\Http\Controllers\BusinessTypeController;
+//use App\BusinessType;
 
 /*
     @Database
 */
 use App\Ilinya\Database\DBManager as DB;
 
-class ResponseHandler{
+class Introduction{
     public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
@@ -73,7 +75,12 @@ class ResponseHandler{
     }
     
     public function categories(){
-        $categories = DB::retrieve($this->db_bTypes,null, ['category', 'asc']);
+        $request = new Request();
+        $request['sort'] = ["category" => "asc"];
+        $result = app('App\Http\Controllers\BusinessTypeController')->retrieve($request);
+        $result = json_decode($result->getContent(), true);
+        $categories = $result['data'];
+        //$categories = DB::retrieve($this->db_bTypes,null, ['category', 'asc']);
         $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
@@ -85,7 +92,7 @@ class ResponseHandler{
             foreach ($categories as $category) {
                 $buttons[] = ButtonElement::title($category['sub_category'])
                     ->type('postback')
-                    ->payload('categories@'.strtolower($category['sub_category']))
+                    ->payload(strtolower($category['sub_category']).'@categoryselected')
                     ->toArray();
                 if($i < sizeof($categories) - 1){
                     if($prev != $categories[$i + 1]['category']){
@@ -115,18 +122,6 @@ class ResponseHandler{
 
         $response =  GenericTemplate::toArray($elements);
         return $response;
-    }
-
-    public function search($category){
-        $quickReplies[] = QuickReplyElement::title('Company Name')->contentType('text')->payload('search@company_name');
-        $quickReplies[] = QuickReplyElement::title('Company Location')->contentType('text')->payload('search@company_location');
-        $quickReplies[] = QuickReplyElement::title('')->contentType('location')->payload('');
-
-        return QuickReplyTemplate::toArray('Select options for search:', $quickReplies);
-    } 
-
-    public function location(Attachments $attachments){
-        return LocationTemplate::toArray("Your Location", $attachments->getLat(), $attachments->getLong());
     }
 
     public function myQueueCards(){

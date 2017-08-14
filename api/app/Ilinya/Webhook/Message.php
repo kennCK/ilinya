@@ -30,6 +30,16 @@ class Message{
     }
 
     public function getQuickReply(){
-        return $this->quickReply;
+        if($this->quickReply){
+            if(strpos($this->quickReply['payload'],"@")){
+                $payload = $this->quickReply['payload'];
+                list($parameter, $payload) = explode('@', $payload);
+                return [
+                    "payload"   => '@'.$payload,
+                    "parameter" => $parameter
+                ];
+            }
+        }
+        return null;
     }
 }

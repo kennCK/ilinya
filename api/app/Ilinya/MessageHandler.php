@@ -2,11 +2,13 @@
 namespace App\Ilinya;
 
 use App\Ilinya\Message\Codes;
+use App\Ilinya\Message\Attachments;
 use App\Ilinya\Bot;
-use App\Ilinya\ResponseHandler;
 use App\Ilinya\StatusChecker;
 use App\Ilinya\MessageExtractor;
 use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Response\Introduction;
+use App\Ilinya\Response\Search;
 
 
 class MessageHandler{
@@ -14,14 +16,18 @@ class MessageHandler{
   protected $response;
   protected $bot;
   protected $custom;
+  protected $search;
 
   protected $types = array('postback', 'message', 'read', 'delivery');
 
   protected $code;
 
+  protected $currentCode;
+
   function __construct(Messaging $messaging){
     $this->checker    = new StatusChecker($messaging);
-    $this->response   = new ResponseHandler($messaging); 
+    $this->response   = new Introduction($messaging); 
+    $this->search     = new Search($messaging);
     $this->bot        = new Bot($messaging);
     $this->code       = new Codes();
     $messageExtractor = new MessageExtractor($messaging); 
@@ -30,7 +36,11 @@ class MessageHandler{
 
   public function checkMessage(){
     //Save tracker here
+    $category = null;
+    $dbTrack = 0;
+    //echo json_encode($this->custom);
     $status = $this->checker->getStatus($this->custom);
+    $this->currentCode = $this->code->getCodeByUnknown($this->custom);
     switch ($status) {
       case 0:
         $this->read();
@@ -40,15 +50,17 @@ class MessageHandler{
         break;
       case 2000:
         $this->postback();
-        $this->checker->insert($this->code->getCodeByUnknown($this->custom));
+        $dbTrack = 1;
+        $category = $this->getCategoryIfExist();    
         break;
-      case 2001:
+      case 2001:  
         $this->postback();
-        $this->checker->update($this->code->getCodeByUnknown($this->custom));
+        $dbTrack = 2;
+        $category = $this->getCategoryIfExist();    
         break;
       case 3000:
         $this->message();
-        $this->checker->update($this->code->getCodeByUnknown($this->custom));
+        $dbTrack = 2;
         break;
       case 4000:
         $this->bot->reply($this->response->priorityError(), false);
@@ -57,11 +69,20 @@ class MessageHandler{
         //
         break;
     }
+    if($dbTrack == 1)
+        $this->checker->insert($this->currentCode, $category);
+    else if($dbTrack == 2 && $this->currentCode != $this->code->M_TEXT)
+        $this->checker->update($this->currentCode, $category);
+  }
+
+  public function getCategoryIfExist(){
+    if($this->custom['payload'] == '@categoryselected')
+          return $this->custom['parameter'];
+    else
+          return null;
   }
 
   public function postback(){
-        list($priority, $category) = explode('@', $this->custom['payload']);
-        if(!$priority){
           $action = $this->code->getCode($this->custom['payload']);
           switch ($action) {
             case $this->code->P_START:
@@ -77,21 +98,13 @@ class MessageHandler{
             case $this->code->P_CATEGORIES:
               $this->bot->reply($this->response->categories(), false);
               break;
-            default:
-              $this->bot->reply($this->response->ERROR, true);
-              break;
-          }
-        }
-        else{
-          switch ($priority) {
-            case 'categories':
-              $this->bot->reply($this->response->search($category), false);
+            case $this->code->P_CATEGORY_SELECTED:
+              $this->bot->reply($this->search->options(), false);
               break;
             default:
               $this->bot->reply($this->response->ERROR, true);
               break;
-          }
-        }     
+          }   
   }
 
   public function message(){
@@ -116,13 +129,11 @@ class MessageHandler{
 
 
   public function quickReply(){
-      list($type, $value) = explode('@', $this->custom['quick_reply']['payload']);
-
-      switch ($type) {
-        case 'search':
-          $this->bot->reply(SearchCompany::search($value), true);
+      switch ($this->currentCode) {
+        case $this->code->QR_SEARCH:
+          $this->bot->reply($this->search->question($this->custom['quick_reply']['parameter']), true);
           break;
-        case 'priority':
+        case '@priority':
           //Statement Here
           break;
         default:

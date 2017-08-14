@@ -31,20 +31,30 @@ class MessageExtractor{
 
     public function extractDataFromMessage(){
         $message = new Message($this->messaging->getMessageArray());
-        return [
+        $response =  [
             "type"          => "message",
             "text"          => $message->getText(),
             "attachments"   => $message->getAttachments(),
             "quick_reply"   => $message->getQuickReply()
         ];
+        return $response;
     }
 
     public function extractDataFromPostback(){
         $payload = $this->messaging->getPostback()->getPayload();
-        return [
-            "type"      => "postback",
-            "payload"   => $payload
+        $response = [
+            "type"  => "postback"
         ];
+
+        if(strpos($payload, '@')){
+            list($parameter, $payload) = explode('@', $payload);
+            $response['payload']    = "@".$payload;
+            $response['parameter']   = $parameter;
+        }
+        else{
+            $response['payload']    = $payload;
+        }
+        return  $response;
     }
 
     public function extractDataFromRead(){

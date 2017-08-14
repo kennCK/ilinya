@@ -16,7 +16,7 @@ class CreateTempCustomFieldsStorage extends Migration
         Schema::dropIfExists('temp_custom_fields_storage');
         Schema::create('temp_custom_fields_storage', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('facebook_id');
+            $table->unsignedInteger('track_id');
             $table->string('field_name',100);
             $table->string('field_value');
             $table->timestamps();
