@@ -53,8 +53,9 @@
           <div v-if="queue_card_id && selected_queue_card['status'] !== 3" class="row">
             <div class="col-sm-12 text-center">
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
+              <button @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
-              <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "><i class="fa fa-bell-o" aria-hidden="true"></i> Serve</button>
+              <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
             </div>
           </div>
@@ -153,6 +154,9 @@
     props: {
     },
     methods: {
+      pageUser(){
+        // Code here for paging user
+      },
       removeQueueCard(){
         this.APIRequest('queue_card/delete', {id: this.queue_card_id}, (response) => {
           if(response['data']){

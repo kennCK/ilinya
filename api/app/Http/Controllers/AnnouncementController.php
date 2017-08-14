@@ -10,4 +10,10 @@ class AnnouncementController extends APIController
   function __construct(){
     $this->model = new DBItem();
   }
+
+  public function create(Request $request){
+    $this->createEntry($request->toArray());
+    $this->response['debug'][] = app('App\Http\Controllers\IlinyaController')->broadcast(1, 'test');
+    return $this->output();
+  }
 }

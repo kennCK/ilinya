@@ -104,7 +104,6 @@ class APIController extends Controller
     */
     public function filterRequest($request){
       foreach($this->tableColumns as $column){
-        $this->request['debug'][] = $column;
         switch($column){
           case "company_id":
             if($this->useUserCompanyID){
@@ -182,7 +181,6 @@ class APIController extends Controller
       $tableColumns = $this->model->getTableColumns();
       $this->tableColumns = $tableColumns;
       $request = $this->filterRequest($request);
-      $this->response['debug'][] = $request;
 
       if(!$this->isValid($request, "create")){
         return $this->output();
@@ -296,7 +294,6 @@ class APIController extends Controller
       if(isset($condition)){
         for($x = 0; $x < count($condition); $x++){
           $columnExploded = explode('.', $condition[$x]['column']);
-          // $this->response['debug'][] =
           if(count($columnExploded) > 1){ // foreign table
             if(!isset($initializedCondition['foreign_table'][$columnExploded[0]])){
               $initializedCondition['foreign_table'][$columnExploded[0]] = array();
@@ -358,10 +355,6 @@ class APIController extends Controller
           $this->response['total_entries'] = $this->model->count();
           $this->model = $this->model->limit($request['limit']);
         }
-        if(isset($request['offset'])){
-
-          $this->response['debug'][] = $request['offset'];
-        }
         (isset($request['offset'])) ?  $this->model = $this->model->offset($request['offset'] * 1) : null;
 
       }
@@ -388,6 +381,8 @@ class APIController extends Controller
       return $result;
     }
     public function updateEntry($request, $noFile = false){
+      $tableColumns = $this->model->getTableColumns();
+      $this->tableColumns = $tableColumns;
       $request = $this->filterRequest($request);
       $tableColumns = $this->model->getTableColumns();
 
@@ -508,13 +503,11 @@ class APIController extends Controller
       /*
         column, clause, value
       */
-      $this->response['debug'][] = "he";
       if($conditions){
         foreach($conditions as $condition){
           /*Table.Column, Clause, Value*/
           $condition["clause"] = (isset($condition["clause"])) ? $condition["clause"] : "=";
           $condition["value"] = (isset($condition["value"])) ? $condition["value"] : null;
-          $this->response['debug'][] = $condition["column"];
           switch($condition["clause"]){
             default :
               $this->model = $this->model->where($condition["column"], $condition["clause"], $condition["value"]);
