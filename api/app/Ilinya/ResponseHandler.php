@@ -46,17 +46,14 @@ use App\BusinessType;
 */
 use App\Ilinya\Database\DBManager as DB;
 
-class Ilinya{
-  
-    public  $GET_STARTED      = "@start";
-    public  $CATEGORIES       = "@categories";
-    public  $MY_QUEUE_CARDS   = "@my_queue_cards";
-    public  $USER_GUIDE       = "@users_guide";
-    public  $CONVERSATION     = "@conversation";
+class ResponseHandler{
     public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
     private $curl;
+
+    protected $db_bTypes      = "business_types";
+
 
 
     public function __construct(Messaging $messaging){
@@ -71,12 +68,12 @@ class Ilinya{
 
     public function start(){
         $this->user();
-        DB::saveStatus($this->messaging->getSenderId(),$this->GET_STARTED);
+
         return "Hi ".$this->user->getFirstName()."! My Name is Ilinya, I can help to get your reservations or tickets easily. Just follow my instructions and you will be good to go!";
     }
     
     public function categories(){
-        $categories = BusinessType::orderBy('category')->get();
+        $categories = DB::retrieve($this->db_bTypes,null, ['category', 'asc']);
         $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
@@ -115,7 +112,7 @@ class Ilinya{
             }
         }
 
-        DB::updateStatus($this->messaging->getSenderId(),$this->USER_GUIDE);
+
         $response =  GenericTemplate::toArray($elements);
         return $response;
     }
@@ -139,4 +136,11 @@ class Ilinya{
     public function userGuide(){
         return "User Guide";
     }
+
+    public function priorityError(){
+        $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('priority@yes');
+        $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('priority@no');
+        return QuickReplyTemplate::toArray('Are you sure you want cancel your current conversation?', $quickReplies);
+    }
+   
 }

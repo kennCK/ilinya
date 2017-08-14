@@ -17,7 +17,10 @@ class CreateBotStatusTracker extends Migration
         Schema::create('bot_status_tracker', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('facebook_id');
-            $table->string('status', 20);
+            $table->unsignedInteger('status');
+            $table->string("type", 100)->nullable();
+            $table->string("payload", 100)->nullable();
+            $table->string("category", 100)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

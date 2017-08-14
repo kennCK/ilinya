@@ -29,7 +29,7 @@ class Attachments{
 
       if($this->type == "location"){
         $this->coordinates($data[0]['payload']['coordinates']);
-      }
+      } 
       else if(in_array($this->type, $otherType)){
         $this->url = $data[0]['payload']['url'];
       }
