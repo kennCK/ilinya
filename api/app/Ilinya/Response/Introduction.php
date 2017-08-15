@@ -38,15 +38,10 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 use App\Ilinya\Message\Attachments;
 
 /*
-    @Controller
+    @API
 */
-use App\Http\Controllers\BusinessTypeController;
-//use App\BusinessType;
+use App\Ilinya\API\Controller;
 
-/*
-    @Database
-*/
-use App\Ilinya\Database\DBManager as DB;
 
 class Introduction{
     public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
@@ -77,10 +72,7 @@ class Introduction{
     public function categories(){
         $request = new Request();
         $request['sort'] = ["category" => "asc"];
-        $result = app('App\Http\Controllers\BusinessTypeController')->retrieve($request);
-        $result = json_decode($result->getContent(), true);
-        $categories = $result['data'];
-        //$categories = DB::retrieve($this->db_bTypes,null, ['category', 'asc']);
+        $categories = Controller::call($request, "App\Http\Controllers\BusinessTypeController");
         $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
@@ -92,7 +84,7 @@ class Introduction{
             foreach ($categories as $category) {
                 $buttons[] = ButtonElement::title($category['sub_category'])
                     ->type('postback')
-                    ->payload(strtolower($category['sub_category']).'@categoryselected')
+                    ->payload(strtolower($category['id']).'@categoryselected')
                     ->toArray();
                 if($i < sizeof($categories) - 1){
                     if($prev != $categories[$i + 1]['category']){

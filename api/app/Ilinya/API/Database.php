@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ilinya\Database;
+namespace App\Ilinya\API;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class DBManager{
+class Database{
 
   public static function insert($name, $data){
     $data['created_at'] = Carbon::now();

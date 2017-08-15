@@ -18,7 +18,11 @@ class CreateBotStatusTracker extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('facebook_id');
             $table->unsignedInteger('status');
-            $table->string("category", 100)->nullable();
+            $table->unsignedInteger('stage')->nullable();
+            $table->unsignedInteger('company_id')->nullable();
+            $table->unsignedInteger("business_type_id")->nullable();
+            $table->unsignedInteger("search_option")->nullable();
+            $table->boolean("reply")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

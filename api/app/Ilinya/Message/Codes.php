@@ -21,9 +21,7 @@ class Codes{
     Postback Priority Codes
   */
 
-  public $POSTBACK      = 200;
-
-  public $P_START       = 201;
+  public $POSTBACK      = 201;
 
   public $P_USERGUIDE   = 202;
 
@@ -33,8 +31,16 @@ class Codes{
 
   public $P_CATEGORY_SELECTED = 205;
 
-  public $P_LIMIT       = 205;
+  public $P_GET_GC      = 206;
 
+  public $P_LIMIT       = 299;
+
+  //@Stages
+  public $P_START       = 200;
+
+  public $P_SEARCH      = 210;
+
+  public $P_RESULTS     = 220;
   /**
     Message Priority Codes
   */
@@ -58,10 +64,12 @@ class Codes{
       "delivery"            => $this->DELIVERY,
       "postback"            => $this->POSTBACK,
       "@start"              => $this->P_START,
+      "@shutdown"           => $this->P_LIMIT,
       "@users_guide"        => $this->P_USERGUIDE,
       "@my_queue_cards"     => $this->P_QUEUECARDS,
       "@categories"         => $this->P_CATEGORIES,
       "@categoryselected"   => $this->P_CATEGORY_SELECTED,
+      "@get_queue_cards"    => $this->P_GET_GC,
       "message"             => $this->MESSAGE,
       "quick_reply"         => $this->M_QR,
       "attachments"         => $this->M_ATTACHMENT,
@@ -109,6 +117,12 @@ class Codes{
           break;
         case '@categoryselected':
           $code = $this->P_CATEGORY_SELECTED;
+          break;
+        case '@get_queue_cards':
+          $code = $this->P_GET_GC;
+          break;
+        case '@shutdown':
+          $code = $this->P_LIMIT;
           break;
         default:
           $code = $this->POSTBACK;
