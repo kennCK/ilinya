@@ -30,6 +30,10 @@ class MessageHandler{
 
   protected $stage;
 
+  protected $companyId;
+
+  protected $category;
+
   function __construct(Messaging $messaging){
     $this->checker    = new StatusChecker($messaging);
     $this->response   = new Introduction($messaging); 
@@ -41,8 +45,6 @@ class MessageHandler{
   }
 
   public function checkMessage(){
-    //Save tracker here
-    $category = null;
     $stage = $this->code->P_START;
     $dbTrack = 0;
     $status = $this->checker->getStatus($this->custom);
@@ -57,12 +59,12 @@ class MessageHandler{
       case 2000:
         $this->postback();
         $dbTrack = 1;
-        $category = $this->getCategoryIfExist();    
+        $this->getParameter();    
         break;
       case 2001:  
         $this->postback();
         $dbTrack = 2;
-        $category = $this->getCategoryIfExist();    
+        $this->getParameter();    
         break;
       case 3000:
         $this->message();
@@ -77,7 +79,7 @@ class MessageHandler{
     }
     if($dbTrack == 1){
         //Create
-        $this->checker->insert($this->currentCode, $stage, $category);
+        $this->checker->insert($this->currentCode, $stage, $this->category);
     }
     else if($dbTrack == 2 && $this->currentCode != $this->code->M_TEXT){
         $data = [
@@ -85,8 +87,9 @@ class MessageHandler{
         ];
         if($this->reply)$data['reply']  = $this->reply;
         if($this->searchOption)$data['search_option'] = $this->searchOption;
-        if($category)$data['business_type_id'] = $category;
+        if($this->category)$data['business_type_id'] =  $this->category;
         if($this->stage)$data['stage'] = $this->stage;
+        if($this->companyId)$data['company_id'] = $this->companyId;
         $this->checker->update($data);
     }
     else if($dbTrack == 2 && $this->currentCode == $this->code->M_TEXT){
@@ -95,11 +98,19 @@ class MessageHandler{
     }
   }
 
-  public function getCategoryIfExist(){
-    if($this->custom['payload'] == '@categoryselected')
-          return $this->custom['parameter'];
-    else
-          return null;
+  public function getParameter(){
+
+    switch ($this->custom['payload']) {
+      case '@categoryselected':
+        $this->category =  $this->custom['parameter'];
+        break;
+      case '@get_queue_cards':
+        $this->companyId = $this->custom['parameter'];
+        break;
+      default:
+        # code...
+        break;
+    }
   }
 
   public function postback(){

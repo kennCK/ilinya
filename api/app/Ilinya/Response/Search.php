@@ -103,7 +103,7 @@ class Search{
         $buttons = [];
         $buttons[] = ButtonElement::title("Get Queue Cards Now!")
                     ->type('postback')
-                    ->payload('@get_queue_cards')
+                    ->payload($data['id'].'@get_queue_cards')
                     ->toArray();
         $buttons[] = ButtonElement::title("Close")
                     ->type('postback')
