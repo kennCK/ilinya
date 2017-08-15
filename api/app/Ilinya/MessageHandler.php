@@ -24,6 +24,12 @@ class MessageHandler{
 
   protected $currentCode;
 
+  protected $reply;
+
+  protected $searchOption;
+
+  protected $stage;
+
   function __construct(Messaging $messaging){
     $this->checker    = new StatusChecker($messaging);
     $this->response   = new Introduction($messaging); 
@@ -37,8 +43,8 @@ class MessageHandler{
   public function checkMessage(){
     //Save tracker here
     $category = null;
+    $stage = $this->code->P_START;
     $dbTrack = 0;
-    //echo json_encode($this->custom);
     $status = $this->checker->getStatus($this->custom);
     $this->currentCode = $this->code->getCodeByUnknown($this->custom);
     switch ($status) {
@@ -69,10 +75,24 @@ class MessageHandler{
         //
         break;
     }
-    if($dbTrack == 1)
-        $this->checker->insert($this->currentCode, $category);
-    else if($dbTrack == 2 && $this->currentCode != $this->code->M_TEXT)
-        $this->checker->update($this->currentCode, $category);
+    if($dbTrack == 1){
+        //Create
+        $this->checker->insert($this->currentCode, $stage, $category);
+    }
+    else if($dbTrack == 2 && $this->currentCode != $this->code->M_TEXT){
+        $data = [
+            "status"            => $this->currentCode
+        ];
+        if($this->reply)$data['reply']  = $this->reply;
+        if($this->searchOption)$data['search_option'] = $this->searchOption;
+        if($category)$data['business_type_id'] = $category;
+        if($this->stage)$data['stage'] = $this->stage;
+        $this->checker->update($data);
+    }
+    else if($dbTrack == 2 && $this->currentCode == $this->code->M_TEXT){
+        $data['reply']  = $this->reply;
+        $this->checker->update($data);
+    }
   }
 
   public function getCategoryIfExist(){
@@ -101,6 +121,12 @@ class MessageHandler{
             case $this->code->P_CATEGORY_SELECTED:
               $this->bot->reply($this->search->options(), false);
               break;
+            case $this->code->P_GET_GC:
+              $this->bot->reply("Get Cards", true);
+              break;
+            case $this->code->P_LIMIT:
+              $this->bot->reply("Shutdown", true);
+              break;
             default:
               $this->bot->reply($this->response->ERROR, true);
               break;
@@ -123,15 +149,20 @@ class MessageHandler{
             $this->quickReply();
         }
         else if($this->custom['text']){
-            $this->bot->reply($this->custom['text'], true);
+            $this->replyHandler();
+            
         } 
   }
 
 
   public function quickReply(){
+      $this->reply = 1;
       switch ($this->currentCode) {
         case $this->code->QR_SEARCH:
-          $this->bot->reply($this->search->question($this->custom['quick_reply']['parameter']), true);
+          $option = $this->custom['quick_reply']['parameter'];
+          $this->searchOption = ($option == "company_name")? 1 : 2;
+          $this->bot->reply($this->search->question($option), true);
+          $this->stage = $this->code->P_SEARCH;
           break;
         case '@priority':
           //Statement Here
@@ -140,6 +171,19 @@ class MessageHandler{
           //Statement Here
           break;
       }
+  }
+
+  public function replyHandler(){
+    $text = $this->custom['text'];
+    $replyStatus = $this->checker->getReply();
+    if($replyStatus == 1){
+      $response = $this->search->handler($this->custom['text'], $this->checker);
+      $this->bot->reply($response, false);
+    }
+    else{
+      $this->bot->reply($this->response->ERROR, true);
+    }
+    $this->reply = 0;
   }
   public function read(){
       //
