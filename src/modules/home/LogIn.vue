@@ -27,32 +27,30 @@
             <span class="text-danger"><b>Oops!</b> {{errorMessage}}</span>
           </div>
           <div>
-            <form>
-              <div class="input-group login-spacer">
-                <span class="input-group-addon" id="addon-1"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control form-control-login" placeholder="Username or Email" aria-describedby="addon-1" v-model="username">
-              </div>
-              <div class="input-group login-spacer">
-                <span class="input-group-addon" id="addon-2"><i class="fa fa-key"></i></span>
-                <input type="password" class="form-control form-control-login" placeholder="********" aria-describedby="addon-2" v-model="password">
-              </div>
-              <button class="btn btn-primary btn-block btn-login login-spacer" v-on:click="logIn()">Login</button>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input">
-                  Keep me logged in
-                </label>
-              </div>
-              <div class="container-fluid text-center forgot-password">
-                  <a class="btn-link" v-on:click="redirect('recover_account')">Forgot Password?</a>
-              </div>
-              <br>
-              <div class="container-fluid separator">
-                  or
-              </div>
-              <br>
-              <button class="btn btn-primary btn-block btn-login login-spacer" v-on:click="redirect('registration')">Register New Company</button>
-            </form>
+            <div class="input-group login-spacer">
+              <span class="input-group-addon" id="addon-1"><i class="fa fa-user"></i></span>
+              <input type="text" class="form-control form-control-login" placeholder="Username or Email" aria-describedby="addon-1" v-model="username">
+            </div>
+            <div class="input-group login-spacer">
+              <span class="input-group-addon" id="addon-2"><i class="fa fa-key"></i></span>
+              <input type="password" class="form-control form-control-login" placeholder="********" aria-describedby="addon-2" v-model="password">
+            </div>
+            <button class="btn btn-primary btn-block btn-login login-spacer" v-on:click="logIn()">Login</button>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input">
+                Keep me logged in
+              </label>
+            </div>
+            <div class="container-fluid text-center forgot-password">
+                <a class="btn-link" v-on:click="redirect('recover_account')">Forgot Password?</a>
+            </div>
+            <br>
+            <div class="container-fluid separator">
+                or
+            </div>
+            <br>
+            <button class="btn btn-primary btn-block btn-login login-spacer" v-on:click="redirect('registration')">Register New Company</button>
           </div>
         </div>
       </div>
@@ -208,7 +206,7 @@ body{
 
 /*
       HALLOW
-    
+
 */
 
 .btn-primary-hallow{
@@ -232,7 +230,7 @@ body{
 
 
 /*------------------------------------
-  
+
           TABLES
 
 --------------------------------------*/
@@ -275,7 +273,7 @@ body{
 .primary-color{
   color: #006600;
 }
-/*---------------------------------------------------------          
+/*---------------------------------------------------------
 
                   RESPONSIVE HANDLER
 

@@ -6,23 +6,6 @@
           :inputs="filterList"
         >
         </input-group>
-        <!-- <template v-for="input in filterList">
-          <div class='col-sm-4 float-right'>
-            <input-cell
-              :input_name="input['input_name']"
-              :db_name="input['db_name']"
-              :input_setting="input['input_setting']"
-              :input_type="input['input_type']"
-              :input_style="input['input_style']"
-              :label_colspan="input['label_colspan']"
-              :placeholder="input['placeholder']"
-              :feedback_message="input['feedback_message']"
-              :feedback_status="input['feedback_status']"
-              :muted_text="input['muted_text']"
-            >
-            </input-cell>
-          </div>
-        </template> -->
         <div class="col-sm-2">
           <button @click="filterForm" type="button" class="btn btn-default" >Filter</button>
         </div>
@@ -65,6 +48,7 @@
         this.filterInitialized = true
       },
       filterForm(){
+        console.log('hey')
         this.$emit('filter', this.$refs.form)
       }
     }

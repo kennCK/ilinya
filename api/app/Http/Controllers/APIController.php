@@ -24,6 +24,7 @@ class APIController extends Controller
       "debug" => null,
       "request_timestamp" => 0
     );
+    protected $responseType = 'json';
     protected $rawRequest = null;
     protected $tableColumns = null;
     protected $notRequired = array();
@@ -64,7 +65,11 @@ class APIController extends Controller
     }
     public function output(){
       $this->response["request_timestamp"] = date("Y-m-d h:i:s");
-      return response()->json($this->response);
+      if($this->responseType == 'array'){
+        return $this->response;
+      }else{
+        return response()->json($this->response);
+      }
       // sleep(2);
       // echo json_encode($this->response);
     }
@@ -178,6 +183,7 @@ class APIController extends Controller
       }
     }
     public function createEntry($request){
+      $responseType = isset($request['response_type']) ? $request['response_type'] : 'json';
       $tableColumns = $this->model->getTableColumns();
       $this->tableColumns = $tableColumns;
       $request = $this->filterRequest($request);
@@ -308,6 +314,7 @@ class APIController extends Controller
       return $initializedCondition;
     }
     public function retrieveEntry($request){
+      $responseType = isset($request['response_type']) ? $request['response_type'] : 'json';
       $allowedForeignTable = array_merge($this->foreignTable, $this->editableForeignTable, $this->requiredForeignTable);
       $tableName = $this->model->getTable();
       $singularTableName = str_singular($tableName);
@@ -324,9 +331,10 @@ class APIController extends Controller
       if(isset($request['with_foreign_table'])){
         $foreignTable = array();
         foreach($request['with_foreign_table'] as $tempForeignTable){
-          if(in_array($tempForeignTable, $allowedForeignTable)){
+          if(in_array($tempForeignTable, $allowedForeignTable)){ // check if
             $foreignTable[] = $tempForeignTable;
             if(isset($condition['foreign_table'][str_plural($tempForeignTable)])){
+
               $this->model = $this->model->whereHas($tempForeignTable, function($q) use($condition, $tempForeignTable){
                 $tempForeignTablePlural = str_plural($tempForeignTable);
                 for($x = 0; $x < count($condition['foreign_table'][$tempForeignTablePlural]); $x++){
@@ -336,6 +344,7 @@ class APIController extends Controller
                   $q->where($column, $clause, $value);
                 }
               });
+
             }
           }
         }
@@ -349,7 +358,6 @@ class APIController extends Controller
       if(isset($request["id"])){
          $this->model = $this->model->where($tableName.".id", "=", $request["id"]);
       }else{
-        // (isset($request['condition'])) ? $this->addCondition($request['condition']) : null;
         (isset($request['sort'])) ? $this->addOrderBy($request['sort']) : null;
         if(isset($request['limit'])){
           $this->response['total_entries'] = $this->model->count();
@@ -381,6 +389,7 @@ class APIController extends Controller
       return $result;
     }
     public function updateEntry($request, $noFile = false){
+      $responseType = isset($request['response_type']) ? $request['response_type'] : 'json';
       $tableColumns = $this->model->getTableColumns();
       $this->tableColumns = $tableColumns;
       $request = $this->filterRequest($request);
@@ -491,6 +500,7 @@ class APIController extends Controller
       }
     }
     public function deleteEntry($request){
+      $responseType = isset($request['response_type']) ? $request['response_type'] : 'json';
       $validator = Validator::make($request, ["id" => "required"]);
       if ($validator->fails()) {
         $this->response["error"]["status"] = 101;

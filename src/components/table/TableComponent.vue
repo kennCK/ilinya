@@ -24,7 +24,7 @@
             v-on:click="changeSort(1, index)"
           >
             {{column['name']}}
-            <span class="pull-right">
+            <span v-if="column['sort'] !== false" class="pull-right">
               <i v-if="column['sort'] === 0" class="fa fa-sort" aria-hidden="true"></i>
               <i v-else-if="column['sort'] === 1" class="fa fa-sort-asc" aria-hidden="true"></i>
               <i v-else-if="column['sort'] === 2" class="fa fa-sort-desc" aria-hidden="true"></i>
@@ -121,6 +121,9 @@
     methods: {
 
       changeSort(rowIndex, columnIndex){
+        if(this.columnSetting[rowIndex][columnIndex]['sort'] === false){
+          return false
+        }
         (this.currentSort !== null && this.currentSort['db_name'] !== this.columnSetting[rowIndex][columnIndex]['db_name']) ? this.currentSort['sort'] = 0 : null
         this.columnSetting[rowIndex][columnIndex]['sort'] = (this.columnSetting[rowIndex][columnIndex]['sort'] < 2)
           ? this.columnSetting[rowIndex][columnIndex]['sort'] + 1 : 0
@@ -153,14 +156,16 @@
                 value: value,
                 clause: this.filter_setting[formInputs[x]['name']]['clause']
               })
-
             }
           }
         }
         this.prevRetrieveType = retrieveType
         this.APIRequest(this.api + '/retrieve', requestOption, (response) => {
-          if(response['data']){
-            response['data'].length > 0 ? this.tableEntries = response['data'] : this.currentPage--
+          this.tableEntries = []
+          if(response['data'].length > 0){
+            this.tableEntries = response['data']
+          }else if(response['data'].length === 0 && response['total_entries'] > 0){
+            this.currentPage--
           }
           this.totalPage = Math.ceil(response['total_entries'] / this.entry_per_page)
         })
@@ -186,6 +191,7 @@
         for(let dbName in this.column_setting){
           let column = this.column_setting[dbName]
           Vue.set(column, 'db_name', dbName)
+
           this.initColumn(column)
           this.columnSetting[0].push(column)
           if(!column['sub_columns']){
@@ -208,6 +214,9 @@
         typeof column['name'] === 'undefined' ? Vue.set(column, 'name', this.StringUnderscoreToPhrase(column['db_name'])) : null
         typeof column['type'] === 'undefined' ? Vue.set(column, 'type', 'text') : null
         typeof column['sort'] === 'undefined' ? Vue.set(column, 'sort', 0) : null
+        if(column['type'] === 'button'){
+          column['sort'] = false
+        }
         typeof column['value_function'] === 'undefined' ? Vue.set(column, 'value_function', (row, dbName) => {
           let dbNameSegment = dbName.split('.')
           let value

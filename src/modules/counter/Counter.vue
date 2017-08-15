@@ -130,6 +130,7 @@
 
         },
         column_setting: {
+          id: {},
           number: {},
           status: {
             type: 'html',
@@ -256,6 +257,7 @@
       },
       queueCardModalChangeState(value){
         if(!value){
+          this.$refs.queueCardTable.retrieveData(this.$refs.queueCardTable.prevRetrieveType)
           this.formStatus = 'close'
         }
       },
