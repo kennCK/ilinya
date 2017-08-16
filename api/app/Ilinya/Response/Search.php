@@ -5,7 +5,6 @@ namespace App\Ilinya\Response;
 /*
     @Providers
 */
-use App\Ilinya\Http\Curl;
 use App\Ilinya\Webhook\Messaging;
 use App\Ilinya\User;
 use App\Ilinya\StatusChecker;
@@ -37,11 +36,9 @@ use App\Ilinya\API\Controller;
 class Search{
 
   protected $messaging;
-  protected $curl;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
-      $this->curl = new Curl();
   }
 
   public function options(){

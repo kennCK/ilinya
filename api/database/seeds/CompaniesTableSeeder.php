@@ -16,9 +16,29 @@ class CompaniesTableSeeder extends Seeder
             "id"    => "1",
             "business_type_id" => "1",
             "name"  => "K1",
-            "address"   => "Crossroads",
+            "address"   => "Crossroads, Cebu City",
             "contact_number"    => "123456789",
             "email" => "k1@gmail.com",
+            "lat"   => "123.1234556",
+            "lng"   => "5.1234556"
+          ),
+          array(
+            "id"    => "2",
+            "business_type_id" => "3",
+            "name"  => "Roble",
+            "address"   => "Cebu City",
+            "contact_number"    => "123456789",
+            "email" => "roble@gmail.com",
+            "lat"   => "123.1234556",
+            "lng"   => "5.1234556"
+          ),
+          array(
+            "id"    => "3",
+            "business_type_id" => "2",
+            "name"  => "ILinya",
+            "address"   => "Cebu City",
+            "contact_number"    => "123456789",
+            "email" => "roble@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           ),
