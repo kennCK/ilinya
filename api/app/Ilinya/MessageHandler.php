@@ -9,6 +9,7 @@ use App\Ilinya\MessageExtractor;
 use App\Ilinya\Webhook\Messaging;
 use App\Ilinya\Response\Introduction;
 use App\Ilinya\Response\Search;
+use App\Ilinya\Response\Forms;
 
 
 class MessageHandler{
@@ -38,6 +39,7 @@ class MessageHandler{
     $this->checker    = new StatusChecker($messaging);
     $this->response   = new Introduction($messaging); 
     $this->search     = new Search($messaging);
+    $this->forms      = new Forms($messaging, $this->checker);
     $this->bot        = new Bot($messaging);
     $this->code       = new Codes();
     $messageExtractor = new MessageExtractor($messaging); 
@@ -133,7 +135,7 @@ class MessageHandler{
               $this->bot->reply($this->search->options(), false);
               break;
             case $this->code->P_GET_GC:
-              $this->bot->reply("Get Cards", true);
+              $this->bot->reply($this->forms->retrieve(), false);
               break;
             case $this->code->P_LIMIT:
               $this->bot->reply("Shutdown", true);
