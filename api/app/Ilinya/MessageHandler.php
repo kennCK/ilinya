@@ -46,37 +46,32 @@ class MessageHandler{
     $this->custom     = $messageExtractor->extractData();
   }
 
-  public function checkMessage(){
+  public function manage(){
     $stage = $this->code->P_START;
-    $dbTrack = 0;
+    $dbTrack = false;
     $status = $this->checker->getStatus($this->custom);
     $this->currentCode = $this->code->getCodeByUnknown($this->custom);
     switch ($status) {
       case 0:
-        $this->read();
+        //Do Nothing
         break;
-      case 1000:
-        $this->delivery();
+      case 100:
+        //Do Nothing
         break;
-      case 2000:
-        $this->postback();
-        $dbTrack = 1;
-        $this->getParameter();    
-        break;
-      case 2001:  
-        $this->postback();
+      case 200: 
+        Postback::manage();
         $dbTrack = 2;
         $this->getParameter();    
         break;
-      case 3000:
+      case 300:
         $this->message();
         $dbTrack = 2;
         break;
-      case 4000:
+      case 400:
         $this->bot->reply($this->response->priorityError(), false);
         break;
       default:
-        //
+        //Do Nothing
         break;
     }
     if($dbTrack == 1){
@@ -115,37 +110,6 @@ class MessageHandler{
     }
   }
 
-  public function postback(){
-          $action = $this->code->getCode($this->custom['payload']);
-          switch ($action) {
-            case $this->code->P_START:
-              $this->bot->reply($this->response->start(), true);
-              $this->bot->reply($this->response->categories(), false);
-              break;
-            case $this->code->P_USERGUIDE:
-              $this->bot->reply($this->response->userGuide(), true);
-              break;
-            case $this->code->P_QUEUECARDS:
-              $this->bot->reply($this->response->myQueueCards(), true);
-              break;
-            case $this->code->P_CATEGORIES:
-              $this->bot->reply($this->response->categories(), false);
-              break;
-            case $this->code->P_CATEGORY_SELECTED:
-              $this->bot->reply($this->search->options(), false);
-              break;
-            case $this->code->P_GET_GC:
-              $this->bot->reply($this->forms->retrieve(), false);
-              break;
-            case $this->code->P_LIMIT:
-              $this->bot->reply("Shutdown", true);
-              break;
-            default:
-              $this->bot->reply($this->response->ERROR, true);
-              break;
-          }   
-  }
-
   public function message(){
         $response = "";
         if($this->custom['attachments']){
@@ -156,7 +120,6 @@ class MessageHandler{
             }
             else{
             }
-            $this->bot->reply($response, true);
         }
         else if($this->custom['quick_reply']){
             $this->quickReply();
@@ -166,44 +129,4 @@ class MessageHandler{
             
         } 
   }
-
-
-  public function quickReply(){
-      $this->reply = 1;
-      switch ($this->currentCode) {
-        case $this->code->QR_SEARCH:
-          $option = $this->custom['quick_reply']['parameter'];
-          $this->searchOption = ($option == "company_name")? 1 : 2;
-          $this->bot->reply($this->search->question($option), true);
-          $this->stage = $this->code->P_SEARCH;
-          break;
-        case '@priority':
-          //Statement Here
-          break;
-        default:
-          //Statement Here
-          break;
-      }
-  }
-
-  public function replyHandler(){
-    $text = $this->custom['text'];
-    $replyStatus = $this->checker->getReply();
-    if($replyStatus == 1){
-      $response = $this->search->handler($this->custom['text'], $this->checker);
-      $this->bot->reply($response, false);
-    }
-    else{
-      $this->bot->reply($this->response->ERROR, true);
-    }
-    $this->reply = 0;
-  }
-  public function read(){
-      //
-  }
-
-  public function delivery(){
-      //
-  }
-  
 }
