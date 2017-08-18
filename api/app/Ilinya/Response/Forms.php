@@ -35,9 +35,9 @@ class Forms{
   protected $messaging;
   protected $checker;
 
-  public function __construct(Messaging $messaging, StatusChecker $checker){
+  public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
-      $this->checker   = $checker;
+      $this->checker   = new StatusChecker($messaging);
   }
 
   public function retrieve(){

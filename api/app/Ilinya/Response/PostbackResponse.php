@@ -43,15 +43,11 @@ use App\Ilinya\Message\Attachments;
 use App\Ilinya\API\Controller;
 
 
-class Introduction{
+class PostbackResponse{
     public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
     private $curl;
-
-    protected $db_bTypes      = "business_types";
-
-
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
@@ -72,7 +68,7 @@ class Introduction{
     public function categories(){
         $request = new Request();
         $request['sort'] = ["category" => "asc"];
-        $categories = Controller::call($request, "App\Http\Controllers\BusinessTypeController");
+        $categories = Controller::retrieve($request, "App\Http\Controllers\BusinessTypeController");
         $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
@@ -84,7 +80,7 @@ class Introduction{
             foreach ($categories as $category) {
                 $buttons[] = ButtonElement::title($category['sub_category'])
                     ->type('postback')
-                    ->payload(strtolower($category['id']).'@categoryselected')
+                    ->payload(strtolower($category['id']).'@pCategorySelected')
                     ->toArray();
                 if($i < sizeof($categories) - 1){
                     if($prev != $categories[$i + 1]['category']){

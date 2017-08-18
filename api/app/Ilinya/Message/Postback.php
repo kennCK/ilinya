@@ -2,54 +2,74 @@
 
 namespace App\Ilinya\Message;
 
+use App\Ilinya\Bot;
+use App\Ilinya\StatusChecker;
+use App\Ilinya\Message\Codes;
+use App\Ilinya\Response\Forms;
+use App\Ilinya\Response\PostbackResponse;
+use App\Ilinya\Response\CategoryResponse;
+use App\Ilinya\Webhook\Messaging;
+
 class Postback{
-
-    function __construct(){
-
+    protected $form;
+    protected $post;
+    protected $search;
+    protected $code;
+    protected $tracker;
+    function __construct(Messaging $messaging){
+        $this->bot    = new Bot($messaging);
+        $this->post   = new PostbackResponse($messaging);
+        $this->category = new CategoryResponse($messaging);
+        $this->form   = new Forms($messaging);
+        $this->tracker= new StatusChecker($messaging);
+        $this->code   = new Codes(); 
     }
 
-    public function manage(){
-        $action = $this->code->getCode($this->custom['payload']);
+    public function manage($custom){
+        $action = $this->code->getCode($custom);
         switch ($action) {
-          case $this->code->START:
-            $this->bot->reply($this->response->start(), true);
-            $this->bot->reply($this->response->categories(), false);
+          case $this->code->pStart:
+            $this->bot->reply($this->post->start(), true);
+            $this->bot->reply($this->post->categories(), false);
             break;
-          case $this->code->USER_GUIDE:
-            $this->bot->reply($this->response->userGuide(), true);
+          case $this->code->pUserGuide:
+            $this->bot->reply($this->post->userGuide(), true);
             break;
-          case $this->code->MY_QUEUE_CARDS:
-            $this->bot->reply($this->response->myQueueCards(), true);
+          case $this->code->pMyQueueCards:
+            $this->bot->reply($this->post->myQueueCards(), true);
             break;
-          case $this->code->CATEGORIES:
-            $this->bot->reply($this->response->categories(), false);
+          case $this->code->pCategories:
+            $this->bot->reply($this->post->categories(), false);
             break;
-          case $this->code->CATEGORY_SELECTED:
-            $this->bot->reply($this->search->options(), false);
+          case $this->code->pCategorySelected:
+            $data = array(
+              "category"  => $this->tracker->getCategory()
+            );
+            $this->bot->reply($this->category->companies($data), false);
             break;
-          case $this->code->QUEUE_CARD:
+          case $this->code->pSearch:
+            $this->bot->reply($this->category->searchOption(), false);
+            break;
+          case $this->code->pGetQueueCard:
             $this->bot->reply($this->forms->retrieve(), false);
             break;
-          case $this->code->LOCATE:
+          case $this->code->pLocate:
             //Do Something
             break;
-          case $this->code->NEXT:
+          case $this->code->pNext:
             //Do Something
             break;
-          case $this->code->SEND:
+          case $this->code->pSend:
             //Do Something
             break;
-          case $this->code->EDIT:
+          case $this->code->pEdit:
             //Do Something
             break;
-          case $this->code->DISREGARD:
+          case $this->code->pDisregard:
             //Do Something
-            break;
-          case $this->code->P_LIMIT:
-            $this->bot->reply("Shutdown", true);
             break;
           default:
-            $this->bot->reply($this->response->ERROR, true);
+            //Error
             break;
         }   
     }
