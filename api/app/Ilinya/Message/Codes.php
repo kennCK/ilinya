@@ -6,90 +6,101 @@ namespace App\Ilinya\Message;
 class Codes{
 
   /**
-    Read Priority Codes
+    PRIMARY CODES
   */
 
-  public $READ          = 0;
+  public $read          = 0;
+  public $delivery      = 100;
+  public $postback      = 200;
+  public $message       = 300;
+  public $error         = 400;
 
   /**
-    Delivery Priority Codes
+    POSTBACK CODES
   */
+  public $pStart            = 201;
+  public $pUserGuide        = 202;
+  public $pMyQueueCards     = 203;
+  public $pCategories       = 204;
+  public $pCategorySelected = 205;
+  public $pGetQueueCard     = 206;
+  public $pLocate      = 207;
+  public $pNext        = 208;
+  public $pSend        = 209;
+  public $pEdit        = 210;
+  public $pDisregard   = 211;
+  public $pSearch      = 212;
 
-  public $DELIVERY      = 100;
+
 
   /**
-    Postback Priority Codes
+    MESSAGE CODES
   */
-
-  public $POSTBACK      = 201;
-
-  public $P_USERGUIDE   = 202;
-
-  public $P_QUEUECARDS  = 203;
-
-  public $P_CATEGORIES  = 204;
-
-  public $P_CATEGORY_SELECTED = 205;
-
-  public $P_GET_GC      = 206;
-
-  public $P_LIMIT       = 299;
-
-  //@Stages
-  public $P_START       = 200;
-
-  public $P_SEARCH      = 210;
-
-  public $P_RESULTS     = 220;
+  public $mQuickReply  = 301;
+  public $mAttachments = 302;
+  public $mText        = 303;
+  
   /**
-    Message Priority Codes
+    ATTACHMENTS CODES
+  */
+  public $aLocation    = 310;
+
+  /**
+    QUICK REPLY CODES
+  */
+  public $qrSearch       = 320;
+  public $qrPriorityYes  = 321;
+  public $qrPriorityNo   = 322;
+  public $qrFormCancel   = 323;
+  public $qrFormContinue = 324;
+
+  /**
+    TEXT CODES
   */
 
-  public $MESSAGE       = 300;
-
-  public $M_QR          = 301;
-
-  public $M_ATTACHMENT  = 302;
-
-  public $M_TEXT        = 303;
-
-  public $QR_SEARCH     = 304;
+  public $replyStageSearch     = 1;
+  public $replyStageForm       = 2;
+  public $replyStageEdit       = 3;
+  public $replyStageShortCodes = 10;
+  
 
 
-  protected $PREDEFINED   = array();
+  protected $postbackPayloads = array();
+  protected $quickReplyPayloads = array();
 
   function __construct(){
-    $this->PREDEFINED = array(
-      "read"                => $this->READ,
-      "delivery"            => $this->DELIVERY,
-      "postback"            => $this->POSTBACK,
-      "@start"              => $this->P_START,
-      "@shutdown"           => $this->P_LIMIT,
-      "@users_guide"        => $this->P_USERGUIDE,
-      "@my_queue_cards"     => $this->P_QUEUECARDS,
-      "@categories"         => $this->P_CATEGORIES,
-      "@categoryselected"   => $this->P_CATEGORY_SELECTED,
-      "@get_queue_cards"    => $this->P_GET_GC,
-      "message"             => $this->MESSAGE,
-      "quick_reply"         => $this->M_QR,
-      "attachments"         => $this->M_ATTACHMENT,
-      "text"                => $this->M_TEXT,
-      "@search"             => $this->QR_SEARCH
+    $this->postbackPayloads = array(
+      "@pStart"          => $this->pStart,
+      "@pUserGuide"      => $this->pUserGuide,
+      "@pMyQueueCards"   => $this->pMyQueueCards,
+      "@pCategories"     => $this->pCategories,
+      "@pCategorySelected"  => $this->pCategorySelected,
+      "@pGetQueueCard"      => $this->pGetQueueCard,
+      "@pLocate"    => $this->pLocate,
+      "@pNext"      => $this->pNext,
+      "@pSend"      => $this->pSend,
+      "@pEdit"      => $this->pEdit,
+      "@pDisregard" => $this->pDisregard,
+      "@pSearch"    => $this->pSearch
+    );
+
+    $this->quickReplyPayloads = array(
+      "@qrSearch"       => $this->qrSearch,
+      "@qrPriorityYes"  => $this->qrPriorityYes,
+      "@qrPriorityNo"   => $this->qrPriorityNo,
+      "@qrFormCancel"   => $this->qrFormCancel,
+      "@qrFormContinue" => $this->qrFormContinue 
     );
   }
 
-  public function getCode($action){
-    return $this->PREDEFINED[$action];
-  }
-
-  public function getCodeByUnknown($custom){
+  public function getCode($custom){
     $code = null;
     switch ($custom['type']) {
       case 'read':
-        $code = $this->READ;
+        $code = $this->read;
         break;
       case 'delivery':
-        $code = $this->DELIVERY;
+        $code = $this->delivery;
         break;
       case 'postback':
         $code = $this->getCodeInPostback($custom['payload']);
@@ -101,49 +112,18 @@ class Codes{
   }
 
   public function getCodeInPostback($payload){
-    $code = null;
-      switch ($payload) {
-        case '@start':
-          $code = $this->P_START;
-          break;
-        case '@users_guide':
-          $code = $this->P_USERGUIDE;
-          break;
-        case '@my_queue_cards':
-          $code = $this->P_QUEUECARDS;
-          break;
-        case '@categories':
-          $code = $this->P_CATEGORIES;
-          break;
-        case '@categoryselected':
-          $code = $this->P_CATEGORY_SELECTED;
-          break;
-        case '@get_queue_cards':
-          $code = $this->P_GET_GC;
-          break;
-        case '@shutdown':
-          $code = $this->P_LIMIT;
-          break;
-        default:
-          $code = $this->POSTBACK;
-          break;
-      }
-    return $code;
+    return $this->postbackPayloads[$payload];
   }
 
   public function getCodeInMessage($messageType){
-    if($messageType['attachments'])return $this->M_ATTACHMENT;
+    if($messageType['attachments'])return $this->mAttachments;
     else if($messageType['quick_reply'])return $this->getCodeInQuickReply($messageType['quick_reply']['payload']);
-    else if($messageType['text'])return $this->M_TEXT;
-    else return $this->MESSAGE;
+    else if($messageType['text'])return $this->mText;
+    else return $this->message;
   }
 
   public function getCodeInQuickReply($payload){
-    switch ($payload) {
-      case '@search':
-        return $this->QR_SEARCH;
-        break;
-    }
+    return $this->quickReplyPayloads[$payload];
   }
 
 

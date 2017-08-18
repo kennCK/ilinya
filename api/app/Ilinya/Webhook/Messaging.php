@@ -39,8 +39,7 @@ class Messaging
         else if(isset($data['delivery'])){
             $this->type = "delivery";
             //Code Here
-        }
-        
+        }   
     }
 
     public function getSenderId(){

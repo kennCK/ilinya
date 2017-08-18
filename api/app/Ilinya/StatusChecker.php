@@ -59,28 +59,28 @@ class StatusChecker{
 
   public function getStatus($custom){
     $prev = $this->status;
-    $current = $this->code->getCodeByUnknown($custom);
+    json_encode($custom);
+    $current = $this->code->getCode($custom);
   
     if(!$prev){
       //@start if user not exist
-      return 2000;
+      return $this->code->postback;
     }
-    else if($current == $this->code->READ){
-      return 0;
+    else if($current == $this->code->read){
+      return $this->code->read;
     }
-    else if($current == $this->code->DELIVERY){
-      return 1000;
+    else if($current == $this->code->delivery){
+      return $this->code->delivery;
     }
-    else if($current <= $this->code->P_LIMIT && $current >= $this->code->POSTBACK){
-      return 2001;
+    else if($current < $this->code->message && $current >= $this->code->postback){
+      return $this->code->postback;
     }
-    else if($current >= $this->code->MESSAGE){
-      return 3000;
+    else if($current < $this->code->error && $current >= $this->code->message){
+      return $this->code->message;
     }
     else{
-      return 0;
+      return $this->code->error;
     }
-
   }
 
   public function insert($status, $stage, $category = null){

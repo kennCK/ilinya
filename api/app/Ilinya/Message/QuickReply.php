@@ -3,67 +3,46 @@
 namespace App\Ilinya\Message;
 
 use App\Ilinya\Bot;
-use App\Ilinya\Response\Search;
+use App\Ilinya\StatusChecker;
+use App\Ilinya\Message\Codes;
+use App\Ilinya\Response\Forms;
+use App\Ilinya\Response\PostbackResponse;
+use App\Ilinya\Response\CategoryResponse;
+use App\Ilinya\Webhook\Messaging;
+
 
 class QuickReply{
-  protected $data;
-  protected $bot; 
-  protected $search;
+    protected $form;
+    protected $post;
+    protected $search;
+    protected $code;
+    protected $tracker;
 
-  function __construct(Bot $bot, $custom, Search $search){
-      $this->bot = $bot;
-      $this->custom = $custom;
-      $this->search = $search;
+  function __construct(Messaging $messaging){
+        $this->bot    = new Bot($messaging);
+        $this->post   = new PostbackResponse($messaging);
+        $this->category = new CategoryResponse($messaging);
+        $this->form   = new Forms($messaging);
+        $this->tracker= new StatusChecker($messaging);
+        $this->code   = new Codes(); 
   }
-  public static function manage(){
-
-      switch ($this->currentCode) {
-        case $this->code->QR_SEARCH:
-          $this->search();
+  public function manage($custom){
+      $parameter = $custom['quick_reply']['parameter'];
+      switch ($this->code->getCode($custom)) {
+        case $this->code->qrSearch:
+          $this->bot->reply($this->category->question($parameter),true);
           break;
-        case $this->code->PRIORITY_YES: 
-          $this->priorityIsYes();
+        case $this->code->qrPriorityYes:
           break;
-        case $this->code->PRIORITY_NO:
-          $this->priorityIsNo();
+        case $this->code->qrPriorityNo:
           break;
-        case $this->code->FORM_CANCEL:
-          $this->formIsCancel();
+        case $this->code->qrFormCancel:
           break;
-        case $this->code->FORM_CONTINUE:
-          $this->formIsContinue();
+        case $this->code->qrFormContinue:
           break;
         default:
           //Statement Here
           break;
       }
-  }
-
-  public function search(){
-      $option = $this->custom['quick_reply']['parameter'];
-      $this->searchOption = ($option == "company_name")? 1 : 2;
-      $this->bot->reply($this->search->question($option), true);
-      $this->stage = $this->code->P_SEARCH;
-      $parameter = [
-        "stage" => $this->code->P_SEARCH,
-        "reply" => 1
-      ];
-      return $parameter;
-  }
-
-  public function priorityIsYes(){
-    return 1;
-  }
-
-  public function priorityIsNo(){
-    return 1;
-  }
-
-  public function formIsCancel(){
-    return 1;
-  }
-
-  public function formIsContinue(){
-    return 1;
   }
 }
