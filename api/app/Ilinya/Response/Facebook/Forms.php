@@ -7,7 +7,7 @@ namespace App\Ilinya\Response\Facebook;
 use App\Ilinya\Http\Curl;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
-use App\Ilinya\StatusChecker;
+use App\Ilinya\Tracker;
 use Illuminate\Http\Request;
 /*
     @Template
@@ -34,11 +34,11 @@ use App\Ilinya\API\Controller;
 
 class Forms{
   protected $messaging;
-  protected $checker;
+  protected $tracker;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
-      $this->checker   = new StatusChecker($messaging);
+      $this->tracker   = new Tracker($messaging);
   }
 
   public function retrieve(){
@@ -46,7 +46,7 @@ class Forms{
     $condition[] = [
       "column"  => "company_id",
       "clause"  => "=",
-      "value"   => $this->checker->getCompanyId()
+      "value"   => $this->tracker->getCompanyId()
     ];
     
     $request['condition'] = $condition;
