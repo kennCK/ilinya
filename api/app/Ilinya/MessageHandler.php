@@ -2,7 +2,7 @@
 namespace App\Ilinya;
 
 use App\Ilinya\MessageExtractor;
-use App\Ilinya\StatusChecker;
+use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Attachments;
 use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Message\Facebook\Error;
@@ -22,46 +22,55 @@ class MessageHandler{
   protected $companyId;
   protected $category;
 
+
   protected $tracker;
+  protected $trackerFlag;
 
   protected $code;
-  protected $checker;
   protected $custom;
 
   protected $postback;
   protected $messaging;
   protected $quickReply;
 
+
+  protected $response;
   function __construct(Messaging $messaging){
     $this->messaging  = $messaging;
-    $this->checker    = new StatusChecker($messaging);
+    $this->tracker    = new Tracker($messaging);
     $messageExtractor = new MessageExtractor($messaging); 
     $this->custom     = $messageExtractor->extractData();
     $this->code       = new Codes();
     $this->postback   = new Postback($messaging);
     $this->quickReply = new QuickReply($messaging);
-    $this->tracker    = 0;
+    $this->trackerFlag    = 0;
   }
 
   public function manage(){
-    $this->prevStage = $this->checker->getStage();
-    $status = $this->checker->getStatus($this->custom);
+    $this->response = $this->tracker->getStatus($this->custom);
     $this->currentCode = $this->code->getCode($this->custom);
-    switch ($status) {
+    switch ($this->response['status']) {
       case $this->code->read:
+        $this->trackerFlag    = 0;
         //Read
         break;
       case $this->code->delivery:
+        $this->trackerFlag    = 0;
         //Delivery
         break;
-      case $this->code->postback:
+      case $this->code->pStart:
+        $this->trackerFlag = 1;
         $this->postback->manage($this->custom);
-        //$this->tracker = 2;
-        //$this->getParameter();    
+        $this->trackerHandler();
+        break;
+      case $this->code->postback:
+        $this->trackerFlag = 2;
+        $this->getParameter();  
+        $this->trackerHandler();
+        $this->postback->manage($this->custom);  
         break;
       case $this->code->message:
         $this->message();
-        //$this->tracker = 3;
         break;
       case $this->code->error:
         //Error
@@ -73,11 +82,11 @@ class MessageHandler{
   }
 
   public function trackerHandler(){
-    switch ($this->tracker) {
+    switch ($this->trackerFlag) {
       case 1: // Insert
-            $this->checker->insert($this->currentCode, $stage, $this->category);
+            $this->tracker->insert($this->currentCode, $this->response['stage'], $this->category);
         break;
-      case 2:
+      case 2: // Update
             $data = [
                 "status"            => $this->currentCode
             ];
@@ -86,11 +95,13 @@ class MessageHandler{
             if($this->category)$data['business_type_id'] =  $this->category;
             if($this->stage)$data['stage'] = $this->stage;
             if($this->companyId)$data['company_id'] = $this->companyId;
-            $this->checker->update($data);
+            $this->tracker->update($data);
         break;
       case 3:
             $data['reply']  = $this->reply;
-            $this->checker->update($data);
+            $this->tracker->update($data);
+        break;
+      case 4: // Delete
         break;
       default:
         break;

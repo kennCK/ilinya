@@ -6,7 +6,7 @@ use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\API\Database as DB;
 
-class StatusChecker{
+class Tracker{
   
   protected $status;
   
@@ -25,6 +25,8 @@ class StatusChecker{
   protected $messaging;
 
   protected $code;
+
+  protected $pageID = "133610677239344";
 
 
   function __construct(Messaging $messaging){
@@ -59,38 +61,58 @@ class StatusChecker{
 
   public function getStatus($custom){
     $prev = $this->status;
-    json_encode($custom);
     $current = $this->code->getCode($custom);
-  
-    if(!$prev){
-      //@start if user not exist
-      return $this->code->postback;
-    }
-    else if($current == $this->code->read){
-      return $this->code->read;
+    $response = array();
+
+    if($current == $this->code->read){
+      $response = [
+        "status"  => $this->code->read,
+        "stage"   => null
+      ];
     }
     else if($current == $this->code->delivery){
-      return $this->code->delivery;
+      $response = [
+        "status"  => $this->code->delivery,
+        "stage"   => null
+      ];
+    }
+    else if(!$prev){
+      $response = [
+        "status"  => $this->code->pStart,
+        "stage"   => $this->code->pStart
+      ];
     }
     else if($current < $this->code->message && $current >= $this->code->postback){
-      return $this->code->postback;
+      $response = [
+        "status"  => $this->code->postback,
+        "stage"   => null
+      ];
     }
     else if($current < $this->code->error && $current >= $this->code->message){
-      return $this->code->message;
+      $response = [
+        "status"  => $this->code->message,
+        "stage"   => null
+      ];
     }
     else{
-      return $this->code->error;
+      $response = [
+        "status"  => $this->code->error,
+        "stage"   => null
+      ];
     }
+    return $response;
   }
 
   public function insert($status, $stage, $category = null){
-      $data = [
-        "facebook_id" => $this->messaging->getSenderId(),
-        "status"      => $status,
-        "stage"       => $stage
-      ];
-      if($category)$data['category'] = $category;
-      DB::insert($this->db_tracker, $data);
+       if($this->messaging->getSenderId() != $this->pageID){
+        $data = [
+          "facebook_id" => $this->messaging->getSenderId(),
+          "status"      => $status,
+          "stage"       => $stage
+        ];
+        if($category)$data['category'] = $category;
+        DB::insert($this->db_tracker, $data);
+    }
   }
 
   public function update($data){
@@ -103,7 +125,7 @@ class StatusChecker{
   public function retrieve(){
     $pageID = "133610677239344";
 
-    if($this->messaging->getSenderId() != $pageID){
+    if($this->messaging->getSenderId() != $this->pageID){
       $condition = [
           ['facebook_id','=',$this->messaging->getSenderId()]
       ];
@@ -121,7 +143,7 @@ class StatusChecker{
       }
     }
     else{
-      $this->status = 1000;
+      $this->status = null;
     }
   }
 

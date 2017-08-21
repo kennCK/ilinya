@@ -3,7 +3,7 @@
 namespace App\Ilinya\Message\Facebook;
 
 use App\Ilinya\Bot;
-use App\Ilinya\StatusChecker;
+use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Response\Facebook\Forms;
 use App\Ilinya\Response\Facebook\PostbackResponse;
@@ -23,7 +23,7 @@ class QuickReply{
         $this->post   = new PostbackResponse($messaging);
         $this->category = new CategoryResponse($messaging);
         $this->form   = new Forms($messaging);
-        $this->tracker= new StatusChecker($messaging);
+        $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
   }
   public function manage($custom){
