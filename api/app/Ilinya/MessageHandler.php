@@ -3,13 +3,13 @@ namespace App\Ilinya;
 
 use App\Ilinya\MessageExtractor;
 use App\Ilinya\StatusChecker;
-use App\Ilinya\Message\Attachments;
-use App\Ilinya\Message\Codes;
-use App\Ilinya\Message\Error;
-use App\Ilinya\Message\Postback;
-use App\Ilinya\Message\QuickReply;
-use App\Ilinya\Message\Text;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Message\Facebook\Attachments;
+use App\Ilinya\Message\Facebook\Codes;
+use App\Ilinya\Message\Facebook\Error;
+use App\Ilinya\Message\Facebook\Postback;
+use App\Ilinya\Message\Facebook\QuickReply;
+use App\Ilinya\Message\Facebook\Text;
+use App\Ilinya\Webhook\Facebook\Messaging;
 
 class MessageHandler{
   protected $types = array('postback', 'message', 'read', 'delivery');

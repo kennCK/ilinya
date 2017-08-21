@@ -6,7 +6,7 @@ namespace App\Ilinya;
 use Illuminate\Support\Facades\Log;
 
 use App\Ilinya\Http\Curl;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Webhook\Facebook\Messaging;
 
 
 class Bot{  

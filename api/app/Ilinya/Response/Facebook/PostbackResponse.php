@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Ilinya\Response;
+namespace App\Ilinya\Response\Facebook;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
     @Providers
 */
 use App\Ilinya\Http\Curl;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
 
 /*
@@ -29,13 +29,6 @@ use App\Ilinya\Templates\Facebook\ListTemplate;
 use App\Ilinya\Templates\Facebook\ButtonElement;
 use App\Ilinya\Templates\Facebook\GenericElement;
 use App\Ilinya\Templates\Facebook\QuickReplyElement;
-
-
-/*
-    @Message
-*/
-
-use App\Ilinya\Message\Attachments;
 
 /*
     @API

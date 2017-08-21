@@ -1,5 +1,5 @@
 <?php 
-namespace App\Ilinya\Webhook;
+namespace App\Ilinya\Webhook\Facebook;
 
 class Postback{
 

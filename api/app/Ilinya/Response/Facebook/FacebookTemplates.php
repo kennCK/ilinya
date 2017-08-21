@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ilinya\Response;
+namespace App\Ilinya\Response\Facebook;
 
 
 class FacebookTemplates{
