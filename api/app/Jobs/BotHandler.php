@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\MessageHandler;
 
 use Illuminate\Bus\Queueable;

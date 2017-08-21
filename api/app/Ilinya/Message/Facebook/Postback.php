@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Ilinya\Message;
+namespace App\Ilinya\Message\Facebook;
 
 use App\Ilinya\Bot;
 use App\Ilinya\StatusChecker;
-use App\Ilinya\Message\Codes;
-use App\Ilinya\Response\Forms;
-use App\Ilinya\Response\PostbackResponse;
-use App\Ilinya\Response\CategoryResponse;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Message\Facebook\Codes;
+use App\Ilinya\Response\Facebook\Forms;
+use App\Ilinya\Response\Facebook\PostbackResponse;
+use App\Ilinya\Response\Facebook\CategoryResponse;
+use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Postback{
     protected $form;

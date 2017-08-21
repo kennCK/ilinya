@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Ilinya\Webhook\Entry;
+use App\Ilinya\Webhook\Facebook\Entry;
 use App\Jobs\BotHandler;
 
 

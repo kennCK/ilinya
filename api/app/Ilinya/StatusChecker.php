@@ -2,8 +2,8 @@
 
 namespace App\Ilinya;
 
-use App\Ilinya\Message\Codes;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Message\Facebook\Codes;
+use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\API\Database as DB;
 
 class StatusChecker{

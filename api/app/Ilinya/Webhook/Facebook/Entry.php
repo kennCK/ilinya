@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ilinya\Webhook;
+namespace App\Ilinya\Webhook\Facebook;
 
 use Illuminate\Http\Request;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Entry{
 

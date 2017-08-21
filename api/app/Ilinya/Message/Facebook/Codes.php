@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ilinya\Message;
+namespace App\Ilinya\Message\Facebook;
 
 
 class Codes{

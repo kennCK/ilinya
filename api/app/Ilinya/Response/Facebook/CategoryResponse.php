@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ilinya\Response;
+namespace App\Ilinya\Response\Facebook;
 
 /*
     @Providers
 */
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
 use App\Ilinya\StatusChecker;
 use Illuminate\Http\Request;
