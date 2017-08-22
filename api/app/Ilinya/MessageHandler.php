@@ -21,10 +21,10 @@ class MessageHandler{
   protected $prevStage;
   protected $companyId;
   protected $category;
+  protected $formId;
 
 
   protected $tracker;
-  protected $trackerFlag;
 
   protected $code;
   protected $custom;
@@ -43,34 +43,31 @@ class MessageHandler{
     $this->code       = new Codes();
     $this->postback   = new Postback($messaging);
     $this->quickReply = new QuickReply($messaging);
-    $this->trackerFlag    = 0;
   }
 
   public function manage(){
     $this->response = $this->tracker->getStatus($this->custom);
     $this->currentCode = $this->code->getCode($this->custom);
+    $this->trackerFlag = $this->response['tracker_flag'];
     switch ($this->response['status']) {
       case $this->code->read:
-        $this->trackerFlag    = 0;
         //Read
         break;
       case $this->code->delivery:
-        $this->trackerFlag    = 0;
         //Delivery
         break;
       case $this->code->pStart:
-        $this->trackerFlag = 1;
         $this->postback->manage($this->custom);
         $this->trackerHandler();
         break;
       case $this->code->postback:
-        $this->trackerFlag = 2;
         $this->getParameter();  
         $this->trackerHandler();
-        $this->postback->manage($this->custom);  
+        $this->postback->manage($this->custom);
         break;
       case $this->code->message:
         $this->message();
+        $this->trackerHandler();
         break;
       case $this->code->error:
         //Error
@@ -82,23 +79,24 @@ class MessageHandler{
   }
 
   public function trackerHandler(){
+    $data = [
+                "status"            => $this->currentCode
+            ];
     switch ($this->trackerFlag) {
       case 1: // Insert
             $this->tracker->insert($this->currentCode, $this->response['stage'], $this->category);
         break;
       case 2: // Update
-            $data = [
-                "status"            => $this->currentCode
-            ];
-            if($this->reply)$data['reply']  = $this->reply;
-            if($this->searchOption)$data['search_option'] = $this->searchOption;
             if($this->category)$data['business_type_id'] =  $this->category;
             if($this->stage)$data['stage'] = $this->stage;
             if($this->companyId)$data['company_id'] = $this->companyId;
+            if($this->reply)$data['reply']  = $this->reply;
+            if($this->searchOption)$data['search_option'] = $this->searchOption;
             $this->tracker->update($data);
         break;
       case 3:
-            $data['reply']  = $this->reply;
+            if($this->reply)$data['reply']  = $this->reply;
+            if($this->formId)$data['form_id'] = $this->formId;
             $this->tracker->update($data);
         break;
       case 4: // Delete
@@ -134,7 +132,7 @@ class MessageHandler{
             }
         }
         else if($this->custom['quick_reply']){
-            $this->quickReply->manage($this->custom);
+            $this->formId = $this->quickReply->manage($this->custom);
         }
         else if($this->custom['text']){
             //Text

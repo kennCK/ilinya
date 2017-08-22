@@ -9,16 +9,18 @@ use App\Ilinya\API\Database as DB;
 class Tracker{
   
   protected $status;
+
+  protected $stage;
   
-  protected $reply;
-
   protected $category;
-
-  protected $searchOption;
 
   protected $companyId;
 
-  protected $stage;
+  protected $formId;
+
+  protected $searchOption;
+
+  protected $reply;
 
   protected $db_tracker = "bot_status_tracker";
 
@@ -33,6 +35,10 @@ class Tracker{
     $this->messaging = $messaging;
     $this->code = new Codes();
     $this->retrieve();
+  }
+
+  public function getFormId(){
+    return $this->formId;
   }
 
   public function getReply(){
@@ -67,37 +73,43 @@ class Tracker{
     if($current == $this->code->read){
       $response = [
         "status"  => $this->code->read,
-        "stage"   => null
+        "stage"   => null,
+        "tracker_flag"  => 0
       ];
     }
     else if($current == $this->code->delivery){
       $response = [
         "status"  => $this->code->delivery,
-        "stage"   => null
+        "stage"   => null,
+        "tracker_flag"  => 0
       ];
     }
     else if(!$prev){
       $response = [
         "status"  => $this->code->pStart,
-        "stage"   => $this->code->pStart
+        "stage"   => $this->code->pStart,
+        "tracker_flag"  => 1
       ];
     }
     else if($current < $this->code->message && $current >= $this->code->postback){
       $response = [
         "status"  => $this->code->postback,
-        "stage"   => null
+        "stage"   => null,
+        "tracker_flag"  => 2
       ];
     }
     else if($current < $this->code->error && $current >= $this->code->message){
       $response = [
         "status"  => $this->code->message,
-        "stage"   => null
+        "stage"   => null,
+        "tracker_flag"  => 3
       ];
     }
     else{
       $response = [
         "status"  => $this->code->error,
-        "stage"   => null
+        "stage"   => null,
+        "tracker_flag"  => 0
       ];
     }
     return $response;
@@ -134,9 +146,10 @@ class Tracker{
       if($result){
           foreach ($result as $key) {
               $this->status       = $key['status'];
-              $this->stage        = $key['stage'];            
+              $this->stage        = $key['stage'];     
+              $this->category     = $key['business_type_id'];       
               $this->companyId    = $key['company_id'];
-              $this->category     = $key['business_type_id'];
+              $this->formId       = $key['form_id'];
               $this->searchOption = $key['search_option'];
               $this->reply        = $key['reply'];  
           }
