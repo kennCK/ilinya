@@ -5,13 +5,13 @@ namespace App\Ilinya\Message\Facebook;
 use App\Ilinya\Bot;
 use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Codes;
-use App\Ilinya\Response\Facebook\Forms;
+use App\Ilinya\Response\Facebook\FormsResponse;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Postback{
-    protected $form;
+    protected $forms;
     protected $post;
     protected $search;
     protected $code;
@@ -20,7 +20,7 @@ class Postback{
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
         $this->category = new CategoryResponse($messaging);
-        $this->form   = new Forms($messaging);
+        $this->forms   = new FormsResponse($messaging);
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
     }
@@ -42,16 +42,13 @@ class Postback{
             $this->bot->reply($this->post->categories(), false);
             break;
           case $this->code->pCategorySelected:
-            $data = array(
-              "category"  => $this->tracker->getCategory()
-            );
-            $this->bot->reply($this->category->companies($data), false);
+            $this->bot->reply($this->category->companies($custom['parameter']), false);
             break;
           case $this->code->pSearch:
             $this->bot->reply($this->category->searchOption(), false);
             break;
           case $this->code->pGetQueueCard:
-            $this->bot->reply($this->forms->retrieve(), false);
+            $this->bot->reply($this->forms->retrieve($custom['parameter']), false);
             break;
           case $this->code->pLocate:
             //Do Something

@@ -53,12 +53,12 @@ class CategoryResponse{
     return ($value == "company_name")? "Enter Company Name:":"Enter Company Location:";
   }
 
-  public function companies($data){
+  public function companies($businessTypeId){
      $request = new Request();
      $condition[] = [
       "column"  => "business_type_id",
       "clause"  => "=",
-      "value"   => $data['category']
+      "value"   => $businessTypeId
     ];
      $request['condition'] = $condition;
      $request['sort'] = ["name" => "asc"];
@@ -106,20 +106,24 @@ class CategoryResponse{
 
   public function manageResult($datas){
     $size = sizeof($datas);
-
+    $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
     if($size < 9 && $datas){
       $elements = [];
-      $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
+      
       foreach ($datas as $data) {
         $buttons = [];
-        $buttons[] = ButtonElement::title("Get Queue Cards Now!")
+        $buttons[] = ButtonElement::title("Get Queue Cards")
                     ->type('postback')
-                    ->payload($data['id'].'@get_queue_cards')
+                    ->payload($data['id'].'@pGetQueueCard')
                     ->toArray();
-        $buttons[] = ButtonElement::title("Locate")
+        $buttons[] = ButtonElement::title("View Location")
                     ->type('postback')
                     ->payload('@pLocate')
                     ->toArray();
+        $buttons[] = ButtonElement::title("Categories")
+            ->type('postback')
+            ->payload('@pCategories')
+            ->toArray();
         $elements[] = GenericElement::title($data['name'])
                             ->imageUrl($imgUrl)
                             ->subtitle('Address: '.$data['address'])
@@ -127,31 +131,30 @@ class CategoryResponse{
                             ->toArray();
 
       }
-
-      $buttons = [];
-      $buttons[] = ButtonElement::title("Next")
-          ->type('postback')
-          ->payload('@pNext')
-          ->toArray();
-      $buttons[] = ButtonElement::title("Search")
-          ->type('postback')
-          ->payload('@pSearch')
-          ->toArray();
-      $buttons[] = ButtonElement::title("Back to Categories")
-          ->type('postback')
-          ->payload('@pCategories')
-          ->toArray();
-      $elements[] = GenericElement::title("There's more on this Category!")
-                          ->imageUrl($imgUrl)
-                          ->subtitle("Click Next or take a search:")
-                          ->buttons($buttons)
-                          ->toArray();
-
       $response =  GenericTemplate::toArray($elements);
       return $response;
     }
     else if($size > 10 && $datas){
-      //
+        $buttons = [];
+        $buttons[] = ButtonElement::title("Next")
+            ->type('postback')
+            ->payload('@pNext')
+            ->toArray();
+        $buttons[] = ButtonElement::title("Search")
+            ->type('postback')
+            ->payload('@pSearch')
+            ->toArray();
+        $buttons[] = ButtonElement::title("Back to Categories")
+            ->type('postback')
+            ->payload('@pCategories')
+            ->toArray();
+        $elements[] = GenericElement::title("There's more on this Category!")
+                            ->imageUrl($imgUrl)
+                            ->subtitle("Click Next or take a search:")
+                            ->buttons($buttons)
+                            ->toArray();
+      $response =  GenericTemplate::toArray($elements);
+      return $response;
     }
     else{
       return ["text" => "Search not found :'("];

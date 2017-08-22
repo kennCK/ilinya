@@ -32,27 +32,34 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 */
 use App\Ilinya\API\Controller;
 
-class Forms{
+class FormsResponse{
   protected $messaging;
   protected $tracker;
+  protected $curl;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
       $this->tracker   = new Tracker($messaging);
+      $this->curl = new Curl();
   }
 
-  public function retrieve(){
+  public function user(){
+      $user = $this->curl->getUser($this->messaging->getSenderId());
+      $this->user = new User($this->messaging->getSenderId(), $user['first_name'], $user['last_name']);
+  }
+
+  public function retrieve($companyId){
     $request = new Request();
     $condition[] = [
       "column"  => "company_id",
       "clause"  => "=",
-      "value"   => $this->tracker->getCompanyId()
+      "value"   => $companyId
     ];
     
     $request['condition'] = $condition;
     $request['limit']     = 10;
 
-    $forms = Controller::call($request, 'App\Http\Controllers\QueueFormController');
+    $forms = Controller::retrieve($request, 'App\Http\Controllers\QueueFormController');
     return $this->manageForms($forms);
   }
 
@@ -60,11 +67,11 @@ class Forms{
     if($forms){
         if(sizeof($forms) > 1){
           //Show Forms
-          return $this->selectForms();
+          return $this->selectForms($forms);
         }
         else{
           //Direct Display
-          return $this->ask($forms);
+          return $this->confirmation($forms[0]);
         }
     }
     else{
@@ -72,11 +79,19 @@ class Forms{
     }
   }
 
-  public function selectForms(){
+  public function selectForms($forms){
       return ['text'  => "Select form:"];
   }
 
-  public function ask($forms){
-      return ['text'  => "Enter Something"];
+ public function confirmation($form){
+      $this->user();
+      $title = "Hi ".$this->user->getFirstName().'! You are about to make '.$form['title'].'. Are you sure you want to continue?';
+      $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload($form['id'].'@qrFormCancel');
+      $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload($form['id'].'@qrFormContinue');
+      return QuickReplyTemplate::toArray($title, $quickReplies);
+  }
+
+  public function ask(){
+    return ['text' => "Enter First Name:"];
   }
 }
