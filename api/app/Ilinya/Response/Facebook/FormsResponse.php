@@ -48,50 +48,30 @@ class FormsResponse{
       $this->user = new User($this->messaging->getSenderId(), $user['first_name'], $user['last_name']);
   }
 
-  public function retrieve($companyId){
-    $request = new Request();
-    $condition[] = [
-      "column"  => "company_id",
-      "clause"  => "=",
-      "value"   => $companyId
-    ];
-    
-    $request['condition'] = $condition;
-    $request['limit']     = 10;
-
-    $forms = Controller::retrieve($request, 'App\Http\Controllers\QueueFormController');
-    return $this->manageForms($forms);
-  }
-
-  public function manageForms($forms){
-    if($forms){
-        if(sizeof($forms) > 1){
-          //Show Forms
-          return $this->selectForms($forms);
-        }
-        else{
-          //Direct Display
-          return $this->confirmation($forms[0]);
-        }
-    }
-    else{
-      return ['text'  => 'No Forms Available'];
-    }
-  }
-
   public function selectForms($forms){
       return ['text'  => "Select form:"];
   }
 
  public function confirmation($form){
       $this->user();
-      $title = "Hi ".$this->user->getFirstName().'! You are about to make '.$form['title'].'. Are you sure you want to continue?';
+      $companyData = $this->tracker->getCompanyData();
+      $title = "Hi ".$this->user->getFirstName().'! You are about to make '.$form['title'].' to '.$companyData['name'].'. Are you sure you want to continue?';
       $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload($form['id'].'@qrFormCancel');
       $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload($form['id'].'@qrFormContinue');
       return QuickReplyTemplate::toArray($title, $quickReplies);
   }
 
-  public function ask(){
-    return ['text' => "Enter First Name:"];
+  public function emptyForm(){
+    return ['text'  => 'No Forms Available'];
   }
+
+  public function ask($question){
+    return ['text' => 'Enter '.$question.':'];
+  }
+
+  public function error(){
+    $this->user();
+    return ['text' => 'Hi '.$this->user->getFirstName().', I am very sorry but you have missed something. I will take you form the start. Kindly select the options below.'];
+  }
+
 }

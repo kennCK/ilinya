@@ -97,6 +97,7 @@ class MessageHandler{
       case 3:
             if($this->reply)$data['reply']  = $this->reply;
             if($this->formId)$data['form_id'] = $this->formId;
+            if($this->stage)$data['stage'] = $this->stage;
             $this->tracker->update($data);
         break;
       case 4: // Delete
@@ -132,7 +133,11 @@ class MessageHandler{
             }
         }
         else if($this->custom['quick_reply']){
-            $this->formId = $this->quickReply->manage($this->custom);
+            $response = $this->quickReply->manage($this->custom);
+            if($response){
+              if(isset($response['stage']))$this->stage = $response['stage'];
+              if(isset($response['form_id']))$this->formId = $response['form_id'];
+            }
         }
         else if($this->custom['text']){
             //Text

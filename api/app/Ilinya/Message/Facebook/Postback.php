@@ -5,7 +5,7 @@ namespace App\Ilinya\Message\Facebook;
 use App\Ilinya\Bot;
 use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Codes;
-use App\Ilinya\Response\Facebook\FormsResponse;
+use App\Ilinya\Message\Facebook\FormControl;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
@@ -20,7 +20,7 @@ class Postback{
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
         $this->category = new CategoryResponse($messaging);
-        $this->forms   = new FormsResponse($messaging);
+        $this->forms   = new FormControl($messaging);
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
     }
@@ -48,7 +48,7 @@ class Postback{
             $this->bot->reply($this->category->searchOption(), false);
             break;
           case $this->code->pGetQueueCard:
-            $this->bot->reply($this->forms->retrieve($custom['parameter']), false);
+            $this->forms->retrieveForms($custom['parameter']);
             break;
           case $this->code->pLocate:
             //Do Something

@@ -63,10 +63,13 @@ class Codes{
   public $replyStageEdit       = 3;
   public $replyStageShortCodes = 10;
   
-
+  public $stageStart = 1000;
+  public $stageForm  = 2000;
 
   protected $postbackPayloads = array();
   protected $quickReplyPayloads = array();
+
+
 
   function __construct(){
     $this->postbackPayloads = array(
