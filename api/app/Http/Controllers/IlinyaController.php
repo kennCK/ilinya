@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Ilinya\Webhook\Facebook\Entry;
 use App\Jobs\BotHandler;
+use App\Ilinya\Bot;
 
 
 class IlinyaController extends Controller
@@ -21,7 +22,10 @@ class IlinyaController extends Controller
     }
 
     public function broadcast(Request $request){
-        $data = $request->all();
+        //$data = $request->all();
+        $message = "test";
+        $recepientId = "1756273174387070";
+        Bot::notify($recepientId, $message);
         return "broadcast";
     }
 

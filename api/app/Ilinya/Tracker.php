@@ -2,9 +2,12 @@
 
 namespace App\Ilinya;
 
+
+use App\Ilinya\API\Controller;
+use App\Ilinya\API\Database as DB;
+use Illuminate\Http\Request;
 use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Webhook\Facebook\Messaging;
-use App\Ilinya\API\Database as DB;
 
 class Tracker{
   
@@ -30,11 +33,20 @@ class Tracker{
 
   protected $pageID = "133610677239344";
 
+  protected $companyData;
+
 
   function __construct(Messaging $messaging){
     $this->messaging = $messaging;
     $this->code = new Codes();
     $this->retrieve();
+    if($this->companyId){
+      $this->retrieveCompanyData();
+    }
+  }
+
+  public function getCompanyData(){
+    return $this->companyData;
   }
 
   public function getFormId(){
@@ -87,7 +99,7 @@ class Tracker{
     else if(!$prev){
       $response = [
         "status"  => $this->code->pStart,
-        "stage"   => $this->code->pStart,
+        "stage"   => $this->code->stageStart,
         "tracker_flag"  => 1
       ];
     }
@@ -166,6 +178,18 @@ class Tracker{
     ];
 
     DB::delete($this->db_tracker, $condition);
+  }
+
+  public function retrieveCompanyData(){
+     $request = new Request();
+     $condition[] = [
+      "column"  => "id",
+      "clause"  => "=",
+      "value"   => $this->companyId
+    ];
+     $request['condition'] = $condition;
+     $result = Controller::retrieve($request, "App\Http\Controllers\CompanyController");
+     $this->companyData = $result[0];
   }
 
 }

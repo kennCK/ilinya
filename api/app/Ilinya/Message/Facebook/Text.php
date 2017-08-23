@@ -5,7 +5,7 @@ namespace App\Ilinya\Message\Facebook;
 use App\Ilinya\Bot;
 use App\Ilinya\StatusChecker;
 use App\Ilinya\Message\Facebook\Codes;
-use App\Ilinya\Response\Facebook\FormsResponse;
+use App\Ilinya\Message\Facebook\FormControl;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;

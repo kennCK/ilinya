@@ -5,7 +5,7 @@ namespace App\Ilinya\Message\Facebook;
 use App\Ilinya\Bot;
 use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Codes;
-use App\Ilinya\Response\Facebook\FormsResponse;
+use App\Ilinya\Message\Facebook\FormControl;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
@@ -22,7 +22,7 @@ class QuickReply{
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
         $this->category = new CategoryResponse($messaging);
-        $this->form   = new FormsResponse($messaging);
+        $this->form   = new FormControl($messaging);
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
   }
@@ -42,8 +42,11 @@ class QuickReply{
           return null;
           break;
         case $this->code->qrFormContinue:
-          $this->bot->reply($this->form->ask(), false);
-          return $parameter;
+          $this->form->retrieveFields();
+          return [
+            "form_id" => $parameter,
+            "stage"     => $this->code->stageForm
+          ];
           break;
         default:
           //Statement Here
