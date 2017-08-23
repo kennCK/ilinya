@@ -14,7 +14,7 @@ use App\Ilinya\Webhook\Facebook\Messaging;
 */
 use App\Ilinya\API\Controller;
 
-class FormControl{
+class Form{
 
   public    $question;
   public    $reply;
@@ -22,7 +22,7 @@ class FormControl{
   protected $bot;
   protected $response;
   protected $tracker;
-  protected $code; 
+  protected $code;
   protected $post;
 
   function __construct(Messaging $messaging){
@@ -31,7 +31,7 @@ class FormControl{
     $this->response   = new FormsResponse($messaging);
     $this->tracker    = new Tracker($messaging);
     $this->code       = new Codes();
-    $this->post   = new PostbackResponse($messaging);
+    $this->post       = new PostbackResponse($messaging);
   }
 
  public function retrieveForms($companyId){
