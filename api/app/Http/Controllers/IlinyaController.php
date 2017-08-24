@@ -21,21 +21,18 @@ class IlinyaController extends Controller
         return response("", 200);
     }
 
-    public function broadcast(Request $request){
+    public function broadcast($companyId){
         //$data = $request->all();
         $message = "test";
         $recepientId = "1756273174387070";
         Bot::notify($recepientId, $message);
-        return "broadcast";
     }
 
-    public function paging(Request $request){
-        $data = $request->all();
-        return "paging";
+    public function paging($recepientId, $message){
+        Bot::notify($recepientId, $message);
     }
 
-    public function reminder(Request $request){
-        $data = $request->all();
-        return "reminder";
+    public function reminder($recepientId, $message){
+        Bot::notify($recepientId, $message);
     }
 }

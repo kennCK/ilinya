@@ -66,6 +66,15 @@ class Form{
   }
 
   public function retrieveFields(){
+    /*
+      Guide
+      1. Retrieve Fields
+      2. Insert to temp
+      3. Ask
+      4. Get Reply
+      5. Update
+    */
+
     $formId = $this->tracker->getFormId();
     $stage  = $this->tracker->getStage();
     if(!$formId && $stage == $this->code->stageForm){
@@ -86,7 +95,15 @@ class Form{
 
   }
 
-  public function save(){
+  public function insert(){
+
+  }
+
+  public function update(){
+
+  }
+
+  public function delete(){
 
   }
   
