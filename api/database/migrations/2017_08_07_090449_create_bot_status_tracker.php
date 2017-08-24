@@ -22,6 +22,7 @@ class CreateBotStatusTracker extends Migration
             $table->unsignedInteger("business_type_id")->nullable();
             $table->unsignedInteger('company_id')->nullable();
             $table->unsignedInteger('form_id')->nullable();
+            $table->unsignedInteger('form_sequence')->nullable();
             $table->unsignedInteger("search_option")->nullable();
             $table->boolean("reply")->nullable();
             $table->timestamps();

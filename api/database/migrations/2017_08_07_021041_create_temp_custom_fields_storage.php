@@ -17,8 +17,8 @@ class CreateTempCustomFieldsStorage extends Migration
         Schema::create('temp_custom_fields_storage', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('track_id');
-            $table->string('field_name',100);
-            $table->string('field_value');
+            $table->unsignedInteger('field_id');
+            $table->string('field_value')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

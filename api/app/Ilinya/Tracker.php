@@ -10,6 +10,8 @@ use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Tracker{
+
+  protected $id;
   
   protected $status;
 
@@ -20,6 +22,8 @@ class Tracker{
   protected $companyId;
 
   protected $formId;
+
+  protected $formSequence;
 
   protected $searchOption;
 
@@ -45,12 +49,20 @@ class Tracker{
     }
   }
 
+  public function getId(){
+    return $this->id;
+  }
+
   public function getCompanyData(){
     return $this->companyData;
   }
 
   public function getFormId(){
     return $this->formId;
+  }
+
+  public function getFormSequence(){
+    return $this->formSequence;
   }
 
   public function getReply(){
@@ -157,11 +169,13 @@ class Tracker{
 
       if($result){
           foreach ($result as $key) {
+              $this->id           = $key['id'];
               $this->status       = $key['status'];
               $this->stage        = $key['stage'];     
               $this->category     = $key['business_type_id'];       
               $this->companyId    = $key['company_id'];
               $this->formId       = $key['form_id'];
+              $this->formSequence = $key['form_sequence'];
               $this->searchOption = $key['search_option'];
               $this->reply        = $key['reply'];  
           }
