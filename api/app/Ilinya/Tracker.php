@@ -65,7 +65,7 @@ class Tracker{
     return $this->formSequence;
   }
 
-  public function getReply(){
+  public function getReplyStage(){
     return $this->reply;
   }
 
@@ -147,6 +147,12 @@ class Tracker{
           "stage"       => $stage
         ];
         if($category)$data['category'] = $category;
+        
+        $condition = [
+            ['facebook_id','=',$this->messaging->getSenderId()]
+        ];
+        $flag = DB::retrieve($this->db_tracker, $condition, null);
+        if(!$flag)
         DB::insert($this->db_tracker, $data);
     }
   }
