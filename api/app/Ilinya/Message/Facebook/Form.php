@@ -36,7 +36,7 @@ class Form{
     $this->code       = new Codes();
     $this->post       = new PostbackResponse($messaging);
   }
-
+  
  public function retrieveForms($companyId){
     $forms = $this->request('App\Http\Controllers\QueueFormController','company_id', $companyId, 10, null);
     $this->manageForms($forms);
@@ -80,21 +80,72 @@ class Form{
 
   }
 
-  public function reply(){
+  public function reply($replyText){
+    //Before
+    //Get tracker ID
+    //Get Field Id
+    //Check Stage is 2000
+    $trackerId = $this->tracker->getId();
+    $stage     = $this->tracker->getStage();
+    $fieldId   = $this->field('id');
 
+    //Validate
+    $validation = $this->validate($replyText);
+
+    //After retrieve again
+    //
+    if($validation ==  true){
+      //Update Field
+      //Reset Reply to 0
+      //Retrieve new Field
+      $this->retrieveFields();
+    }
+    else{
+      //Ask again
+      
+    }
   }
 
-  public function validate(){
+  public function validate($replyText){
+    $type = $this->field('type');
+    $flag = false;
 
+
+    //Get Field Validation Settings
+    //If valid, update and ask new field
+    //Else, re ask
+    $this->bot->reply($type, true);
+    return $flag;
+  }
+
+  public function field($column){
+      $request = new Request();
+      $controller = 'App\Http\Controllers\QueueFormFieldController';
+
+      $condition[] = [
+          "column"  => 'queue_form_id',
+          "clause"  => "=",
+          "value"   => $this->tracker->getFormId()
+      ];
+      $condition[] = [
+          "column"  => 'sequence',
+          "clause"  => "=",
+          "value"   => $this->tracker->getFormSequence()
+      ];
+      $request['condition'] = $condition;
+      $field = Controller::retrieve($request, $controller);
+
+      return ($field)?$field[0][$column]:null;
   }
 
   public function retrieve(){
 
     /*
       Check if Empty
-      Checek if Finish
+      Check if Finish
       Get Field Name
     */
+
     $controller = 'App\Http\Controllers\QueueFormFieldController';
     $formSequence = $this->tracker->getFormSequence();
     $field = null;
@@ -120,14 +171,24 @@ class Form{
       $field = $this->request($controller,'queue_form_id', $this->tracker->getFormId(), 1, 'sequence');
     }  
 
-      if($field){
-        $this->insert($field[0]['id'],$field[0]['sequence']);
-        $this->bot->reply($this->response->ask($field[0]['description']), false);
-      }
-      else{
-        $this->bot->reply("Not Available!", true);
-        $this->bot->reply($this->post->categories(), false);
-      }
+    if($field){
+      $this->insert($field[0]['id'],$field[0]['sequence']);
+      $this->bot->reply($this->response->ask($field[0]['description']), false);
+    }
+    else{
+      /*
+        Check if sequence is not empty
+      */
+        if($sequence){
+          /*
+            Set to Null Finish loop
+          */
+        }
+        else{ 
+          $this->bot->reply("Not Available!", true);
+          $this->bot->reply($this->post->categories(), false); 
+        }
+    }
   }
 
   public function insert($fieldId, $sequence){
@@ -137,17 +198,24 @@ class Form{
       ];
       DB::insert($this->db_field, $data);
       $sData = [
-        "form_sequence"  => $sequence
+        "form_sequence"  => $sequence,
+        "reply"          => $this->code->replyStageForm
       ];
       $this->tracker->update($sData);
   }
 
-  public function update(){
-
+  public function update($reply, $fieldId){
+      $condition = [ 
+        ['track_id', "=", $this->tracker->id],
+        ['field_id', '=', $fieldId]
+      ];
+      $data = ['field_value' => $reply];
+      DB::update($this->db_field, $condition, $data);
   }
 
   public function delete(){
-
+    //Clear all fields and set to null
+    //Transfer Fields
   }
 
    public function request($controller,$column, $vaue, $limit = null, $sort = null){

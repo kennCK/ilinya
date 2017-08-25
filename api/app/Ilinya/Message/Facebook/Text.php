@@ -3,7 +3,7 @@
 namespace App\Ilinya\Message\Facebook;
 
 use App\Ilinya\Bot;
-use App\Ilinya\StatusChecker;
+use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
@@ -22,23 +22,23 @@ class Text{
       $this->post   = new PostbackResponse($messaging);
       $this->category = new CategoryResponse($messaging);
       $this->form   = new Form($messaging);
-      $this->tracker= new StatusChecker($messaging);
+      $this->tracker= new Tracker($messaging);
       $this->code   = new Codes(); 
   }
 
-  public static function manage($custom){
-    $shortCodes = $this->checkShortCodes($custom['text']);
+  public function manage($reply){
+    $shortCodes = $this->checkShortCodes($reply);
     if($shortCodes == true){
       //Short Codes
     }
     else{
-        switch ($this->replyStage) {
+        switch ($this->tracker->getReplyStage()) {
           case $this->code->replyStageSearch:
-            $this->bot->reply($custom['text'], true);
+            $this->bot->reply(1, true);
             //$this->search();
             break;
           case $this->code->replyStageForm:
-            $this->form();
+            $this->form->reply($reply);
             break;
           case $this->code->replyStageEdit:
             $this->edit();

@@ -32,6 +32,7 @@ class MessageHandler{
   protected $postback;
   protected $messaging;
   protected $quickReply;
+  protected $text;
 
 
   protected $response;
@@ -43,6 +44,7 @@ class MessageHandler{
     $this->code       = new Codes();
     $this->postback   = new Postback($messaging);
     $this->quickReply = new QuickReply($messaging);
+    $this->text       = new Text($messaging);
   }
 
   public function manage(){
@@ -140,7 +142,7 @@ class MessageHandler{
             }
         }
         else if($this->custom['text']){
-            //Text
+            $this->text->manage($this->custom['text']);
         } 
   }
 }
