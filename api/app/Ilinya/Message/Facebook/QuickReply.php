@@ -42,10 +42,10 @@ class QuickReply{
           return null;
           break;
         case $this->code->qrFormContinue:
-          $this->form->retrieveFields();
-          return [
+          $this->form->retrieve($parameter);
+          return $data = [
             "form_id" => $parameter,
-            "stage"     => $this->code->stageForm
+            "stage"   => $this->code->stageForm
           ];
           break;
         default:

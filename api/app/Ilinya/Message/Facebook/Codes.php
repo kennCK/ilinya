@@ -65,6 +65,7 @@ class Codes{
   
   public $stageStart = 1000;
   public $stageForm  = 2000;
+  public $stageReview = 3000;
 
   protected $postbackPayloads = array();
   protected $quickReplyPayloads = array();

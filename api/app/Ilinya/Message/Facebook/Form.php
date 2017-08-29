@@ -58,7 +58,7 @@ class Form{
     }
   }
 
-  public function retrieveFields(){
+  public function retrieveFields($formId){
     /*
       Guide
       1. Retrieve Fields
@@ -98,7 +98,8 @@ class Form{
       //Update Field
       //Reset Reply to 0
       //Retrieve new Field
-      $this->retrieveFields();
+      $this->update($replyText, $fieldId);
+      $this->retrieve(null);
     }
     else{
       //Ask again
@@ -108,13 +109,12 @@ class Form{
 
   public function validate($replyText){
     $type = $this->field('type');
-    $flag = false;
+    $flag = true;
 
 
     //Get Field Validation Settings
     //If valid, update and ask new field
     //Else, re ask
-    $this->bot->reply($type, true);
     return $flag;
   }
 
@@ -122,7 +122,7 @@ class Form{
       $request = new Request();
       $controller = 'App\Http\Controllers\QueueFormFieldController';
 
-      $condition[] = [
+      $condition[] = [  
           "column"  => 'queue_form_id',
           "clause"  => "=",
           "value"   => $this->tracker->getFormId()
@@ -138,7 +138,7 @@ class Form{
       return ($field)?$field[0][$column]:null;
   }
 
-  public function retrieve(){
+  public function retrieve($formId = null){
 
     /*
       Check if Empty
@@ -168,7 +168,7 @@ class Form{
       $field = Controller::retrieve($request, $controller);
     }
     else{
-      $field = $this->request($controller,'queue_form_id', $this->tracker->getFormId(), 1, 'sequence');
+      $field = $this->request($controller,'queue_form_id', $formId, 1, 'sequence');
     }  
 
     if($field){
@@ -179,10 +179,13 @@ class Form{
       /*
         Check if sequence is not empty
       */
-        if($sequence){
+        if($formSequence){
           /*
-            Set to Null Finish loop
+            1. Update Stage to review
+            2. Set Reply to 0
+            3. Review Details
           */
+              $this->bot->reply("Finished!", true);
         }
         else{ 
           $this->bot->reply("Not Available!", true);
@@ -206,7 +209,7 @@ class Form{
 
   public function update($reply, $fieldId){
       $condition = [ 
-        ['track_id', "=", $this->tracker->id],
+        ['track_id', "=", $this->tracker->getId()],
         ['field_id', '=', $fieldId]
       ];
       $data = ['field_value' => $reply];
@@ -217,6 +220,7 @@ class Form{
     //Clear all fields and set to null
     //Transfer Fields
   }
+
 
    public function request($controller,$column, $vaue, $limit = null, $sort = null){
     $request = new Request();
