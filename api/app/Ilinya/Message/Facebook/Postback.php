@@ -8,6 +8,7 @@ use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
+use App\Ilinya\Response\Facebook\SendResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Postback{
@@ -16,6 +17,7 @@ class Postback{
     protected $search;
     protected $code;
     protected $tracker;
+    protected $send;
     function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
@@ -23,6 +25,7 @@ class Postback{
         $this->forms   = new Form($messaging);
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
+        $this->send   = new SendResponse($messaging);
     }
 
     public function manage($custom){
@@ -57,7 +60,7 @@ class Postback{
             //Do Something
             break;
           case $this->code->pSend:
-            //Do Something
+            $this->bot->reply($this->send->submit(), false);
             break;
           case $this->code->pEdit:
             //Do Something

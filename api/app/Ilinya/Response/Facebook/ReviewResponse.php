@@ -4,37 +4,21 @@ namespace App\Ilinya\Response\Facebook;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
-
-/*
-    @Providers
-*/
 use App\Ilinya\Http\Curl;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
 use App\Ilinya\Tracker;
 use App\Ilinya\API\Database as DB;
-
-/*
-    @Template
-*/
 use App\Ilinya\Templates\Facebook\QuickReplyTemplate;
 use App\Ilinya\Templates\Facebook\ButtonTemplate;
 use App\Ilinya\Templates\Facebook\GenericTemplate;
 use App\Ilinya\Templates\Facebook\LocationTemplate;
 use App\Ilinya\Templates\Facebook\ListTemplate;
-
-/*
-    @Elements
-*/
-
 use App\Ilinya\Templates\Facebook\ButtonElement;
 use App\Ilinya\Templates\Facebook\GenericElement;
 use App\Ilinya\Templates\Facebook\QuickReplyElement;
-
-/*
-    @API
-*/
 use App\Ilinya\API\Controller;
+use App\Ilinya\API\CustomFieldModel;
 
 class ReviewResponse{
     private $user;
@@ -65,11 +49,7 @@ class ReviewResponse{
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
         $elements = [];
-        $condition = [
-          ['track_id', '=', $trackerId]
-        ];
-        $order = ['id', 'asc'];
-        $fields = DB::retrieve($this->db_field, $condition, $order);
+        $fields = CustomFieldModel::getFieldsByTrackId($trackerId);
         $response = null;
         if($fields){
           if(sizeof($fields) < 10){
