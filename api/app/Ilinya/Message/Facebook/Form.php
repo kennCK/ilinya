@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Response\Facebook\FormsResponse;
 use App\Ilinya\Response\Facebook\PostbackResponse;
+use App\Ilinya\Response\Facebook\ReviewResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 /*
     @API
@@ -24,6 +25,7 @@ class Form{
   protected $response;
   protected $tracker;
   protected $code;
+  protected $review;
   protected $post;
   protected $db_field = "temp_custom_fields_storage";
   protected $pageID = "133610677239344";
@@ -35,6 +37,7 @@ class Form{
     $this->tracker    = new Tracker($messaging);
     $this->code       = new Codes();
     $this->post       = new PostbackResponse($messaging);
+    $this->review     = new ReviewResponse($messaging);
   }
   
  public function retrieveForms($companyId){
@@ -185,7 +188,8 @@ class Form{
             2. Set Reply to 0
             3. Review Details
           */
-              $this->bot->reply("Finished!", true);
+            $this->bot->reply($this->review->inform(), true);
+            $this->bot->reply($this->review->display(), false);
         }
         else{ 
           $this->bot->reply("Not Available!", true);
