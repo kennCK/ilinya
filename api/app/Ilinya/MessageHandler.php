@@ -9,6 +9,7 @@ use App\Ilinya\Message\Facebook\Error;
 use App\Ilinya\Message\Facebook\Postback;
 use App\Ilinya\Message\Facebook\QuickReply;
 use App\Ilinya\Message\Facebook\Text;
+use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class MessageHandler{
@@ -33,7 +34,7 @@ class MessageHandler{
   protected $messaging;
   protected $quickReply;
   protected $text;
-
+  protected $form;
 
   protected $response;
   function __construct(Messaging $messaging){
@@ -44,6 +45,7 @@ class MessageHandler{
     $this->code       = new Codes();
     $this->postback   = new Postback($messaging);
     $this->quickReply = new QuickReply($messaging);
+    $this->form   = new Form($messaging);
     $this->text       = new Text($messaging);
   }
 
@@ -136,9 +138,10 @@ class MessageHandler{
         }
         else if($this->custom['quick_reply']){
             $response = $this->quickReply->manage($this->custom);
+
             if($response){
-              if(isset($response['stage']))$this->stage = $response['stage'];
-              if(isset($response['form_id']))$this->formId = $response['form_id'];
+              if($response['stage'])$this->stage = $response['stage'];
+              if($response['form_id'])$this->formId = $response['form_id'];
             }
         }
         else if($this->custom['text']){

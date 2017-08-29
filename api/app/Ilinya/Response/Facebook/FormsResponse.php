@@ -66,7 +66,7 @@ class FormsResponse{
   }
 
   public function ask($question){
-    return ['text' => 'Enter '.$question.':'];
+    return ['text' => $question];
   }
 
   public function error(){
