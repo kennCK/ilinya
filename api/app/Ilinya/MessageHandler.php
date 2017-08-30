@@ -1,115 +1,133 @@
 <?php
 namespace App\Ilinya;
 
-use App\Ilinya\Message\Codes;
-use App\Ilinya\Message\Attachments;
-use App\Ilinya\Bot;
-use App\Ilinya\StatusChecker;
 use App\Ilinya\MessageExtractor;
-use App\Ilinya\Webhook\Messaging;
-use App\Ilinya\Response\Introduction;
-use App\Ilinya\Response\Search;
-
+use App\Ilinya\Tracker;
+use App\Ilinya\Message\Facebook\Attachments;
+use App\Ilinya\Message\Facebook\Codes;
+use App\Ilinya\Message\Facebook\Error;
+use App\Ilinya\Message\Facebook\Postback;
+use App\Ilinya\Message\Facebook\QuickReply;
+use App\Ilinya\Message\Facebook\Text;
+use App\Ilinya\Message\Facebook\Form;
+use App\Ilinya\Webhook\Facebook\Messaging;
 
 class MessageHandler{
-  protected $checker;
-  protected $response;
-  protected $bot;
-  protected $custom;
-  protected $search;
-
   protected $types = array('postback', 'message', 'read', 'delivery');
+  
+  protected $currentCode;
+  protected $reply;
+  protected $searchOption;
+  protected $stage;
+  protected $prevStage;
+  protected $companyId;
+  protected $category;
+  protected $formId;
+
+
+  protected $tracker;
 
   protected $code;
+  protected $custom;
 
-  protected $currentCode;
+  protected $postback;
+  protected $messaging;
+  protected $quickReply;
+  protected $text;
+  protected $form;
 
+  protected $response;
   function __construct(Messaging $messaging){
-    $this->checker    = new StatusChecker($messaging);
-    $this->response   = new Introduction($messaging); 
-    $this->search     = new Search($messaging);
-    $this->bot        = new Bot($messaging);
-    $this->code       = new Codes();
+    $this->messaging  = $messaging;
+    $this->tracker    = new Tracker($messaging);
     $messageExtractor = new MessageExtractor($messaging); 
     $this->custom     = $messageExtractor->extractData();
+    $this->code       = new Codes();
+    $this->postback   = new Postback($messaging);
+    $this->quickReply = new QuickReply($messaging);
+    $this->form   = new Form($messaging);
+    $this->text       = new Text($messaging);
   }
 
-  public function checkMessage(){
-    //Save tracker here
-    $category = null;
-    $dbTrack = 0;
-    //echo json_encode($this->custom);
-    $status = $this->checker->getStatus($this->custom);
-    $this->currentCode = $this->code->getCodeByUnknown($this->custom);
-    switch ($status) {
-      case 0:
-        $this->read();
+  public function manage(){
+    $this->response = $this->tracker->getStatus($this->custom);
+    $this->currentCode = $this->code->getCode($this->custom);
+    $this->trackerFlag = $this->response['tracker_flag'];
+    switch ($this->response['status']) {
+      case $this->code->read:
+        //Read
         break;
-      case 1000:
-        $this->delivery();
+      case $this->code->delivery:
+        //Delivery
         break;
-      case 2000:
-        $this->postback();
-        $dbTrack = 1;
-        $category = $this->getCategoryIfExist();    
+      case $this->code->pStart:
+        $this->postback->manage($this->custom);
+        $this->trackerHandler();
         break;
-      case 2001:  
-        $this->postback();
-        $dbTrack = 2;
-        $category = $this->getCategoryIfExist();    
+      case $this->code->postback:
+        $this->getParameter();  
+        $this->trackerHandler();
+        $this->postback->manage($this->custom);
         break;
-      case 3000:
+      case $this->code->message:
         $this->message();
-        $dbTrack = 2;
+        $this->trackerHandler();
         break;
-      case 4000:
-        $this->bot->reply($this->response->priorityError(), false);
+      case $this->code->error:
+        //Error
         break;
       default:
-        //
+        //Do Nothing
         break;
     }
-    if($dbTrack == 1)
-        $this->checker->insert($this->currentCode, $category);
-    else if($dbTrack == 2 && $this->currentCode != $this->code->M_TEXT)
-        $this->checker->update($this->currentCode, $category);
   }
 
-  public function getCategoryIfExist(){
-    if($this->custom['payload'] == '@categoryselected')
-          return $this->custom['parameter'];
-    else
-          return null;
+  public function trackerHandler(){
+    $data = [
+                "status"            => $this->currentCode
+            ];
+    switch ($this->trackerFlag) {
+      case 1: // Insert
+            $this->tracker->insert($this->currentCode, $this->response['stage'], $this->category);
+        break;
+      case 2: // Update
+            if($this->category)$data['business_type_id'] =  $this->category;
+            if($this->stage)$data['stage'] = $this->stage;
+            if($this->companyId)$data['company_id'] = $this->companyId;
+            if($this->reply)$data['reply']  = $this->reply;
+            if($this->searchOption)$data['search_option'] = $this->searchOption;
+            $this->tracker->update($data);
+        break;
+      case 3:
+            if($this->reply)$data['reply']  = $this->reply;
+            if($this->formId)$data['form_id'] = $this->formId;
+            if($this->stage)$data['stage'] = $this->stage;
+            $this->tracker->update($data);
+        break;
+      case 4: // Delete
+        break;
+      default:
+        break;
+    }
   }
-
-  public function postback(){
-          $action = $this->code->getCode($this->custom['payload']);
-          switch ($action) {
-            case $this->code->P_START:
-              $this->bot->reply($this->response->start(), true);
-              $this->bot->reply($this->response->categories(), false);
-              break;
-            case $this->code->P_USERGUIDE:
-              $this->bot->reply($this->response->userGuide(), true);
-              break;
-            case $this->code->P_QUEUECARDS:
-              $this->bot->reply($this->response->myQueueCards(), true);
-              break;
-            case $this->code->P_CATEGORIES:
-              $this->bot->reply($this->response->categories(), false);
-              break;
-            case $this->code->P_CATEGORY_SELECTED:
-              $this->bot->reply($this->search->options(), false);
-              break;
-            default:
-              $this->bot->reply($this->response->ERROR, true);
-              break;
-          }   
+  public function getParameter(){
+    $code = $this->code->getCode($this->custom);
+    switch ($code) {
+      case $this->code->pCategorySelected:
+        $this->category =  $this->custom['parameter'];
+        break;
+      case $this->code->pGetQueueCard:
+        $this->companyId = $this->custom['parameter'];
+        break;
+      default:
+        # code...
+        break;
+    }
   }
 
   public function message(){
-        $response = "";
         if($this->custom['attachments']){
+            //Attachments
             $attachments = new Attachments($this->custom['attachments']);
             $response;
             if($attachments->getType() == "location"){
@@ -117,36 +135,17 @@ class MessageHandler{
             }
             else{
             }
-            $this->bot->reply($response, true);
         }
         else if($this->custom['quick_reply']){
-            $this->quickReply();
+            $response = $this->quickReply->manage($this->custom);
+
+            if($response){
+              if($response['stage'])$this->stage = $response['stage'];
+              if($response['form_id'])$this->formId = $response['form_id'];
+            }
         }
         else if($this->custom['text']){
-            $this->bot->reply($this->custom['text'], true);
+            $this->text->manage($this->custom['text']);
         } 
   }
-
-
-  public function quickReply(){
-      switch ($this->currentCode) {
-        case $this->code->QR_SEARCH:
-          $this->bot->reply($this->search->question($this->custom['quick_reply']['parameter']), true);
-          break;
-        case '@priority':
-          //Statement Here
-          break;
-        default:
-          //Statement Here
-          break;
-      }
-  }
-  public function read(){
-      //
-  }
-
-  public function delivery(){
-      //
-  }
-  
 }

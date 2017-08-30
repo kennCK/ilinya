@@ -60,6 +60,6 @@ Route::get('/migrate', function () {
 */
 Route::get("/bot/hook","IlinyaController@hook")->middleware("verify");
 Route::post("/bot/hook","IlinyaController@hook");
-Route::post("/bot/broadcast","IlinyaController@broadcast");
-Route::post("/bot/paging","IlinyaController@paging");
-Route::post("/bot/reminder","IlinyaController@reminder");
+Route::get("/bot/broadcast/{companyId}","IlinyaController@broadcast");
+Route::get("/bot/paging/{recipientId}/{message}","IlinyaController@paging");
+Route::get("/bot/reminder/{recipientId}/{message}","IlinyaController@reminder");

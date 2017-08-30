@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Ilinya\Message;
+namespace App\Ilinya\Templates\Facebook;
 
 class Attachments{
     private $type;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Ilinya\Response;
+namespace App\Ilinya\Response\Facebook;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
     @Providers
 */
 use App\Ilinya\Http\Curl;
-use App\Ilinya\Webhook\Messaging;
+use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
 
 /*
@@ -30,33 +30,17 @@ use App\Ilinya\Templates\Facebook\ButtonElement;
 use App\Ilinya\Templates\Facebook\GenericElement;
 use App\Ilinya\Templates\Facebook\QuickReplyElement;
 
-
 /*
-    @Message
+    @API
 */
+use App\Ilinya\API\Controller;
 
-use App\Ilinya\Message\Attachments;
 
-/*
-    @Controller
-*/
-use App\Http\Controllers\BusinessTypeController;
-//use App\BusinessType;
-
-/*
-    @Database
-*/
-use App\Ilinya\Database\DBManager as DB;
-
-class Introduction{
+class PostbackResponse{
     public  $ERROR            = "I'm sorry but I can't do what you want me to do :'(";
     private $user;
     private $messaging;
     private $curl;
-
-    protected $db_bTypes      = "business_types";
-
-
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
@@ -77,10 +61,7 @@ class Introduction{
     public function categories(){
         $request = new Request();
         $request['sort'] = ["category" => "asc"];
-        $result = app('App\Http\Controllers\BusinessTypeController')->retrieve($request);
-        $result = json_decode($result->getContent(), true);
-        $categories = $result['data'];
-        //$categories = DB::retrieve($this->db_bTypes,null, ['category', 'asc']);
+        $categories = Controller::retrieve($request, "App\Http\Controllers\BusinessTypeController");
         $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
@@ -92,7 +73,7 @@ class Introduction{
             foreach ($categories as $category) {
                 $buttons[] = ButtonElement::title($category['sub_category'])
                     ->type('postback')
-                    ->payload(strtolower($category['sub_category']).'@categoryselected')
+                    ->payload(strtolower($category['id']).'@pCategorySelected')
                     ->toArray();
                 if($i < sizeof($categories) - 1){
                     if($prev != $categories[$i + 1]['category']){

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Ilinya\Webhook;
-use App\Ilinya\Webhook\Postback;
-use App\Ilinya\Webhook\Message;
+namespace App\Ilinya\Webhook\Facebook;
+use App\Ilinya\Webhook\Facebook\Postback;
+use App\Ilinya\Webhook\Facebook\Message;
 
 
 class Messaging
@@ -39,8 +39,7 @@ class Messaging
         else if(isset($data['delivery'])){
             $this->type = "delivery";
             //Code Here
-        }
-        
+        }   
     }
 
     public function getSenderId(){

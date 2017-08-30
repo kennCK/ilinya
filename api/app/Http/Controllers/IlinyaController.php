@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Ilinya\Webhook\Entry;
+use App\Ilinya\Webhook\Facebook\Entry;
 use App\Jobs\BotHandler;
-use Illuminate\Support\Facades\Log;
+use App\Ilinya\Bot;
 
 
 class IlinyaController extends Controller
 {
     public function hook(Request $request){
         $entries = Entry::getEntries($request);
-        Log::info(print_r($entries, true));
         foreach ($entries as $entry) {
             $messagings = $entry->getMessagings();
             foreach ($messagings as $messaging) {
@@ -22,18 +21,18 @@ class IlinyaController extends Controller
         return response("", 200);
     }
 
-    public function broadcast(Request $request){
-        $data = $request->all();
-        return "broadcast";
+    public function broadcast($companyId){
+        //$data = $request->all();
+        $message = "test";
+        $recepientId = "1756273174387070";
+        Bot::notify($recepientId, $message);
     }
 
-    public function paging(Request $request){
-        $data = $request->all();
-        return "paging";
+    public function paging($recepientId, $message){
+        Bot::notify($recepientId, $message);
     }
 
-    public function reminder(Request $request){
-        $data = $request->all();
-        return "reminder";
+    public function reminder($recepientId, $message){
+        Bot::notify($recepientId, $message);
     }
 }

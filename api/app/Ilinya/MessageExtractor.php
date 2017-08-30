@@ -2,8 +2,8 @@
 
 namespace App\Ilinya;
 
-use App\Ilinya\Webhook\Messaging;
-use App\Ilinya\Webhook\Message;
+use App\Ilinya\Webhook\Facebook\Messaging;
+use App\Ilinya\Webhook\Facebook\Message;
 
 class MessageExtractor{
    protected $messaging;
