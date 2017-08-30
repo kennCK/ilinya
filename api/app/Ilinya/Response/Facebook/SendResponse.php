@@ -62,6 +62,8 @@ class SendResponse{
           $cRequest['value'] = $field['field_value'];
           $this->createQueueCardFields($cRequest);
         }
+        $this->tracker->delete();
+        $response = ['text' => "Here is your Queue Card Number:".$this->cardId];
       }
       else{
         $response = ['text' => "Empty Fields"];
