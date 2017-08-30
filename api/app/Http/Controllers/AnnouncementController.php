@@ -14,9 +14,6 @@ class AnnouncementController extends APIController
   public function create(Request $request){
     $this->createEntry($request->toArray());
     // $botRequest = new \Illuminate\Http\Request();
-    $botRequest->replace(array(
-      "company_id" =>
-    ));
     $this->response['debug'][] = app('App\Http\Controllers\IlinyaController')->broadcast($request['message']);
     return $this->output();
   }

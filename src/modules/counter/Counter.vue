@@ -50,17 +50,23 @@
               :default_value="queueFormField['value']"
             ></input-cell>
           </template>
+          <div v-if="selected_queue_card['status'] === 3" class="alert alert-success text-center">
+            This Q-card is done! <i class="fa fa-check-circle" aria-hidden="true"></i>
+          </div>
           <div v-if="queue_card_id && selected_queue_card['status'] !== 3" class="row">
             <div class="col-sm-12 text-center">
+
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
               <button v-if="selected_queue_card.user_id" v-bind:disabled="isCalling" @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
-              <button @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
+              <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
             </div>
           </div>
           <div v-else-if="selected_queue_card['status'] !== 3" class="row">
             <div class="col-sm-12 text-right">
+              <span v-if="formStatus === 'success'" class="text text-success">Success!</span>
+              <span v-else-if="formStatus === 'error'" class="text text-danger">Failed!</span>
               <button @click="submitQueueCard" type="button" class="btn btn-primary ">Submit</button>
               <button @click="closeQueueCardModal" type="button" class="btn btn-default">Close</button>
             </div>
@@ -108,27 +114,40 @@
           })
         }
       }
+      let filterSetting = {}
+      filterSetting = {
+        number: {},
+        status: {
+          input_type: 'select',
+          clause: '!=',
+          input_setting: {
+            options: [
+              {value: null, label: 'Any'},
+              {value: 3, label: 'Active'},
+              {value: 1, label: 'On Queue'},
+              {value: 2, label: 'Serving'},
+              {value: 3, label: 'Finished'}
+            ]
+          },
+          value_function: (form) => {
+            if(form){
+              if(form.status === 0){
+                this.filterSetting['status']['clause'] = '!='
+              }else{
+                this.filterSetting['status']['clause'] = '='
+              }
+            }
+          }
+        }
+
+      }
       return {
         queue_card_id: 0,
         rowIndex: -1,
         selected_queue_card: {
 
         },
-        filterSetting: {
-          number: {},
-          status: {
-            input_type: 'select',
-            input_setting: {
-              options: [
-                {value: null, label: 'Any'},
-                {value: 1, label: 'On Queue'},
-                {value: 2, label: 'Serving'},
-                {value: 3, label: 'Finished'}
-              ]
-            }
-          }
-
-        },
+        filterSetting: filterSetting,
         column_setting: {
           id: {},
           number: {},
@@ -230,8 +249,17 @@
       submitQueueCard(){
         let link = this.queue_card_id ? 'queue_card/update' : 'queue_card/create'
         this.APIFormRequest(link, this.$refs.queueCardForm, (response) => {
-          this.$refs.queueCardTable.retrieveData()
-          this.closeQueueCardModal()
+          let prevFormStatus = this.formStatus
+          if(response['data']){
+            this.formStatus = 'success'
+            this.$refs.queueCardTable.retrieveData()
+            this.closeQueueCardModal()
+          }else{
+            this.formStatus = 'error'
+          }
+          setTimeout(() => {
+            this.formStatus = prevFormStatus
+          }, 2000)
         })
       },
       closeQueueCardModal(){

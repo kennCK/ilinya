@@ -13,7 +13,9 @@ class QueueCardController extends APIController
     );
     $this->notRequired = array(
       'user_id',
-      'status'
+      'status',
+      'datetime_finished',
+      'datetime_served'
     );
     $this->foreignTable = array(
       'facebook_user'
@@ -41,6 +43,22 @@ class QueueCardController extends APIController
       }
     }
     $this->updateEntry($reqArray);
+    return $this->output();
+  }
+  public function getAverageQueueTime(){
+    $currentDate = date('Y-m-d H:i:s', time());
+    $startDate = date("Y-m-d 00:00:00", strtotime("-1 week"));
+    $result = $this->model
+      ->where('datetime_finished', '>', $startDate)
+      ->where('datetime_served', '<=', $currentDate)
+      ->get()->toArray();
+    $totalTimeDifference = 0;
+    foreach($result as $queueCard){
+      $date1 = strtotime($queueCard['datetime_finished']);
+      $date2 = strtotime($queueCard['datetime_served']);
+      $totalTimeDifference = $date1 - $date2;
+    }
+    $this->response['data'] = number_format($totalTimeDifference / count($queueCard), 2);
     return $this->output();
   }
 }

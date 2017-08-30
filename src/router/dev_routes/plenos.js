@@ -55,5 +55,13 @@ export default{
     meta: {
       tokenRequired: false
     }
+  },
+  {
+    path: '/mockup',
+    name: 'mockup',
+    component: resolve => require(['modules/test/Mockup.vue'], resolve),
+    meta: {
+      tokenRequired: false
+    }
   }]
 }

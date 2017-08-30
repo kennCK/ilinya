@@ -6,23 +6,20 @@
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i> Announcement
       </div>
       <div slot="body">
-        <div class="card card-outline-primary mb-5">
-          <div class="card-header card-primary text-white">
-            Make Announcement
+        <div class="">
+          <label class="form-label-control">Make Announcement</label>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <textarea v-model="announcementMessage" class="form-control" placeholder="Type your announcement here..."></textarea>
+            </div>
           </div>
-          <div class="card-block">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <textarea v-model="announcementMessage" class="form-control" placeholder="Type your announcement here..."></textarea>
-              </div>
-            </div>
-            <div class="col-sm-12 text-right">
-              <label v-if="announcementStatus === 'success'" class="text-success">Announcement Sent!</label>
-              <label v-if="announcementStatus === 'error'" class="text-danger">Announcement Failed! Please refresh the page and try again.</label>
-              <button v-bind:disabled="announcementStatus" @click="announce" class="btn btn-primary"><i class="fa fa-bullhorn" aria-hidden="true"></i> Announce</button>
-            </div>
+          <div class="col-sm-12 text-right">
+            <label v-if="announcementStatus === 'success'" class="text-success">Announcement Sent!</label>
+            <label v-if="announcementStatus === 'error'" class="text-danger">Announcement Failed! Please refresh the page and try again.</label>
+            <button v-bind:disabled="announcementStatus" @click="announce" class="btn btn-primary"><i class="fa fa-bullhorn" aria-hidden="true"></i> Announce</button>
           </div>
         </div>
+        <hr>
         <div class="row">
           <div  class="col-sm-12  text-center mb-3">
             <strong>Announcements</strong>

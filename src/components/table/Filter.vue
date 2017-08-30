@@ -1,15 +1,17 @@
 <template>
   <div>
     <form v-if="filterInitialized" ref="form" enctype="multipart/form-data" role="form" method="POST">
-
-        <input-group
-          :inputs="filterList"
-        >
-        </input-group>
-        <div class="col-sm-2">
-          <button @click="filterForm" type="button" class="btn btn-default" >Filter</button>
+      <div class="row">
+        <div class="col-sm-10 float-right">
+          <input-group
+            :inputs="filterList"
+          >
+          </input-group>
         </div>
-
+        <div class="col-sm-2">
+          <button @click="filterForm" type="button" class="btn btn-outline-success" ><i class="fa fa-filter" aria-hidden="true"></i> Filter</button>
+        </div>
+      </div>
     </form>
   </div>
 </template>
@@ -48,7 +50,6 @@
         this.filterInitialized = true
       },
       filterForm(){
-        console.log('hey')
         this.$emit('filter', this.$refs.form)
       }
     }

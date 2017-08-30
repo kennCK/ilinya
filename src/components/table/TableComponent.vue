@@ -1,7 +1,7 @@
 <template>
   <div>
     <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter')" :filter_setting="filter_setting" ref="tableFilter"></table-filter>
-    <table class="table">
+    <table class="table table-bordered table-condensed" >
       <thead>
         <tr>
           <th v-for="(column, index) in columnSetting[0]"
@@ -128,7 +128,7 @@
         this.columnSetting[rowIndex][columnIndex]['sort'] = (this.columnSetting[rowIndex][columnIndex]['sort'] < 2)
           ? this.columnSetting[rowIndex][columnIndex]['sort'] + 1 : 0
         this.currentSort = this.columnSetting[rowIndex][columnIndex]
-        this.retrieveData()
+        this.retrieveData(this.prevRetrieveType)
       },
       retrieveData(retrieveType, resetPage){
         let requestOption = {} // this.retrieve_parameter

@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <template v-for="input in inputList">
-        <div v-if="input['input_type'] === 'group'" v-bind:class="'col-sm-' + input['col']">
+        <div v-if="input['input_type'] === 'group'" v-bind:class="'col-sm-' + input['col']" >
           <input-group-recursive
             :inputs="input['inputs']"
             :form_data="form_data"
