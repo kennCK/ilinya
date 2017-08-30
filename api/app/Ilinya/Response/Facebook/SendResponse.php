@@ -26,6 +26,8 @@ class SendResponse{
     private $curl;
     protected $tracker;
     protected $db_field = "temp_custom_fields_storage";
+    protected $userId;
+    protected $cardId;
 
 
     public function __construct(Messaging $messaging){
@@ -50,13 +52,105 @@ class SendResponse{
       $response = null;
       $trackerId = $this->tracker->getId();
       $fields = CustomFieldModel::getFieldsByTrackId($trackerId);
-
       if($fields){
-        $response =  ['text' => "Success"];
+        $this->manageUser();
+        $this->createQueueCard();
+        foreach ($fields as $field) {
+          $cRequest = new Request();
+          $cRequest['queue_card_id'] = $this->cardId;
+          $cRequest['queue_form_field_id'] = $field['field_id'];
+          $cRequest['value'] = $field['field_value'];
+          $this->createQueueCardFields($cRequest);
+        }
       }
       else{
         $response = ['text' => "Empty Fields"];
       }
       return $response;
     }
+
+
+    public function manageUser(){
+      $fbController = 'App\Http\Controllers\FacebookUserController';
+      $request = new Request();
+      $this->user();
+      $senderId = $this->messaging->getSenderId();
+      $completeName = $this->user->getFirstName().' '.$this->user->getLastName();
+
+       $condition[] = [
+          "column"  => "account_number",
+          "clause"  => "=",
+          "value"   => $senderId
+       ];
+
+       $request['condition'] = $condition;
+       $user = Controller::retrieve($request, $fbController);
+       if($user){
+          $this->userId = $user[0]['id'];
+       }
+       else{
+          $newRequest = new Request();
+
+          $newRequest['account_number'] = $senderId;
+          $newRequest['full_name']   = $completeName;
+          $result = Controller::create($newRequest, $fbController);
+          if($result != false)
+            $this->user = $result;
+          else
+            $this->user = null;
+       }
+    }
+    public function createQueueCard(){
+      /*
+        1. Get Fields
+        2. Tracker
+        3. Get New Card Number
+           - Get Previous  + 1
+      */
+        $controller = 'App\Http\Controllers\QueueCardController';
+        //@tracker
+        $companyId = $this->tracker->getCompanyId();
+        $queueFormId = $this->tracker->getFormId();
+        $reCon = new Request();
+        $condition[] = [
+          "column"  => "company_id",
+          "clause"  => "=",
+          "value"   => $companyId
+        ];
+        $condition[] = [
+          "column"  => "queue_form_id",
+          "clause"  => "=",
+          "value"   => $queueFormId
+        ];
+
+        $reCon['condition'] = $condition;
+
+        $result = Controller::retrieve($reCon, $controller);
+
+        if(!$result){
+          $request = new Request();
+          $request['company_id'] = $companyId;
+          $request['queue_form_id'] = $queueFormId;
+          $request['facebook_user_id'] = $this->userId;
+          $request['number']  = 0;
+          $result = Controller::create($request, $controller);
+          $this->cardId = ($result != false)? $result:null;  
+        }
+        else{
+          $this->cardId = $result[0]['id'];
+        }
+    }
+
+    public function createQueueCardFields(Request $request){
+       $controller = 'App\Http\Controllers\QueueCardFieldController';
+      /*
+        1. Get Queue Card ID - Given
+        2. Get Queue Form Field ID - Given
+      */
+        $result = Controller::insert($request, $controller);
+
+        return ($result != null)? true:false;
+    }
+
+
 }

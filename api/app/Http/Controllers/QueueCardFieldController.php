@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\QueueCard as DBItem;
+use App\QueueCardField as DBItem;
 use Illuminate\Http\Request;
 
 class QueueCardFieldController extends APIController
