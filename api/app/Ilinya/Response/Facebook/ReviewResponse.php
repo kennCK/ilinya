@@ -57,7 +57,7 @@ class ReviewResponse{
               $question = $this->getQuestion($field['field_id']);
               $buttons[] = ButtonElement::title("Edit")
                   ->type('postback')
-                  ->payload('@pEdit')
+                  ->payload($field['id'].'@pEdit')
                   ->toArray();
               $elements[] = GenericElement::title($question)
                                   ->subtitle($field['field_value'])

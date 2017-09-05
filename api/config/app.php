@@ -177,8 +177,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-        Mpociot\BotMan\BotManServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class
     ],
 
     /*
@@ -229,7 +228,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'JWTAuth'   => Tymon\JWTAuthFacades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuthFacades\JWTFactory::class,
-        'BotMan' => Mpociot\BotMan\Facades\BotMan::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        //'Image' => Intervention\Image\ImageManagerStatic::class,
     ],
 
 ];

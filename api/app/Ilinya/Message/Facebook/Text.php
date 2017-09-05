@@ -8,6 +8,7 @@ use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
+use App\Ilinya\Response\Facebook\EditResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Text{
@@ -16,6 +17,7 @@ class Text{
     protected $search;
     protected $code;
     protected $tracker;
+    protected $edit;
 
   function __construct(Messaging $messaging){
       $this->bot    = new Bot($messaging);
@@ -24,6 +26,7 @@ class Text{
       $this->form   = new Form($messaging);
       $this->tracker= new Tracker($messaging);
       $this->code   = new Codes(); 
+      $this->edit   = new EditResponse($messaging);
   }
 
   public function manage($reply){
@@ -41,7 +44,8 @@ class Text{
             $this->form->reply($reply);
             break;
           case $this->code->replyStageEdit:
-            $this->edit();
+            $this->bot->reply($this->edit->inform(), false);
+            $this->bot->reply($this->edit->update($reply), false);
             break;
           case $this->code->replyStageShortCodes:
             $this->shortCodes();
@@ -64,10 +68,6 @@ class Text{
   }
 
   public function form(){
-
-  }
-
-  public function edit(){
 
   }
 

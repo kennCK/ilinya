@@ -18,6 +18,7 @@ use App\Ilinya\Templates\Facebook\GenericElement;
 use App\Ilinya\Templates\Facebook\QuickReplyElement;
 use App\Ilinya\API\Controller;
 use App\Ilinya\API\CustomFieldModel;
+use App\Ilinya\ImageGenerator;
 
 
 class SendResponse{
@@ -64,6 +65,7 @@ class SendResponse{
         }
         $this->tracker->delete();
         $response = ['text' => "Here is your Queue Card Number:".$this->cardId];
+        //ImageGenerator::create($this->cardId);
       }
       else{
         $response = ['text' => "Empty Fields"];
