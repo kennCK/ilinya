@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Ilinya\Webhook\Facebook\Entry;
 use App\Jobs\BotHandler;
 use App\Ilinya\Bot;
-
+use App\Ilinya\ImageGenerator;
 
 class IlinyaController extends Controller
 {
@@ -34,5 +34,9 @@ class IlinyaController extends Controller
 
     public function reminder($recepientId, $message){
         Bot::notify($recepientId, $message);
+    }
+
+    public function createImage(){
+        ImageGenerator::create();
     }
 }
