@@ -13,4 +13,12 @@ class CustomFieldModel{
         $order = ['id', 'asc'];
         return DB::retrieve($db_field, $condition, $order);
     }
+
+    public static function getFieldById($id){
+       $db_field = "temp_custom_fields_storage";
+       $condition = [
+          ['id', '=', $id]
+        ];
+        return DB::retrieve($db_field, $condition, null);
+    }
 }

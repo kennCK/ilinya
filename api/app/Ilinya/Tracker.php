@@ -39,6 +39,8 @@ class Tracker{
 
   protected $companyData;
 
+  protected $editFieldId;
+
 
   function __construct(Messaging $messaging){
     $this->messaging = $messaging;
@@ -47,6 +49,10 @@ class Tracker{
     if($this->companyId){
       $this->retrieveCompanyData();
     }
+  }
+
+  public function getEditFieldId(){
+    return $this->editFieldId;
   }
 
   public function getId(){
@@ -184,6 +190,7 @@ class Tracker{
               $this->formSequence = $key['form_sequence'];
               $this->searchOption = $key['search_option'];
               $this->reply        = $key['reply'];  
+              $this->editFieldId  = $key['edit_field_id'];
           }
       }
     }

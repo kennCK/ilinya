@@ -65,7 +65,7 @@ class SendResponse{
         }
         $this->tracker->delete();
         $response = ['text' => "Here is your Queue Card Number:".$this->cardId];
-        ImageGenerator::create($this->cardId);
+        //ImageGenerator::create($this->cardId);
       }
       else{
         $response = ['text' => "Empty Fields"];

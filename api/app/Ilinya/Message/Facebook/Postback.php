@@ -9,6 +9,8 @@ use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\SendResponse;
+use App\Ilinya\Response\Facebook\EditResponse;
+use App\Ilinya\Response\Facebook\QueueCardsResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Postback{
@@ -18,6 +20,8 @@ class Postback{
     protected $code;
     protected $tracker;
     protected $send;
+    protected $edit;
+    protected $qc;
     function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
@@ -26,6 +30,8 @@ class Postback{
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
         $this->send   = new SendResponse($messaging);
+        $this->edit   = new EditResponse($messaging);
+        $this->qc     = new QueueCardsResponse($messaging);
     }
 
     public function manage($custom){
@@ -39,7 +45,7 @@ class Postback{
             $this->bot->reply($this->post->userGuide(), true);
             break;
           case $this->code->pMyQueueCards:
-            $this->bot->reply($this->post->myQueueCards(), true);
+            $this->bot->reply($this->qc->display(), false);
             break;
           case $this->code->pCategories:
             $this->bot->reply($this->post->categories(), false);
@@ -63,7 +69,7 @@ class Postback{
             $this->bot->reply($this->send->submit(), false);
             break;
           case $this->code->pEdit:
-            //Do Something
+            $this->bot->reply($this->edit->manage($custom), false);
             break;
           case $this->code->pDisregard:
             //Do Something
