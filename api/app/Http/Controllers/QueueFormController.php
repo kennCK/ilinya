@@ -12,7 +12,8 @@ class QueueFormController extends APIController
         'queue_form_fields'
       );
       $this->defaultValue = array(
-        'company_id' => $this->getUserCompanyID()
+        'company_id' => $this->getUserCompanyID(),
+        'availability' => 1
       );
     }
 }

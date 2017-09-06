@@ -119,7 +119,7 @@ class APIController extends Controller
       }
       return $request;
     }
-    public function isValid($request, $action = "create"){
+    public function isValid($request, $action = "create", $subTableName = false){
       /*Require all fields*/
       unset($this->tableColumns[0]);
       array_pop($this->tableColumns);//deleted at
@@ -153,14 +153,13 @@ class APIController extends Controller
         foreach($this->validation as $validationKey => $validationValue){
           if($action == "update"){
             if( strpos( $validationValue, "unique" ) !== false ) { //check if rule has unique
-                $rules = explode("|", $this->validation[$validationKey]);
-                foreach($rules as $ruleKey => $ruleValue){ //find the unique rule
-                  if(strpos( $ruleValue, "unique" ) !== false){
-                    $rules[$ruleKey] = Rule::unique(str_replace("unique:", "", $ruleValue), $validationKey)->ignore($request["id"], "id");
-                  }
+              $rules = explode("|", $this->validation[$validationKey]);
+              foreach($rules as $ruleKey => $ruleValue){ //find the unique rule
+                if(strpos( $ruleValue, "unique" ) !== false){
+                  $rules[$ruleKey] = Rule::unique(str_replace("unique:", "", $ruleValue), $validationKey)->ignore($request["id"], "id");
                 }
-                $this->validation[$validationKey] = $rules;
-
+              }
+              $this->validation[$validationKey] = $rules;
             }
           }
           if(strpos( $validationKey, "_id" ) !== false){
@@ -174,8 +173,10 @@ class APIController extends Controller
         }
         $validator = Validator::make($request, $this->validation);
         if ($validator->fails()) {
-            $this->response["error"]["status"] = 100;
-            $this->response["error"]["message"] = $validator->errors()->toArray();
+            if($subTableName){
+              $this->response["error"]["status"] = 100;
+              $this->response["error"]["message"] = $validator->errors()->toArray();
+            }
             return false;
         }else{
           return true;
