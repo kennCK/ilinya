@@ -13,10 +13,9 @@ class ModulesTableSeeder extends Seeder
     public function run()
     {
        DB:: table('modules') -> insert(array(
-        //Dashboard
-        array('id' => 1, 'parent_id' => 0,  'description'=>'Form Management', 'icon' => 'fa fa-address-card-o', 'path' => 'form_management', 'rank' => 1),
-        //Workforce Management
-        array('id' => 10, 'parent_id' => 0,  'description'=>'Queueing Management', 'icon' => 'fa fa-clock-o',  'path' => 'queueing_management', 'rank' => 2),      
+        array('id' => 1, 'parent_id' => 0,  'description'=>'Dashboard', 'icon' => 'fa fa-tachometer', 'path' => 'dashboard', 'rank' => 1),
+        array('id' => 2, 'parent_id' => 0,  'description'=>'Form Management', 'icon' => 'fa fa-address-card-o', 'path' => 'queue_form_management', 'rank' => 2),
+        array('id' => 3, 'parent_id' => 0,  'description'=>'Counter', 'icon' => 'fa fa-bell',  'path' => 'counter', 'rank' => 3)
 
       ));
     }
