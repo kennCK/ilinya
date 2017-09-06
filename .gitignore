@@ -1,5 +1,4 @@
 .DS_Store
-node_modules/
 dist/
 npm-debug.log
 test/unit/coverage
@@ -10,6 +9,6 @@ api/composer.lock
 src/modules/test/Casera.vue
 src/modules/test/Plenos.vue
 api/app/Department.php
-
+node_modules/
 src/config.js
 api/.env
