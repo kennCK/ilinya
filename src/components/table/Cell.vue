@@ -16,7 +16,7 @@
       <i v-else class="fa fa-check text-success" aria-hidden="true"></i>
     </div>
     <div v-else-if="type === 'button'" >
-      <button @click="setting['on_click']($event, row_data)" v-html="setting['label']" v-bind:class="setting['class']" @click.stop type="button" class="btn"></button>
+      <button v-if="if_condition(row_data)" @click="setting['on_click']($event, row_data)" v-html="setting['label']" v-bind:class="setting['class']" @click.stop type="button" class="btn"></button>
     </div>
     <div v-else>
       {{value}}
@@ -27,7 +27,6 @@
   export default{
     name: '',
     create(){
-
     },
     mounted(){
     },
@@ -35,7 +34,7 @@
       return {
       }
     },
-    props: ['type', 'value', 'setting', 'row_data'],
+    props: ['type', 'value', 'setting', 'row_data', 'if_condition'],
     methods: {
     }
   }

@@ -10,6 +10,6 @@ class QueueCard extends APIModel
     return $this->hasMany('App\QueueCardField')->with('queue_form_field');
   }
   public function  facebook_user(){
-    return $this->hasMany('App\FacebookUser');
+    return $this->belongsTo('App\FacebookUser', 'facebook_user_id');
   }
 }

@@ -41,6 +41,7 @@
               :value="columnSetting['value_function'](tableEntry, columnSetting['db_name'])"
               :setting="columnSetting['setting']"
               :row_data="tableEntry"
+              :if_condition="columnSetting['if_condition']"
               >
             </table-cell>
           </td>
@@ -217,6 +218,9 @@
         if(column['type'] === 'button'){
           column['sort'] = false
         }
+        typeof column['if_condition'] === 'undefined' ? Vue.set(column, 'if_condition', (row) => {
+          return true
+        }) : null
         typeof column['value_function'] === 'undefined' ? Vue.set(column, 'value_function', (row, dbName) => {
           let dbNameSegment = dbName.split('.')
           let value

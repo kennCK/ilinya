@@ -57,9 +57,9 @@ let routes = [
     }
   }
 ]
-if(CONFIG.default.IS_DEV){
-  routes = routes.concat(devRoutes)
-}
+// if(CONFIG.default.IS_DEV){
+routes = routes.concat(devRoutes)
+// }
 export default{
   routes: routes
 }

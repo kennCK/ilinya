@@ -15,6 +15,7 @@
           :api="'queue_card'"
           :filter_setting="filterSetting"
           :column_setting="column_setting"
+          :retrieve_parameter="retrieveParameter"
           v-on:row_clicked="rowClicked"
         >
         </table-component>
@@ -57,7 +58,7 @@
             <div class="col-sm-12 text-center">
 
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
-              <button v-if="selected_queue_card.user_id" v-bind:disabled="isCalling" @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call</button>
+              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
@@ -154,8 +155,9 @@
           status: {
             type: 'html',
             value_function: (row) => {
+              console.log
               let status = [
-                '<span class="badge badge-primary">ON QUEUE</span>',
+                '<span class="badge badge-primary">ON QUEUE ' + row['facebook_user_id'] + '</span>',
                 '<span class="badge badge-warning">SERVING</span>',
                 '<span class="badge badge-success">FINISHED</span>']
               return status[row['status'] - 1]
@@ -163,10 +165,13 @@
           },
           call: {
             type: 'button',
+            if_condition: (row) => {
+              return row['facebook_user_id']
+            },
             setting: {
               on_click: (event, row) => {
                 $(event.target).attr('disabled', true)
-                $.post(CONFIG.BACKEND_URL + '/bot/paging/' + row['user_id'], {}, (response) => {
+                $.post(CONFIG.BACKEND_URL + '/bot/paging/' + row['facebook_user']['account_number'], {}, (response) => {
                   $(event.target).attr('disabled', false)
                 })
               },
@@ -191,7 +196,7 @@
     methods: {
       pageUser(){
         this.isCalling = true
-        $.post(CONFIG.BACKEND_URL + '/bot/paging/' + this.selected_queue_card.user_id, {}, (response) => {
+        $.post(CONFIG.BACKEND_URL + '/bot/paging/' + this.selected_queue_card.facebook_user_id, {}, (response) => {
           this.isCalling = false
         })
       },

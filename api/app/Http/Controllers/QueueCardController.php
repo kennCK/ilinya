@@ -17,7 +17,7 @@ class QueueCardController extends APIController
       'datetime_finished',
       'datetime_served'
     );
-    $this->foreignTable = array(
+    $this->requiredForeignTable = array(
       'facebook_user'
     );
     $this->editableForeignTable = array(
