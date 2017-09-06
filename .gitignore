@@ -1,5 +1,4 @@
 .DS_Store
-dist/
 npm-debug.log
 test/unit/coverage
 test/e2e/reports
@@ -12,3 +11,4 @@ api/app/Department.php
 node_modules/
 src/config.js
 api/.env
+dist/
