@@ -93,7 +93,11 @@ class QueueCardsResponse{
           1. Display Cards
           2. Use Generic Templates
         */
-        return ['text' => 'Your Card:'.$qc[0]['id'].','.$qc[1]['id']];
+          $queueCards = '';
+          foreach ($qc as $card) {
+            $queueCards = $queueCards.','.$card['id'];
+          }
+        return ['text' => 'Your Card:'.$queueCards];
       }
       else{
         return ['text' => 'No Cards Found!'];
