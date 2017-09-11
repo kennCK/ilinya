@@ -17,23 +17,29 @@ Route::get('/', function () {
 /*
   Accessing uploaded files
 */
-
-Route::get('image/department_logo/{filename}', function ($filename)
+Route::get('file/icon/{filename}', function ($filename)
 {
-  $path = storage_path('app/images/department/' . $filename);
-
+  $path = storage_path('/icons/' . $filename);
   if (!File::exists($path)) {
       abort(404);
   }
-
   $file = File::get($path);
   $type = File::mimeType($path);
-
   $response = Response::make($file, 200);
   $response->header("Content-Type", $type);
-
   return $response;
-
+});
+Route::get('file/q_card/{filename}', function ($filename)
+{
+  $path = storage_path('/qcards/' . $filename);
+  if (!File::exists($path)) {
+      abort(404);
+  }
+  $file = File::get($path);
+  $type = File::mimeType($path);
+  $response = Response::make($file, 200);
+  $response->header("Content-Type", $type);
+  return $response;
 });
 Route::get('/cache', function () {
     $exitCode = Artisan::call('config:cache');
