@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Ilinya\Webhook\Facebook\Entry;
 use App\Jobs\BotHandler;
 use App\Ilinya\Bot;
+use App\Jobs\TestDatabaseQueryEffect;
 use App\Ilinya\ImageGenerator;
-
 class IlinyaController extends Controller
 {
     public function hook(Request $request){
@@ -38,5 +38,9 @@ class IlinyaController extends Controller
 
     public function createImage(){
         ImageGenerator::create();
+    }
+
+    public function test($size){
+        dispatch(new TestDatabaseQueryEffect($size));
     }
 }

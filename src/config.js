@@ -1,5 +1,5 @@
 let LIVE_BACKEND_URL = 'http://johnenrick.com'
-let DEV_BACKEND_URL = 'http://192.168.1.5/ilinya/api'
+let DEV_BACKEND_URL = 'http://127.0.0.1/ilinya/api'
 let isDev = true
 let BACKEND_URL = isDev ? DEV_BACKEND_URL : LIVE_BACKEND_URL
 // 'http://finegrabzapi.johnenrick.com'

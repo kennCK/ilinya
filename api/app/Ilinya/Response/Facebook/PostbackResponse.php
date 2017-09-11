@@ -62,15 +62,15 @@ class PostbackResponse{
         $request = new Request();
         $request['sort'] = ["category" => "asc"];
         $categories = Controller::retrieve($request, "App\Http\Controllers\BusinessTypeController");
-        $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
         $elements = [];
-
+       
         if($categories){
             $prev = $categories[0]['category'];
             $i = 0;
             foreach ($categories as $category) {
+                 $imageUrl = "https://4bcc2ced.ngrok.io/ilinya/storage/icons/category_";
                 $buttons[] = ButtonElement::title($category['sub_category'])
                     ->type('postback')
                     ->payload(strtolower($category['id']).'@pCategorySelected')
@@ -78,8 +78,9 @@ class PostbackResponse{
                 if($i < sizeof($categories) - 1){
                     if($prev != $categories[$i + 1]['category']){
                         $title = $category['category'];
+                        $imageUrl .= strtolower($title).'png';
                         $elements[] = GenericElement::title($title)
-                            ->imageUrl($imgUrl)
+                            ->imageUrl(assets($imageUrl))
                             ->subtitle($subtitle)
                             ->buttons($buttons)
                             ->toArray();
@@ -89,8 +90,9 @@ class PostbackResponse{
                 }
                 else{
                     $title = $category['category'];
+                    $imageUrl .= strtolower($title).'png';
                     $elements[] = GenericElement::title($title)
-                        ->imageUrl($imgUrl)
+                        ->imageUrl(assets($imageUrl))
                         ->subtitle($subtitle)
                         ->buttons($buttons)
                         ->toArray();
