@@ -1,5 +1,5 @@
 {
-  "name": "godigit",
+  "name": "ilinya",
   "version": "1.0.0",
   "description": "An accounting system developed by GoCentral",
   "author": "John Enrick Plenos",
@@ -86,5 +86,18 @@
   "engines": {
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
-  }
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kennCK/ilinya.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kennCK/ilinya/issues"
+  },
+  "homepage": "https://github.com/kennCK/ilinya#readme"
 }
