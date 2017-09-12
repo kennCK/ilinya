@@ -70,7 +70,7 @@ class PostbackResponse{
             $prev = $categories[0]['category'];
             $i = 0;
             foreach ($categories as $category) {
-                 $imageUrl = "https://4bcc2ced.ngrok.io/ilinya/storage/icons/category_";
+                 $imageUrl = "http://ilinya.com/wp-content/uploads/2017/09/category_".strtolower($category['category']).'.png';
                 $buttons[] = ButtonElement::title($category['sub_category'])
                     ->type('postback')
                     ->payload(strtolower($category['id']).'@pCategorySelected')
@@ -78,24 +78,24 @@ class PostbackResponse{
                 if($i < sizeof($categories) - 1){
                     if($prev != $categories[$i + 1]['category']){
                         $title = $category['category'];
-                        $imageUrl .= strtolower($title).'png';
                         $elements[] = GenericElement::title($title)
-                            ->imageUrl(assets($imageUrl))
+                            ->imageUrl($imageUrl)
                             ->subtitle($subtitle)
                             ->buttons($buttons)
                             ->toArray();
                         $prev = $category['category'];
                         $buttons = null;
+                        echo $imageUrl.'<br />';
                     }
                 }
                 else{
                     $title = $category['category'];
-                    $imageUrl .= strtolower($title).'png';
                     $elements[] = GenericElement::title($title)
-                        ->imageUrl(assets($imageUrl))
+                        ->imageUrl($imageUrl)
                         ->subtitle($subtitle)
                         ->buttons($buttons)
                         ->toArray();
+                        echo $imageUrl.'<br />';
                 }
                 
                 $i++;
