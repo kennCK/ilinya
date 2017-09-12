@@ -94,13 +94,45 @@ class QueueCardsResponse{
           2. Use Generic Templates
         */
           $queueCards = '';
+          $elements = [];
           foreach ($qc as $card) {
-            $queueCards = $queueCards.','.$card['id'];
+            $cardId = $card['id'];
+            $title =  "Queue Card #:".$cardId;
+            $subtitle = "QC Status:".$this->getStatus($card['status']);
+            $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
+            $buttons = [];
+
+            if($card['status'] == 1 || $card['status'] == 2){
+              $buttons[] = ButtonElement::title("Cancel")
+                        ->type('postback')
+                        ->payload($cardId.'@pCancelQueueCard')
+                        ->toArray();
+              $buttons[] = ButtonElement::title("Postpone")
+                        ->type('postback')
+                        ->payload($cardId.'@pPostponeQueueCard')
+                        ->toArray();
+            }
+            $elements[] = GenericElement::title($title)
+                                ->imageUrl($imageUrl)
+                                ->subtitle($subtitle)
+                                ->buttons($buttons)
+                                ->toArray();
           }
-        return ['text' => 'Your Card:'.$queueCards];
+        return GenericTemplate::toArray($elements);
       }
       else{
         return ['text' => 'No Cards Found!'];
+      }
+    }
+
+    public function getStatus($status){
+      switch ($status) {
+        case 1: return "OnQueue";
+        case 2: return "Serving";
+        case 3: return "Finished";
+        default:
+          # code...
+          break;
       }
     }
 

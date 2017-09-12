@@ -45,25 +45,30 @@ class ReviewResponse{
     public function display(){
         $this->user();
         $trackerId = $this->tracker->getId();
-        $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
         $subtitle = "Get tickets or make reservations on category below:";
         $buttons = [];
         $elements = [];
         $fields = CustomFieldModel::getFieldsByTrackId($trackerId);
         $response = null;
+        $i = 1;
         if($fields){
           if(sizeof($fields) < 10){
             foreach ($fields as $field) {
+              $imgUrl = "http://ilinya.com/wp-content/uploads/2017/09/step-";
               $question = $this->getQuestion($field['field_id']);
               $buttons[] = ButtonElement::title("Edit")
                   ->type('postback')
                   ->payload($field['id'].'@pEdit')
                   ->toArray();
+
+              $imgUrl .= $i.'.png';
               $elements[] = GenericElement::title($question)
+                                  ->imageUrl($imgUrl)
                                   ->subtitle($field['field_value'])
                                   ->buttons($buttons)
                                   ->toArray();
               $buttons = null;
+              $i++;
             }
             $buttons[] = ButtonElement::title("Send")
                   ->type('postback')
@@ -73,7 +78,9 @@ class ReviewResponse{
                   ->type('postback')
                   ->payload('@pDisregard')
                   ->toArray();
+            $imgUrl = "http://ilinya.com/wp-content/uploads/2017/09/step_1.png";
             $elements[] = GenericElement::title("Hi ".$this->user->getFirstName().'! You already reviewed your information.')
+                                  ->imageUrl($imgUrl)
                                   ->subtitle("Kindly choose the options bellow:")
                                   ->buttons($buttons)
                                   ->toArray();
