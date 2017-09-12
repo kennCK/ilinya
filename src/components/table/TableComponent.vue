@@ -1,7 +1,7 @@
 <template>
   <div>
     <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter')" :filter_setting="filter_setting" ref="tableFilter"></table-filter>
-    <table class="table table-bordered table-condensed" >
+    <table class="table table-bordered table-condensed table-hover" >
       <thead>
         <tr>
           <th v-for="(column, index) in columnSetting[0]"

@@ -22,8 +22,9 @@
       </div>
     </div>
     <modal ref="queueCardManagement" v-on:change-state="queueCardModalChangeState">
-      <div slot="header">
+      <div slot="header" style="width:100%">
         <i class="fa fa-vcard-o" aria-hidden="true"></i> Queue Card
+        <span v-if="isLoading" class="float-right"><i class="fa fa-hourglass-2" aria-hidden="true"></i> Please wait...</span>
       </div>
       <div slot="body">
         <form ref="queueCardForm">
@@ -54,11 +55,11 @@
           <div v-if="selected_queue_card['status'] === 3" class="alert alert-success text-center">
             This Q-card is done! <i class="fa fa-check-circle" aria-hidden="true"></i>
           </div>
-          <div v-if="queue_card_id && selected_queue_card['status'] !== 3" class="row">
+          <div v-if="queue_card_id && selected_queue_card['status'] !== 3 && !isLoading" class="row">
             <div class="col-sm-12 text-center">
 
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
-              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="pageUser" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
+              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="pageUser(selected_queue_card.facebook_user.account_number, 'It\'s your turn')" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
@@ -143,6 +144,7 @@
 
       }
       return {
+        isLoading: false,
         queue_card_id: 0,
         rowIndex: -1,
         selected_queue_card: {
@@ -155,9 +157,8 @@
           status: {
             type: 'html',
             value_function: (row) => {
-              console.log
               let status = [
-                '<span class="badge badge-primary">ON QUEUE ' + row['facebook_user_id'] + '</span>',
+                '<span class="badge badge-primary">ON QUEUE ' + '</span>',
                 '<span class="badge badge-warning">SERVING</span>',
                 '<span class="badge badge-success">FINISHED</span>']
               return status[row['status'] - 1]
@@ -171,7 +172,7 @@
             setting: {
               on_click: (event, row) => {
                 $(event.target).attr('disabled', true)
-                $.post(CONFIG.BACKEND_URL + '/bot/paging/' + row['facebook_user']['account_number'], {}, (response) => {
+                this.pageUser(row['facebook_user']['account_number'], "It's your turn!", () => {
                   $(event.target).attr('disabled', false)
                 })
               },
@@ -194,10 +195,15 @@
     props: {
     },
     methods: {
-      pageUser(){
+      pageUser(accountNumber, message, callback){
+        console.log(accountNumber, message)
         this.isCalling = true
-        $.post(CONFIG.BACKEND_URL + '/bot/paging/' + this.selected_queue_card.facebook_user_id, {}, (response) => {
+        $.get(CONFIG.BACKEND_URL + '/bot/reminder/' + accountNumber + '/' + message, {}, (response) => {
           this.isCalling = false
+          if(callback){
+            callback()
+            console.log('callback!')
+          }
         })
       },
       removeQueueCard(){
@@ -214,9 +220,10 @@
           status: status
         }
         if(status * 1 === 2){
-          this.pageUser()
+          this.pageUser(this.selected_queue_card.facebook_user.account_number, "It's your turn!")
         }
         this.APIRequest('queue_card/update', requestParam, (response) => {
+          console.log(status)
           if(response['data']){
             this.selected_queue_card['status'] = status
             if(status * 1 === 2 || status * 1 === 1){
@@ -224,15 +231,20 @@
             }else{
               this.$refs.queueCardTable.deleteRow(this.rowIndex)
             }
+            if(status * 1 === 3){
+              this.pageUser(this.selected_queue_card.facebook_user.account_number, 'Thank you!')
+            }
           }
         })
       },
       rowClicked(index, entryID){
+
         this.rowIndex = index
         let requestoption = {
           id: entryID,
           with_foreign_table: [
-            'queue_card_fields'
+            'queue_card_fields',
+            'facebook_user'
           ]
         }
         this.APIRequest('queue_card/retrieve', requestoption, (response) => {
