@@ -50,23 +50,28 @@
     </table>
     <nav >
       <ul class="pagination justify-content-end ">
-        <li class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
-          <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
-            <i class="fa fa-chevron-left" aria-hidden="true"></i>
-            Previous
-          </button>
+        <li v-if="isLoadingData" class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
+          <i class="fa fa-hourglass-2" aria-hidden="true"></i> Loading Table...
         </li>
-        <li class="page-item">
-          <!-- <input class="form-control text-right" size="5"> -->
-          <select v-model="currentPage" class="form-control select-rtl">
-            <option v-for="x in this.totalPage" >{{x}}</option>
-          </select>
-        </li>
-        <li class="page-item"></li>
-        <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
-        <li class="page-item">
-          <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-        </li>
+        <template v-else>
+          <li class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
+            <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
+              <i class="fa fa-chevron-left" aria-hidden="true"></i>
+              Previous
+            </button>
+          </li>
+          <li class="page-item">
+            <!-- <input class="form-control text-right" size="5"> -->
+            <select v-model="currentPage" class="form-control select-rtl">
+              <option v-for="x in this.totalPage" >{{x}}</option>
+            </select>
+          </li>
+          <li class="page-item"></li>
+          <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
+          <li class="page-item">
+            <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+          </li>
+        </template>
       </ul>
     </nav>
   </div>
@@ -93,7 +98,8 @@
         currentSort: null,
         currentPage: 1,
         totalPage: 1,
-        prevRetrieveType: null
+        prevRetrieveType: null,
+        isLoadingData: false
       }
     },
     props: {
@@ -132,6 +138,7 @@
         this.retrieveData(this.prevRetrieveType)
       },
       retrieveData(retrieveType, resetPage){
+        this.isLoadingData = true
         let requestOption = {} // this.retrieve_parameter
         for(let x in this.retrieve_parameter){
           requestOption[x] = this.retrieve_parameter[x]
@@ -169,6 +176,7 @@
             this.currentPage--
           }
           this.totalPage = Math.ceil(response['total_entries'] / this.entry_per_page)
+          this.isLoadingData = false
         })
       },
       updateRow(rowIndex, entryID){

@@ -43,21 +43,21 @@
                 sequence: {},
                 additional_option: {
                   db_name: 'setting'
-                },
-                main_field: {
-                  input_type: 'select',
-                  default_value: 1,
-                  select_option: [
-                    {
-                      value: 1,
-                      label: 'Yes'
-                    },
-                    {
-                      value: 2,
-                      label: 'No'
-                    }
-                  ]
                 }
+                // main_field: {
+                //   input_type: 'select',
+                //   default_value: 1,
+                //   select_option: [
+                //     {
+                //       value: 1,
+                //       label: 'Yes'
+                //     },
+                //     {
+                //       value: 2,
+                //       label: 'No'
+                //     }
+                //   ]
+                // }
               }
             }
           }

@@ -29,6 +29,18 @@ Route::get('file/icon/{filename}', function ($filename)
   $response->header("Content-Type", $type);
   return $response;
 });
+Route::get('file/company/{filename}', function ($filename)
+{
+  $path = storage_path('/company/' . $filename);
+  if (!File::exists($path)) {
+      abort(404);
+  }
+  $file = File::get($path);
+  $type = File::mimeType($path);
+  $response = Response::make($file, 200);
+  $response->header("Content-Type", $type);
+  return $response;
+});
 Route::get('file/q_card/{filename}', function ($filename)
 {
   $path = storage_path('/qcards/' . $filename);

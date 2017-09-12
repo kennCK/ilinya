@@ -24,7 +24,7 @@
     <modal ref="queueCardManagement" v-on:change-state="queueCardModalChangeState">
       <div slot="header" style="width:100%">
         <i class="fa fa-vcard-o" aria-hidden="true"></i> Queue Card
-        <span v-if="isLoading" class="float-right"><i class="fa fa-hourglass-2" aria-hidden="true"></i> Please wait...</span>
+        <span v-if="isLoadingCard" class="float-right"><i class="fa fa-hourglass-2" aria-hidden="true"></i> Please wait...</span>
       </div>
       <div slot="body">
         <form ref="queueCardForm">
@@ -55,7 +55,7 @@
           <div v-if="selected_queue_card['status'] === 3" class="alert alert-success text-center">
             This Q-card is done! <i class="fa fa-check-circle" aria-hidden="true"></i>
           </div>
-          <div v-if="queue_card_id && selected_queue_card['status'] !== 3 && !isLoading" class="row">
+          <div v-if="queue_card_id && selected_queue_card['status'] !== 3 && !isLoadingCard" class="row">
             <div class="col-sm-12 text-center">
 
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
@@ -65,7 +65,7 @@
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
             </div>
           </div>
-          <div v-else-if="selected_queue_card['status'] !== 3" class="row">
+          <div v-else-if="selected_queue_card['status'] !== 3  && !isLoadingCard" class="row">
             <div class="col-sm-12 text-right">
               <span v-if="formStatus === 'success'" class="text text-success">Success!</span>
               <span v-else-if="formStatus === 'error'" class="text text-danger">Failed!</span>
@@ -144,7 +144,7 @@
 
       }
       return {
-        isLoading: false,
+        isLoadingCard: false,
         queue_card_id: 0,
         rowIndex: -1,
         selected_queue_card: {
@@ -238,7 +238,8 @@
         })
       },
       rowClicked(index, entryID){
-
+        this.isLoadingCard = true
+        this.showQueueCard(0)
         this.rowIndex = index
         let requestoption = {
           id: entryID,
@@ -247,6 +248,7 @@
             'facebook_user'
           ]
         }
+        console.log('loadng')
         this.APIRequest('queue_card/retrieve', requestoption, (response) => {
           if(response['data']){
             this.queue_card_id = response['data']['id']
@@ -258,9 +260,10 @@
               this.queueFormFields[x]['id'] = this.queueFormFields[x]['queue_form_field_id']
             }
             this.formStatus = (response['data']['status'] * 1 === 3) ? 'view' : 'editing'
-            this.showQueueCard(this.queue_card_id)
+            // this.showQueueCard(this.queue_card_id)
 
           }
+          this.isLoadingCard = false
         })
       },
       submitQueueCard(){

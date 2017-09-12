@@ -28,19 +28,20 @@
         <label v-if="formRequestStatus === 'success'" class="text-success">Success!</label>
         <label v-else-if="formRequestStatus === 'failed'" class="text-danger">Failed!</label>
         <label v-else-if="formRequestStatus === 'loading'" class="text-primary">Please wait...</label>
-        <template v-if="formStatus === 'view'">
-          <button v-if="formData['id'] !== 0" @click="formStatus = 'editing'" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
-          <button @click="$emit('form_close')" type="button"  v-bind:disabled="formStatus === 'loading'? true : false" class="btn btn-secondary">Close</button>
-        </template>
-        <template v-else-if="formStatus === 'editing'">
-
-          <button @click="formStatus = 'delete_confirmation'" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-danger pull-left"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
-          <button @click="submitForm" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-success"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
-          <button @click="viewForm(formData['id'])" type="button"  v-bind:disabled="formStatus === 'loading'? true : false" class="btn btn-secondary">Cancel</button>
-        </template>
-        <template v-else-if="formStatus === 'create'">
-          <button v-if="formData['id'] === 0" @click="submitForm" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-success"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
-          <button v-if="formData['id'] === 0" @click="$emit('form_close')" type="button"  v-bind:disabled="formStatus === 'loading'? true : false" class="btn btn-secondary">Close</button>
+        <template v-if="formRequestStatus !== 'loading'">
+          <template v-if="formStatus === 'view'">
+            <button v-if="formData['id'] !== 0" @click="formStatus = 'editing'" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
+            <button @click="$emit('form_close')" type="button"  v-bind:disabled="formStatus === 'loading'? true : false" class="btn btn-secondary">Close</button>
+          </template>
+          <template v-else-if="formStatus === 'editing'">
+            <button @click="formStatus = 'delete_confirmation'" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-danger pull-left"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+            <button @click="submitForm" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-success"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
+            <button @click="viewForm(formData['id'])" type="button"  v-bind:disabled="formStatus === 'loading'? true : false" class="btn btn-secondary">Cancel</button>
+          </template>
+          <template v-else-if="formStatus === 'create'">
+            <button v-if="formData['id'] === 0" @click="submitForm" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-success"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
+            <button v-if="formData['id'] === 0" @click="$emit('form_close')" type="button"  v-bind:disabled="formStatus === 'loading'? true : false" class="btn btn-secondary">Close</button>
+          </template>
         </template>
       </div>
     </div>
