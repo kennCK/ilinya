@@ -54,7 +54,7 @@ class ReviewResponse{
         if($fields){
           if(sizeof($fields) < 10){
             foreach ($fields as $field) {
-              $imgUrl = "http://ilinya.com/wp-content/uploads/2017/09/step_";
+              $imgUrl = "http://ilinya.com/wp-content/uploads/2017/09/step-";
               $question = $this->getQuestion($field['field_id']);
               $buttons[] = ButtonElement::title("Edit")
                   ->type('postback')

@@ -63,14 +63,35 @@ class SendResponse{
           $cRequest['value'] = $field['field_value'];
           $this->createQueueCardFields($cRequest);
         }
+        $response = $this->queueCard();
         $this->tracker->delete();
-        $response = ['text' => "Here is your Queue Card Number:".$this->cardId];
         //ImageGenerator::create($this->cardId);
       }
       else{
         $response = ['text' => "Empty Fields"];
       }
       return $response;
+    }
+
+    public function queueCard(){
+        $title =  "Hi ".$this->user->getFirstName()."! Here's your Queue Card #:".$this->cardId;
+        $subtitle = "QC Status: Onqueue";
+        $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
+        $buttons[] = ButtonElement::title("Cancel")
+                    ->type('postback')
+                    ->payload($this->cardId.'@pCancelQueueCard')
+                    ->toArray();
+        $buttons[] = ButtonElement::title("Postpone")
+                    ->type('postback')
+                    ->payload($this->cardId.'@pPostponeQueueCard')
+                    ->toArray();
+        $elements[] = GenericElement::title($title)
+                            ->imageUrl($imageUrl)
+                            ->subtitle($subtitle)
+                            ->buttons($buttons)
+                            ->toArray();
+        $response =  GenericTemplate::toArray($elements);
+        return $response;
     }
 
 

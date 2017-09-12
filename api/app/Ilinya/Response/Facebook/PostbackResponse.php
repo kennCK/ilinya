@@ -55,7 +55,16 @@ class PostbackResponse{
     public function start(){
         $this->user();
 
-        return "Hi ".$this->user->getFirstName()."! My Name is Ilinya, I can help to get your reservations or tickets easily. Just follow my instructions and you will be good to go!";
+        $title =  "Hi ".$this->user->getFirstName()."! I'm Ilinya your personal assistant!";
+        $subtitle = "Just follow me and you will be good to go!";
+        $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
+        $elements[] = GenericElement::title($title)
+                            ->imageUrl($imageUrl)
+                            ->subtitle($subtitle)
+                            ->buttons(null)
+                            ->toArray();
+        $response =  GenericTemplate::toArray($elements);
+        return $response;
     }
     
     public function categories(){
