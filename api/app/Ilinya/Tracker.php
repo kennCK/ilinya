@@ -46,9 +46,6 @@ class Tracker{
     $this->messaging = $messaging;
     $this->code = new Codes();
     $this->retrieve();
-    if($this->companyId){
-      $this->retrieveCompanyData();
-    }
   }
 
   public function getEditFieldId(){
@@ -192,6 +189,7 @@ class Tracker{
               $this->reply        = $key['reply'];  
               $this->editFieldId  = $key['edit_field_id'];
           }
+          $this->retrieveCompanyData($this->companyId);
       }
     }
     else{
@@ -207,16 +205,16 @@ class Tracker{
     DB::delete($this->db_tracker, $condition);
   }
 
-  public function retrieveCompanyData(){
+  public function retrieveCompanyData($id){
      $request = new Request();
      $condition[] = [
       "column"  => "id",
       "clause"  => "=",
-      "value"   => $this->companyId
+      "value"   => $id
     ];
      $request['condition'] = $condition;
      $result = Controller::retrieve($request, "App\Http\Controllers\CompanyController");
-     $this->companyData = $result[0];
+     $this->companyData = $result;
   }
 
 }

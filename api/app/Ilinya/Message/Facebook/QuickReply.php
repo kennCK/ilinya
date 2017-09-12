@@ -8,6 +8,7 @@ use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
+use App\Ilinya\Response\Facebook\SendResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 
@@ -17,6 +18,7 @@ class QuickReply{
     protected $search;
     protected $code;
     protected $tracker;
+    protected $send;
 
   function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
@@ -25,6 +27,7 @@ class QuickReply{
         $this->form   = new Form($messaging);
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
+        $this->send   = new SendResponse($messaging);
   }
   public function manage($custom){
       $parameter = $custom['quick_reply']['parameter'];
@@ -47,6 +50,18 @@ class QuickReply{
             "form_id" => $parameter,
             "stage"   => $this->code->stageForm
           ];
+          break;
+        case $this->code->qrDisregard:
+          if($parameter == '1' || intval($parameter) == 1){
+            //Disregard
+            $this->tracker->delete();
+            $this->bot->reply('Transaction has been successfully disregarded!', true);
+          }
+          else{
+            //Cancel go to review or send directly
+            $this->bot->reply($this->send->submit(), false);
+          }
+          return null;
           break;
         default:
           //Statement Here
