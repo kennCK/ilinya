@@ -7,6 +7,7 @@ use App\Ilinya\Webhook\Facebook\Entry;
 use App\Jobs\BotHandler;
 use App\Ilinya\Bot;
 use App\Jobs\TestDatabaseQueryEffect;
+use App\Jobs\ChatbotBroadcast;
 use App\Ilinya\ImageGenerator;
 class IlinyaController extends Controller
 {
@@ -21,11 +22,8 @@ class IlinyaController extends Controller
         return response("", 200);
     }
 
-    public function broadcast($companyId){
-        //$data = $request->all();
-        $message = "test";
-        $recepientId = "1756273174387070";
-        Bot::notify($recepientId, $message);
+    public function broadcast($companyId, $message){
+        dispatch(new ChatbotBroadcast($companyId, $message));
     }
 
     public function paging($recepientId, $message){
