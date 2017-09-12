@@ -11,6 +11,7 @@ use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\SendResponse;
 use App\Ilinya\Response\Facebook\EditResponse;
 use App\Ilinya\Response\Facebook\QueueCardsResponse;
+use App\Ilinya\Response\Facebook\DisregardResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Postback{
@@ -22,6 +23,7 @@ class Postback{
     protected $send;
     protected $edit;
     protected $qc;
+    protected $disregard;
     function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
@@ -32,6 +34,7 @@ class Postback{
         $this->send   = new SendResponse($messaging);
         $this->edit   = new EditResponse($messaging);
         $this->qc     = new QueueCardsResponse($messaging);
+        $this->disregard = new DisregardResponse($messaging);
     }
 
     public function manage($custom){
@@ -72,7 +75,7 @@ class Postback{
             $this->bot->reply($this->edit->manage($custom), false);
             break;
           case $this->code->pDisregard:
-            //Do Something
+            $this->bot->reply($this->disregard->inform(), false);
             break;
           default:
             //Error

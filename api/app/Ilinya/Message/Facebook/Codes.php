@@ -53,6 +53,7 @@ class Codes{
   public $qrPriorityNo   = 322;
   public $qrFormCancel   = 323;
   public $qrFormContinue = 324;
+  public $qrDisregard    = 325;
 
   /**
     TEXT CODES
@@ -93,7 +94,8 @@ class Codes{
       "@qrPriorityYes"  => $this->qrPriorityYes,
       "@qrPriorityNo"   => $this->qrPriorityNo,
       "@qrFormCancel"   => $this->qrFormCancel,
-      "@qrFormContinue" => $this->qrFormContinue 
+      "@qrFormContinue" => $this->qrFormContinue,
+      "@qrDisregard"    => $this->qrDisregard 
     );
   }
 
