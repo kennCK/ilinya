@@ -30,6 +30,8 @@ class Codes{
   public $pEdit        = 210;
   public $pDisregard   = 211;
   public $pSearch      = 212;
+  public $pCancelQC    = 213;
+  public $pPostponeQC  = 214;
 
 
 
@@ -86,7 +88,9 @@ class Codes{
       "@pSend"      => $this->pSend,
       "@pEdit"      => $this->pEdit,
       "@pDisregard" => $this->pDisregard,
-      "@pSearch"    => $this->pSearch
+      "@pSearch"    => $this->pSearch,
+      "@pCancelQC"  => $this->pCancelQC,
+      "@pPostponeQC"=> $this->pPostponeQC
     );
 
     $this->quickReplyPayloads = array(

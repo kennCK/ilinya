@@ -105,11 +105,11 @@ class QueueCardsResponse{
             if($card['status'] == 1 || $card['status'] == 2){
               $buttons[] = ButtonElement::title("Cancel")
                         ->type('postback')
-                        ->payload($cardId.'@pCancelQueueCard')
+                        ->payload($cardId.'@pCancelQC')
                         ->toArray();
               $buttons[] = ButtonElement::title("Postpone")
                         ->type('postback')
-                        ->payload($cardId.'@pPostponeQueueCard')
+                        ->payload($cardId.'@pPostponeQC')
                         ->toArray();
             }
             $elements[] = GenericElement::title($title)
@@ -134,6 +134,19 @@ class QueueCardsResponse{
           # code...
           break;
       }
+    }
+
+    public function cancel($id){
+      $request = new Request();
+      $controller = 'App\Http\Controllers\QueueCardController';
+      $request['id'] = $id;
+      $result = Controller::delete($request, $controller);
+      if($result == 1){
+        return ['text' => "Successfully Cancelled"];
+      }else if($result == 0){
+        return ['text' => "Queue Card not found or deleted already!"];
+      }
+        return ['text' => "Server Error! Please try again."];
     }
 
 

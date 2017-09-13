@@ -147,6 +147,11 @@ class SendResponse{
           "clause"  => "=",
           "value"   => $queueFormId
         ];
+        $condition[] = [
+          "column"  => "facebook_user_id",
+          "clause"  => "=",
+          "value"   => $this->getFacebookUserId()
+        ];
 
         $reCon['condition'] = $condition;
 
@@ -175,6 +180,21 @@ class SendResponse{
         $result = Controller::insert($request, $controller);
 
         return ($result != null)? true:false;
+    }
+
+    public function getFacebookUserId(){
+      $controller = 'App\Http\Controllers\FacebookUserController';
+      $request = new Request();
+
+      $condition [] = [
+        'column'  => 'account_number',
+        'clause'  => '=',
+        'value'   => $this->messaging->getSenderId()
+      ];
+
+      $request['condition'] = $condition;
+      $userField = Controller::retrieve($request, $controller);
+      return $userField[0]['id'];
     }
 
 
