@@ -24,4 +24,10 @@ class Controller{
     $result = json_decode($result->getContent(), true);
     return $result['data'];
   }
+
+  public static function delete(Request $request, $controller){
+    $result = app($controller)->delete($request);
+    $result = json_decode($result->getContent(), true);
+    return $result['data'];
+  }
 }

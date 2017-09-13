@@ -77,6 +77,17 @@ class Postback{
           case $this->code->pDisregard:
             $this->bot->reply($this->disregard->inform(), false);
             break;
+          case $this->code->pCancelQC:
+            /*
+                Cancel QC
+            */
+                $this->bot->reply($this->qc->cancel($custom['parameter']), false);
+            break;
+          case $this->code->pPostponeQC:
+            /*
+                Postpone QC
+            */
+            break;
           default:
             //Error
             break;

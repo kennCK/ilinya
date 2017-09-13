@@ -11,9 +11,11 @@ use App\Ilinya\Response\Facebook\FormsResponse;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\ReviewResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
+use Illuminate\Support\Facades\Validator;
 /*
     @API
 */
+
 use App\Ilinya\API\Controller;
 
 class Form{
@@ -93,6 +95,7 @@ class Form{
     $fieldId   = $this->field('id');
 
     //Validate
+    //$validation = false;
     $validation = $this->validate($replyText);
 
     //After retrieve again
@@ -106,19 +109,59 @@ class Form{
     }
     else{
       //Ask again
-      
+      /*
+        1. Get Field Description\
+        $controller,$column, $vaue, $limit = null, $sort = null
+      */
+       $desc = $this->field('description');
+       $this->bot->reply('Please enter a valid '.$this->field('type').'! '.$desc, true);
     }
   }
 
   public function validate($replyText){
     $type = $this->field('type');
     $flag = true;
-
+    
 
     //Get Field Validation Settings
     //If valid, update and ask new field
     //Else, re ask
+    switch ($type) {
+      case 'email':
+        # code..
+        $text = array('email' => $replyText);
+        $flag = $this->validateEmail($text);
+        break;
+      case 'text':
+        return true;
+        break;
+      case 'number':
+        #
+        $text = array('number' => $replyText);
+        $flag = $this->validateNumber($text);
+        break;
+      default:
+        # code...
+        break;
+    }
     return $flag;
+  }
+
+  public function validateEmail($text){
+    $validation = array('email' => 'required|email'); 
+    return $this->validateReply($text, $validation);
+  }
+  public function validateNumber($text){
+    $validation = array('number' => 'required|numeric');
+    return $this->validateReply($text, $validation);
+  }
+  public function validateReply($text, $validation){
+    $validator = Validator::make($text, $validation);
+    if($validator->fails()){
+      return false;
+    }
+    else
+      return true;
   }
 
   public function field($column){

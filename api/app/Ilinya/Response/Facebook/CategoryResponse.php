@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Ilinya\Response\Facebook;
 
 /*
@@ -117,13 +116,10 @@ class CategoryResponse{
                     ->payload($data['id'].'@pGetQueueCard')
                     ->toArray();
         $buttons[] = ButtonElement::title("View Location")
-                    ->type('postback')
-                    ->payload('@pLocate')
+                    ->type('web_url')
+                    ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
+                    ->ratio('full')
                     ->toArray();
-        $buttons[] = ButtonElement::title("Categories")
-            ->type('postback')
-            ->payload('@pCategories')
-            ->toArray();
         $elements[] = GenericElement::title($data['name'])
                             ->imageUrl($imgUrl)
                             ->subtitle('Address: '.$data['address'])
