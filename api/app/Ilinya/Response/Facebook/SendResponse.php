@@ -74,6 +74,7 @@ class SendResponse{
     }
 
     public function queueCard(){
+        $this->user();
         $title =  "Hi ".$this->user->getFirstName()."! Here's your Queue Card #:".$this->cardId;
         $subtitle = "QC Status: Onqueue";
         $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
