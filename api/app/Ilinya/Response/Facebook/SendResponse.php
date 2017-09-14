@@ -121,9 +121,9 @@ class SendResponse{
           $newRequest['full_name']   = $completeName;
           $result = Controller::create($newRequest, $fbController);
           if($result != false)
-            $this->user = $result;
+            $this->userId = $result;
           else
-            $this->user = null;
+            $this->userId = null;
        }
     }
     public function createQueueCard(){
