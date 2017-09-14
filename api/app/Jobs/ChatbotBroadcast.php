@@ -44,8 +44,8 @@ class ChatbotBroadcast implements ShouldQueue
 
             foreach ($activeUsers as $user) {
                 $facebookInfo = $this->getFacebookUserInfo($user['facebook_user_id']);
-                 $this->message = "Hi ".$facebookInfo[0]['full_name'].'!'.$this->message;
-                 Bot::notify($facebookInfo[0]['account_number'], $this->message);
+                 $newMessage = "Hi ".$facebookInfo[0]['full_name'].'!'.$this->message;
+                 Bot::notify($facebookInfo[0]['account_number'], $newMessage);
             }
            
     }
