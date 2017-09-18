@@ -30,6 +30,8 @@ class Codes{
   public $pEdit        = 210;
   public $pDisregard   = 211;
   public $pSearch      = 212;
+  public $pCancelQC    = 213;
+  public $pPostponeQC  = 214;
 
 
 
@@ -53,6 +55,7 @@ class Codes{
   public $qrPriorityNo   = 322;
   public $qrFormCancel   = 323;
   public $qrFormContinue = 324;
+  public $qrDisregard    = 325;
 
   /**
     TEXT CODES
@@ -85,7 +88,9 @@ class Codes{
       "@pSend"      => $this->pSend,
       "@pEdit"      => $this->pEdit,
       "@pDisregard" => $this->pDisregard,
-      "@pSearch"    => $this->pSearch
+      "@pSearch"    => $this->pSearch,
+      "@pCancelQC"  => $this->pCancelQC,
+      "@pPostponeQC"=> $this->pPostponeQC
     );
 
     $this->quickReplyPayloads = array(
@@ -93,7 +98,8 @@ class Codes{
       "@qrPriorityYes"  => $this->qrPriorityYes,
       "@qrPriorityNo"   => $this->qrPriorityNo,
       "@qrFormCancel"   => $this->qrFormCancel,
-      "@qrFormContinue" => $this->qrFormContinue 
+      "@qrFormContinue" => $this->qrFormContinue,
+      "@qrDisregard"    => $this->qrDisregard 
     );
   }
 

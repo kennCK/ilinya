@@ -74,6 +74,7 @@ class SendResponse{
     }
 
     public function queueCard(){
+        $this->user();
         $title =  "Hi ".$this->user->getFirstName()."! Here's your Queue Card #:".$this->cardId;
         $subtitle = "QC Status: Onqueue";
         $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
@@ -120,9 +121,9 @@ class SendResponse{
           $newRequest['full_name']   = $completeName;
           $result = Controller::create($newRequest, $fbController);
           if($result != false)
-            $this->user = $result;
+            $this->userId = $result;
           else
-            $this->user = null;
+            $this->userId = null;
        }
     }
     public function createQueueCard(){
@@ -147,10 +148,16 @@ class SendResponse{
           "clause"  => "=",
           "value"   => $queueFormId
         ];
+        $condition[] = [
+          "column"  => "facebook_user_id",
+          "clause"  => "=",
+          "value"   => $this->getFacebookUserId()
+        ];
 
         $reCon['condition'] = $condition;
 
         $result = Controller::retrieve($reCon, $controller);
+
 
         if(!$result){
           $request = new Request();
@@ -175,6 +182,21 @@ class SendResponse{
         $result = Controller::insert($request, $controller);
 
         return ($result != null)? true:false;
+    }
+
+    public function getFacebookUserId(){
+      $controller = 'App\Http\Controllers\FacebookUserController';
+      $request = new Request();
+
+      $condition [] = [
+        'column'  => 'account_number',
+        'clause'  => '=',
+        'value'   => $this->messaging->getSenderId()
+      ];
+
+      $request['condition'] = $condition;
+      $userField = Controller::retrieve($request, $controller);
+      return $userField[0]['id'];
     }
 
 

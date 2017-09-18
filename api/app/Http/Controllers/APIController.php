@@ -66,7 +66,11 @@ class APIController extends Controller
       // echo response()->json($user);
     }
     public function output(){
+<<<<<<< HEAD
       sleep(5);
+=======
+      //sleep(2);
+>>>>>>> 964792d15d8af00723289ce0610c5269272967f7
       $this->response["request_timestamp"] = date("Y-m-d h:i:s");
       if($this->responseType == 'array'){
         return $this->response;

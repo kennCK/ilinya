@@ -78,7 +78,7 @@ class ReviewResponse{
                   ->type('postback')
                   ->payload('@pDisregard')
                   ->toArray();
-            $imgUrl = "http://ilinya.com/wp-content/uploads/2017/09/step_1.png";
+            $imgUrl = "http://Ilinyaya.com/wp-content/uploads/2017/09/step_1.png";
             $elements[] = GenericElement::title("Hi ".$this->user->getFirstName().'! You already reviewed your information.')
                                   ->imageUrl($imgUrl)
                                   ->subtitle("Kindly choose the options bellow:")
@@ -107,7 +107,7 @@ class ReviewResponse{
     }
     public function inform(){
         $this->user();
-
         return "Hi ".$this->user->getFirstName()."! Kindly review your information below:";
     }
+
 }

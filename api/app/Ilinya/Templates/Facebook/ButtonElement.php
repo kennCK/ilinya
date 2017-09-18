@@ -104,7 +104,7 @@ class ButtonElement{
     if($this->type == "web_url"){
       $response["url"] = $this->url;
       $response["webview_height_ratio"] = $this->webviewHeightRatio;
-      $response["messenger_extensions"] = false;
+      //$response["messenger_extensions"] = false;
       $response["fallback_url"] = $this->fallbackUrl;
       if($this->webviewShareButton != null)
         $response["webview_share_button"] = $this->webviewShareButton;
