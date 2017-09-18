@@ -27,7 +27,7 @@
         </template>
         <label v-if="formRequestStatus === 'success'" class="text-success">Success!</label>
         <label v-else-if="formRequestStatus === 'failed'" class="text-danger">Failed!</label>
-        <label v-else-if="formRequestStatus === 'loading'" class="text-primary">Please wait...</label>
+        <label v-else-if="formRequestStatus === 'loading'" class="text-primary"><i class="fa fa-hourglass-half" aria-hidden="true"></i> Please wait...</label>
         <template v-if="formRequestStatus !== 'loading'">
           <template v-if="formStatus === 'view'">
             <button v-if="formData['id'] !== 0" @click="formStatus = 'editing'" v-bind:disabled="formStatus === 'loading'? true : false" type="button" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
@@ -114,7 +114,6 @@
         this.messageList = []
         let link = (this.formData['id'] * 1) ? this.links.update : this.links.create
         this.APIFormRequest(link, this.$refs.form, (response) => {
-
           if(response['error']['status'] * 1 === 100){
             this.errorList = response['error']['message']
             for(let field in response['error']['message']){

@@ -59,7 +59,7 @@
             <div class="col-sm-12 text-center">
 
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
-              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="pageUser(selected_queue_card.facebook_user.account_number, 'It\'s your turn')" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
+              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="pageUser(selected_queue_card.facebook_user.account_number, 'Please come to the counter')" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
@@ -132,6 +132,7 @@
             ]
           },
           value_function: (form) => {
+            console.log(form)
             if(form){
               if(form.status === 0){
                 this.filterSetting['status']['clause'] = '!='
@@ -167,12 +168,12 @@
           call: {
             type: 'button',
             if_condition: (row) => {
-              return row['facebook_user_id']
+              return row['facebook_user_id'] && row['status'] !== 3
             },
             setting: {
               on_click: (event, row) => {
                 $(event.target).attr('disabled', true)
-                this.pageUser(row['facebook_user']['account_number'], "It's your turn!", () => {
+                this.pageUser(row['facebook_user']['account_number'], 'Please come to the counter', () => {
                   $(event.target).attr('disabled', false)
                 })
               },
@@ -196,7 +197,6 @@
     },
     methods: {
       pageUser(accountNumber, message, callback){
-        console.log(accountNumber, message)
         this.isCalling = true
         $.get(CONFIG.BACKEND_URL + '/bot/reminder/' + accountNumber + '/' + message, {}, (response) => {
           this.isCalling = false

@@ -48,32 +48,41 @@
         </tr>
       </tbody>
     </table>
-    <nav >
-      <ul class="pagination justify-content-end ">
-        <li v-if="isLoadingData" class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
-          <i class="fa fa-hourglass-2" aria-hidden="true"></i> Loading Table...
-        </li>
-        <template v-else>
-          <li class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
-            <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
-              <i class="fa fa-chevron-left" aria-hidden="true"></i>
-              Previous
-            </button>
-          </li>
-          <li class="page-item">
-            <!-- <input class="form-control text-right" size="5"> -->
-            <select v-model="currentPage" class="form-control select-rtl">
-              <option v-for="x in this.totalPage" >{{x}}</option>
-            </select>
-          </li>
-          <li class="page-item"></li>
-          <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
-          <li class="page-item">
-            <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-          </li>
-        </template>
-      </ul>
-    </nav>
+    <div class="row">
+      <div class="col-sm-6 ">
+        <strong>Results: {{totalResult}}</strong>
+      </div>
+      <div class="col-sm-6">
+        <nav >
+          <ul class="pagination justify-content-end ">
+
+            <li v-if="isLoadingData" class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
+              <i class="fa fa-hourglass-2" aria-hidden="true"></i> Loading Table...
+            </li>
+            <template v-else>
+              <li class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
+                <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
+                  <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                  Previous
+                </button>
+              </li>
+              <li class="page-item ml-1">
+                <!-- <input class="form-control text-right" size="5"> -->
+                <select v-model="currentPage" class="form-control select-rtl">
+                  <option v-for="x in this.totalPage" >{{x}}</option>
+                </select>
+              </li>
+              <li class="page-item"></li>
+              <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
+              <li class="page-item">
+                <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+              </li>
+            </template>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
   </div>
 </template>
 <script>
@@ -98,6 +107,7 @@
         currentSort: null,
         currentPage: 1,
         totalPage: 1,
+        totalResult: 0,
         prevRetrieveType: null,
         isLoadingData: false
       }
@@ -175,6 +185,7 @@
           }else if(response['data'].length === 0 && response['total_entries'] > 0){
             this.currentPage--
           }
+          this.totalResult = response['total_entries']
           this.totalPage = Math.ceil(response['total_entries'] / this.entry_per_page)
           this.isLoadingData = false
         })
