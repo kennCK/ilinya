@@ -118,6 +118,14 @@ class Tracker{
         "tracker_flag"  => 1
       ];
     }
+    else if($current <= $this->code->pCategories && $this->stage >= $this->code->stageForm){
+      $response = [
+        "status"  => $this->code->error,
+        "stage"   => $this->code->stageForm,
+        "tracker_flag"  => 4
+      ];
+      echo json_encode($response);
+    }
     else if($current < $this->code->message && $current >= $this->code->postback){
       $response = [
         "status"  => $this->code->postback,
