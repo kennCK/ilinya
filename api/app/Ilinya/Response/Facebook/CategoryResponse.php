@@ -181,7 +181,6 @@ class CategoryResponse{
     $request['condition'] = $condition;
 
     $result = Controller::retrieve($request, $controller);
-    echo json_encode($result);
     if(sizeof($result) > 0){
       $flag = true;
       foreach ($result as $row) {
