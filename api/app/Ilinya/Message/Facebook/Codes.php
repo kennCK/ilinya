@@ -56,6 +56,7 @@ class Codes{
   public $qrFormCancel   = 323;
   public $qrFormContinue = 324;
   public $qrDisregard    = 325;
+  public $qrStageError   = 326;
 
   /**
     TEXT CODES
@@ -99,7 +100,8 @@ class Codes{
       "@qrPriorityNo"   => $this->qrPriorityNo,
       "@qrFormCancel"   => $this->qrFormCancel,
       "@qrFormContinue" => $this->qrFormContinue,
-      "@qrDisregard"    => $this->qrDisregard 
+      "@qrDisregard"    => $this->qrDisregard,
+      "@qrStageError"   => $this->qrStageError
     );
   }
 
