@@ -181,7 +181,7 @@ class Form{
       $request['condition'] = $condition;
       $field = Controller::retrieve($request, $controller);
 
-      return ($field)?$field[0][$column]:null;
+      return (sizeof($field) > 0)?$field[0][$column]:null;
   }
 
   public function retrieve($formId = null){
