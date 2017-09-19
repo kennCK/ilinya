@@ -35,7 +35,7 @@ class MessageHandler{
   protected $quickReply;
   protected $text;
   protected $form;
-
+  protected $error;
   protected $response;
   function __construct(Messaging $messaging){
     $this->messaging  = $messaging;
@@ -45,8 +45,9 @@ class MessageHandler{
     $this->code       = new Codes();
     $this->postback   = new Postback($messaging);
     $this->quickReply = new QuickReply($messaging);
-    $this->form   = new Form($messaging);
+    $this->form       = new Form($messaging);
     $this->text       = new Text($messaging);
+    $this->error      = new Error($messaging);
   }
 
   public function manage(){
@@ -75,6 +76,7 @@ class MessageHandler{
         break;
       case $this->code->error:
         //Error
+        $this->error->manage($this->custom);
         break;
       default:
         //Do Nothing
@@ -104,7 +106,9 @@ class MessageHandler{
             if($this->stage)$data['stage'] = $this->stage;
             $this->tracker->update($data);
         break;
-      case 4: // Delete
+      case 4: // Update Error
+        break;
+      case 5:
         break;
       default:
         break;
