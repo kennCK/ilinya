@@ -6,6 +6,8 @@ use App\Ilinya\Bot;
 use App\Ilinya\Tracker;
 use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Message\Facebook\Form;
+use App\Ilinya\Message\Facebook\Error;
+use App\Ilinya\Message\Facebook\Postback;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\SendResponse;
@@ -19,6 +21,8 @@ class QuickReply{
     protected $code;
     protected $tracker;
     protected $send;
+    protected $error;
+    protected $postback;
 
   function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
@@ -28,6 +32,8 @@ class QuickReply{
         $this->tracker= new Tracker($messaging);
         $this->code   = new Codes(); 
         $this->send   = new SendResponse($messaging);
+        $this->error  = new Error($messaging);
+        $this->postback = new Postback($messaging);
   }
   public function manage($custom){
       $parameter = $custom['quick_reply']['parameter'];
@@ -45,7 +51,7 @@ class QuickReply{
           return null;
           break;
         case $this->code->qrFormContinue:
-          $this->form->retrieve($parameter);
+          $this->form->retrieve($parameter, null);
           return $data = [
             "form_id" => $parameter,
             "stage"   => $this->code->stageForm
@@ -62,6 +68,30 @@ class QuickReply{
             $this->bot->reply($this->send->submit(), false);
           }
           return null;
+          break;
+        case $this->code->qrStageError:
+          if($parameter == '1' || intval($parameter) == 1){
+              //Cancel Current Transaction
+             $this->error->clearCustomField();
+             $data = [
+                "stage"      => $this->code->stageStart,
+                "company_id" => null,
+                "form_id"    => null,
+                "form_sequence" => null,
+                "reply"     => null
+             ];
+             $this->tracker->update($data);
+             //Perform previous status
+             $data = [
+                "payload" => $this->tracker->getPrevStatusError(),
+                "type"    => 'postback'
+             ];
+             $this->postback->manage($data);
+          }
+          else{
+              //Continue Current Transaction
+             $this->form->retrieve(null, true);
+          }
           break;
         default:
           //Statement Here

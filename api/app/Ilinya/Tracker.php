@@ -15,6 +15,8 @@ class Tracker{
   
   protected $status;
 
+  protected $prevStatusError;
+
   protected $stage;
   
   protected $category;
@@ -48,6 +50,9 @@ class Tracker{
     $this->retrieve();
   }
 
+  public function getPrevStatusError(){
+    return $this->prevStatusError;
+  }
   public function getEditFieldId(){
     return $this->editFieldId;
   }
@@ -196,6 +201,7 @@ class Tracker{
               $this->searchOption = $key['search_option'];
               $this->reply        = $key['reply'];  
               $this->editFieldId  = $key['edit_field_id'];
+              $this->prevStatusError = $key['prev_status'];
           }
           $this->retrieveCompanyData($this->companyId);
       }

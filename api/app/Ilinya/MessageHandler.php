@@ -80,6 +80,7 @@ class MessageHandler{
         break;
       default:
         //Do Nothing
+        $this->error->manage($this->custom);
         break;
     }
   }

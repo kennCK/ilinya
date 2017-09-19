@@ -46,9 +46,9 @@ class ErrorResponse{
     public function stage(){
     $this->user();
       $companyData = $this->tracker->getCompanyData();
-      $title = "Hi ".$this->user->getFirstName().'! You are about to get/make '.$form['title'].' to '.$companyData[0]['name'].'. Are you sure you want to continue?';
-      $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload($form['id'].'@qrFormCancel');
-      $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload($form['id'].'@qrFormContinue');
+      $title = "Hi ".$this->user->getFirstName().'! Are you sure you want to cancel your current transaction to '.$companyData[0]['name'].'?';
+      $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('0@qrStageError');
+      $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('1@qrStageError');
       return QuickReplyTemplate::toArray($title, $quickReplies);
     }
 
