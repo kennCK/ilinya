@@ -135,11 +135,11 @@ class MessageHandler{
             //Attachments
             $attachments = new Attachments($this->custom['attachments']);
             $response;
-            if($attachments->getType() == "location"){
-                $response = $this->response->location($attachments);
-            }
-            else{
-            }
+            //if($attachments->getType() == "location"){
+            //    $response = $this->response->location($attachments);
+            //}
+            //else{
+            //}
         }
         else if($this->custom['quick_reply']){
             $response = $this->quickReply->manage($this->custom);
