@@ -166,7 +166,7 @@ class CategoryResponse{
       return ["text" => "Search not found :'("];
     }
   }
-
+  
   public function availability($companyId){
     $response     = true;
     $controller   = "App\Http\Controllers\QueueFormController";
