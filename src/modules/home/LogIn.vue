@@ -3,21 +3,11 @@
     <div class="row">
       <div class="col-sm-12 col-md-8 hide-this">
         <div class="container-fluid banner">
-          <h2 class="primary-color">
-            Stay connected with your Employees.
-          </h2>
-          <p class="banner-content">
-
-          </p>
+          <img src="../../assets/img/Top.png"  height="100%" width="100%">
         </div>
       </div>
       <div class="col-sm-12 col-md-4">
         <div class="login-wrapper">
-          <div class="app-logo">
-            <span class="app-title primary-color text-center ">
-              <label><b>i</b>Linya</label>
-            </span>
-          </div>
           <div class="login-header">
             <h1 class="navbar-brand">
               Log In
