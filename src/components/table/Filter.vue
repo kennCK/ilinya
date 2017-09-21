@@ -5,6 +5,8 @@
         <div class="col-sm-10 float-right">
           <input-group
             :inputs="filterList"
+            :form_data="formData"
+            v-on:form_data_changed="valueChanged"
           >
           </input-group>
         </div>
@@ -32,7 +34,9 @@
     data(){
       return {
         filterList: {},
-        filterInitialized: false
+        filterInitialized: false,
+        formData: {
+        }
       }
     },
     props: {
@@ -46,11 +50,21 @@
           typeof this.filterList[key]['name'] === 'undefined' ? Vue.set(this.filterList[key], 'name', this.StringUnderscoreToPhrase(key)) : ''
           Vue.set(this.filterList[key], 'db_name', key)
           typeof this.filterList[key]['col'] === 'undefined' ? Vue.set(this.filterList[key], 'col', 4) : ''
+          this.formData[key] = typeof this.filter_setting[key]['default_value'] !== 'undefined' ? this.filter_setting[key]['default_value'] : null
         }
         this.filterInitialized = true
       },
+      valueChanged(fieldName, value){
+        if(typeof this.formData[fieldName] === 'undefined'){
+          Vue.set(this.formData, fieldName, null)
+        }
+        Vue.set(this.formData, fieldName, value)
+      },
+      getFormData(){
+        return this.formData
+      },
       filterForm(){
-        this.$emit('filter', this.$refs.form)
+        this.$emit('filter')
       }
     }
 

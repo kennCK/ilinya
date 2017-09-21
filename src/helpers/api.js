@@ -23,7 +23,6 @@ Vue.mixin({
         url: CONFIG.API_URL + link + tokenStringParam,
         type: 'POST',
         data: formData,
-        async: false,
         success: (response) => {
           this.APISuccessRequestHandler(response, callback)
         },

@@ -6,7 +6,6 @@
           <th v-for="(column, index) in columnSetting[0]"
             v-bind:rowspan="(column['sub_columns']) ? 1:2"
             v-bind:colspan="column['sub_columns'] ? column['sub_column_count']  : 1"
-            v-on:click="changeSort(0, index)"
           >
             {{column['name']}}
             <!--<span class="pull-right">
@@ -21,7 +20,6 @@
           <th v-for="(column, index) in columnSetting[1]"
             v-bind:rowspan="(column['sub_columns']) ? 1:2"
             v-bind:colspan="column['sub_columns'] ? column['sub_column_count']  : 1"
-            v-on:click="changeSort(1, index)"
           >
             {{column['name']}}
             <!---<span class="pull-right">

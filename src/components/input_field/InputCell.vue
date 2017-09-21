@@ -51,6 +51,14 @@
         <textarea-input
           v-else-if="inputType === 'textarea'"
           :input_setting="input_setting"
+          :db_name="dbName"
+          :placeholder="placeholder"
+          :field_name="field_name"
+          :form_data="form_data"
+          :form_status="form_status"
+          :form_data_updated="form_data_updated"
+          v-on:change="valueChanged"
+
           >
         </textarea-input>
         <check-box
@@ -172,6 +180,9 @@
       }
     },
     watch: {
+      form_status(value){
+        console.log(value)
+      },
       form_data_updated(value){
         this.feedbackStatus = 0
         this.feedbackMessage = ''
@@ -202,6 +213,7 @@
     },
     methods: {
       initSetting(){
+
         this.dbName = this.db_name
         this.labelText = this.label ? this.label : this.input_name
         this.labelStyle = this.label_style

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter')" :filter_setting="filter_setting" ref="tableFilter"></table-filter>
+    <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter', true)" :filter_setting="filter_setting" ref="tableFilter"></table-filter>
     <table class="table table-bordered table-condensed table-hover" >
       <thead>
         <tr>
@@ -48,32 +48,41 @@
         </tr>
       </tbody>
     </table>
-    <nav >
-      <ul class="pagination justify-content-end ">
-        <li v-if="isLoadingData" class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
-          <i class="fa fa-hourglass-2" aria-hidden="true"></i> Loading Table...
-        </li>
-        <template v-else>
-          <li class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
-            <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
-              <i class="fa fa-chevron-left" aria-hidden="true"></i>
-              Previous
-            </button>
-          </li>
-          <li class="page-item">
-            <!-- <input class="form-control text-right" size="5"> -->
-            <select v-model="currentPage" class="form-control select-rtl">
-              <option v-for="x in this.totalPage" >{{x}}</option>
-            </select>
-          </li>
-          <li class="page-item"></li>
-          <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
-          <li class="page-item">
-            <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-          </li>
-        </template>
-      </ul>
-    </nav>
+    <div class="row">
+      <div class="col-sm-6 ">
+        <strong>Results: {{totalResult}}</strong>
+      </div>
+      <div class="col-sm-6">
+        <nav >
+          <ul class="pagination justify-content-end ">
+
+            <li v-if="isLoadingData" class="page-item" v-bind:class="currentPage === 1 ? 'disabled' : ''">
+              <i class="fa fa-hourglass-2" aria-hidden="true"></i> Loading Table...
+            </li>
+            <template v-else>
+              <li class="page-item" v-bind:class="currentPage * 1 === 1 ? 'disabled' : ''">
+                <button @click="currentPage--" class="page-link" type="button" tabindex="-1">
+                  <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                  Previous
+                </button>
+              </li>
+              <li class="page-item ml-1">
+                <!-- <input class="form-control text-right" size="5"> -->
+                <select v-model="currentPage" class="form-control select-rtl">
+                  <option v-for="x in this.totalPage" >{{x}}</option>
+                </select>
+              </li>
+              <li class="page-item"></li>
+              <li class="page-item"><label class="col-form-label">&nbsp; of <span style="font-weight:bold">{{totalPage}}&nbsp;&nbsp;</span></label></li>
+              <li class="page-item">
+                <button class="page-link" @click="currentPage++">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+              </li>
+            </template>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
   </div>
 </template>
 <script>
@@ -84,8 +93,10 @@
       'table-cell': require('./Cell.vue')
     },
     mounted(){
+
       this.initColumnSetting()
-      this.retrieveData()
+      console.log('table mounted')
+      this.retrieveData('filter')
     },
     data(){
       return {
@@ -98,6 +109,7 @@
         currentSort: null,
         currentPage: 1,
         totalPage: 1,
+        totalResult: 0,
         prevRetrieveType: null,
         isLoadingData: false
       }
@@ -148,21 +160,24 @@
           requestOption['sort'] = {}
           requestOption['sort'][this.currentSort['db_name']] = orderLookUp[this.currentSort['sort']]
         }
+        if(resetPage){
+          this.currentPage = 1
+        }
         requestOption['limit'] = this.entry_per_page
         requestOption['offset'] = this.entry_per_page * (this.currentPage - 1)
-        if(retrieveType === 'filter'){
+        if(retrieveType === 'filter' && this.$refs.tableFilter){
           typeof requestOption.condition === 'undefined' ? requestOption.condition = [] : null
-          let formInputs = $(this.$refs.tableFilter.$refs.form).serializeArray()
+          let formInputs = this.$refs.tableFilter.getFormData() // $(this.$refs.tableFilter.$refs.form).serializeArray()
           for(let x in formInputs){
-            if(formInputs[x]['value'] !== ''){
-              let value = formInputs[x]['value']
-              if(this.filter_setting[formInputs[x]['name']]['clause'] === 'like'){
+            if(formInputs[x] !== '' && formInputs[x] !== null && this.filter_setting[x]['is_dummy'] !== true){
+              let value = formInputs[x]
+              if(this.filter_setting[x]['clause'] === 'like'){
                 value = '%' + value + '%'
               }
               requestOption.condition.push({
-                column: formInputs[x]['name'],
+                column: x,
                 value: value,
-                clause: this.filter_setting[formInputs[x]['name']]['clause']
+                clause: this.filter_setting[x]['clause']
               })
             }
           }
@@ -170,11 +185,12 @@
         this.prevRetrieveType = retrieveType
         this.APIRequest(this.api + '/retrieve', requestOption, (response) => {
           this.tableEntries = []
-          if(response['data'].length > 0){
+          if(response['data']){
             this.tableEntries = response['data']
-          }else if(response['data'].length === 0 && response['total_entries'] > 0){
+          }else if(!response['data'] && response['total_entries'] > 0){
             this.currentPage--
           }
+          this.totalResult = response['total_entries']
           this.totalPage = Math.ceil(response['total_entries'] / this.entry_per_page)
           this.isLoadingData = false
         })

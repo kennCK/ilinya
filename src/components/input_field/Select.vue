@@ -4,16 +4,16 @@
       v-if="form_status !== 'view'"
       v-bind:name="db_name"
       v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
-      @change="$emit('change', $event)"
+      @change="valueChanged"
     >
       <option v-for="option in options" v-bind:value="option['value']"
-        v-bind:selected="option['value'] === form_data[db_name] ? 'selected' : false"
+        v-bind:selected="option['value'] == form_data[db_name] ? 'selected' : false"
       >
         {{option['label']}}
       </option>
     </select>
 
-    <span v-else class="form-control">{{this.option_lookup[form_data[db_name]]}}</span>
+    <span v-else class="form-control">{{this.option_lookup[form_data[db_name]]}} &nbsp;</span>
   </div>
 </template>
 <script>
@@ -63,7 +63,8 @@
         }
       },
       valueChanged(e){
-        this.$emit('value_changed', e)
+        console.log($(e.target).val())
+        this.$emit('change', e)
       }
     }
 

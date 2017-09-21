@@ -36,17 +36,21 @@ export default {
     localStorage.setItem('company_branch_id', companyBranch)
   },
   setToken(token){
+    if(token === null){
+      console.log('TOKEN IS NULLLLLLLLLLLLLL')
+    }
     this.tokenData.token = token
     localStorage.setItem('usertoken', token)
     if(token){
       setTimeout(() => {
         let vue = new Vue()
         vue.APIRequest('authenticate/refresh', {}, (response) => {
+          console.log(response)
           this.setToken(response['token'])
         }, (response) => {
           ROUTER.go('/')
         })
-      }, 1000 * 60 * 50) // 50min
+      }, 1000 * 60 * 40) // 50min
     }
   },
   authenticate(username, password, callback, errorCallback){
@@ -80,6 +84,7 @@ export default {
       this.setToken(token)
       let vue = new Vue()
       vue.APIRequest('authenticate/user', {}, (userInfo) => {
+
         this.setUser(userInfo.id, userInfo.username, userInfo.user_type_id)
         this.tokenData.verifyingToken = false
         if(this.currentPath){

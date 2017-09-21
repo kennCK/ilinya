@@ -12,12 +12,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuthExceptions\JWTException;
+use App\CompanyBranchEmployee;
 
 class APIController extends Controller
 {
     protected $model = null;
     protected $validation = array();
     protected $test = null;
+    protected $userSession = null;
     protected $response = array(
       "data" => null,
       "error" => array(),// {status, message}
@@ -59,19 +61,18 @@ class APIController extends Controller
     protected $useUserCompanyID = true;
 
     public function test(){
-      $user = $this->getAuthenticatedUser();
-      $this->printR($user->content());
+      $user = $this->getUserCompanyID();
+      $this->printR($this->userSession);
       // echo response()->json($user);
     }
     public function output(){
-      //sleep(2);
+      // sleep(2);
       $this->response["request_timestamp"] = date("Y-m-d h:i:s");
       if($this->responseType == 'array'){
         return $this->response;
       }else{
         return response()->json($this->response);
       }
-
       // echo json_encode($this->response);
     }
     public function create(Request $request){
@@ -376,9 +377,9 @@ class APIController extends Controller
         $tableColumns[$x] = $tableName.'.'.$tableColumns[$x];
       }
 
-      $result = $this->model->get($tableColumns);
-      if($result){
-        $this->response["data"] = $result->toArray();
+      $result = $this->model->get($tableColumns)->toArray();
+      if(count($result)){
+        $this->response["data"] = $result;
         if(isset($request["id"])){
           $this->response["data"] = $this->response["data"][0];
         }
@@ -548,11 +549,23 @@ class APIController extends Controller
         }
 
         // the token is valid and we have found the user via the sub claim
-        $user = $userRaw->content();
-
-        return $user;
+        $user = $userRaw->toArray();
+        $this->userSession = $user;
     }
     public function getUserCompanyID(){
-      return 1;
+      if(!$this->userSession){
+        $this->getAuthenticatedUser();
+      }
+      if(!isset($this->userSession['company_id'])){
+        $company = (new CompanyBranchEmployee())->with(['company_branch'])->where('account_id', $this->userSession['id'])->get()->toArray();
+        $this->userSession['company_id'] = $company[0]['company_branch']['company_id'];
+      }
+      return $this->userSession['company_id'];
+    }
+    public function getUserID(){
+      if(!$this->userSession){
+        $this->getAuthenticatedUser();
+      }
+      return $this->userSession['id'];
     }
 }

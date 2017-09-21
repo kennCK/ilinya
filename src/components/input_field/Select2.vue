@@ -1,4 +1,4 @@
-go  <template>
+<template>
   <div>
     <div v-bind:class="form_status === 'view' ? 'hide' :''">
       <select ref="select" style="width:100%"
