@@ -62,7 +62,7 @@ class APIController extends Controller
 
     public function test(){
       $user = $this->getUserCompanyID();
-      $this->printR($this->userSession);
+      // $this->printR($this->userSession);
       // echo response()->json($user);
     }
     public function output(){
@@ -536,27 +536,28 @@ class APIController extends Controller
     }
     public function getAuthenticatedUser()
     {
-        try {
-          if (! $userRaw = JWTAuth::parseToken()->authenticate()) {
-            return response()->json(['user_not_found'], 404);
-          }
-        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-          return response()->json(['token_expired'], $e->getStatusCode());
-        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-          return response()->json(['token_invalid'], $e->getStatusCode());
-        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-          return response()->json(['token_absent'], $e->getStatusCode());
+      try {
+        if (! $userRaw = JWTAuth::parseToken()->authenticate()) {
+          return response()->json(['user_not_found'], 404);
         }
-
-        // the token is valid and we have found the user via the sub claim
-        $user = $userRaw->toArray();
-        $this->userSession = $user;
+      } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+        return response()->json(['token_expired'], $e->getStatusCode());
+      } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+        return response()->json(['token_invalid'], $e->getStatusCode());
+      } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+        return response()->json(['token_absent'], $e->getStatusCode());
+      } catch(\Tymon\JWTAuth\Exceptions\JWTException $e){//general JWT exception
+        return false;
+      }
+      // the token is valid and we have found the user via the sub claim
+      $user = $userRaw->toArray();
+      $this->userSession = $user;
     }
     public function getUserCompanyID(){
       if(!$this->userSession){
         $this->getAuthenticatedUser();
       }
-      if(!isset($this->userSession['company_id'])){
+      if(!isset($this->userSession['company_id']) && $this->userSession['company_id']){
         $company = (new CompanyBranchEmployee())->with(['company_branch'])->where('account_id', $this->userSession['id'])->get()->toArray();
         $this->userSession['company_id'] = $company[0]['company_branch']['company_id'];
       }
