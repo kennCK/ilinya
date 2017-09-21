@@ -35,7 +35,7 @@ class MessageHandler{
   protected $quickReply;
   protected $text;
   protected $form;
-
+  protected $error;
   protected $response;
   function __construct(Messaging $messaging){
     $this->messaging  = $messaging;
@@ -45,8 +45,9 @@ class MessageHandler{
     $this->code       = new Codes();
     $this->postback   = new Postback($messaging);
     $this->quickReply = new QuickReply($messaging);
-    $this->form   = new Form($messaging);
+    $this->form       = new Form($messaging);
     $this->text       = new Text($messaging);
+    $this->error      = new Error($messaging);
   }
 
   public function manage(){
@@ -75,9 +76,11 @@ class MessageHandler{
         break;
       case $this->code->error:
         //Error
+        $this->error->manage($this->custom);
         break;
       default:
         //Do Nothing
+        $this->error->manage($this->custom);
         break;
     }
   }
@@ -104,7 +107,9 @@ class MessageHandler{
             if($this->stage)$data['stage'] = $this->stage;
             $this->tracker->update($data);
         break;
-      case 4: // Delete
+      case 4: // Update Error
+        break;
+      case 5:
         break;
       default:
         break;
@@ -130,11 +135,11 @@ class MessageHandler{
             //Attachments
             $attachments = new Attachments($this->custom['attachments']);
             $response;
-            if($attachments->getType() == "location"){
-                $response = $this->response->location($attachments);
-            }
-            else{
-            }
+            //if($attachments->getType() == "location"){
+            //    $response = $this->response->location($attachments);
+            //}
+            //else{
+            //}
         }
         else if($this->custom['quick_reply']){
             $response = $this->quickReply->manage($this->custom);

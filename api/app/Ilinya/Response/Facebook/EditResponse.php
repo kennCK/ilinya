@@ -19,6 +19,7 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 use App\Ilinya\Response\Facebook\ReviewResponse;
 use App\Ilinya\API\Controller;
 use App\Ilinya\API\CustomFieldModel;
+use Illuminate\Support\Facades\Validator;
 
 
 class EditResponse{
@@ -111,5 +112,91 @@ class EditResponse{
       return ['text' => 'Successfully Edited! Kindly check review again your forms.'];
     }
 
+    public function validate($replyText){
+    $id   = $this->field('field_id');
+    $type = $this->fieldByController('type', $id);
+    $description = $this->fieldByController('description', $id);
+    $flag = true;
+    
 
+    //Get Field Validation Settings
+    //If valid, update and ask new field
+    //Else, re ask
+    switch ($type) {
+      case 'email':
+        # code..
+        $text = array('email' => $replyText);
+        $flag = $this->validateEmail($text);
+        break;
+      case 'text':
+        $flag = true;
+        break;
+      case 'number':
+        #
+        $text = array('number' => $replyText);
+        $flag = $this->validateNumber($text);
+        break;
+      default:
+        # code...
+        break;
+    }
+
+    $response = array(
+      'status' => $flag,
+      'type'   => $type,
+      'description' => $description
+    );
+    echo json_encode($response);
+    return $response;
+  }
+
+  public function validateEmail($text){
+    $validation = array('email' => 'required|email'); 
+    return $this->validateReply($text, $validation);
+  }
+  
+  public function validateNumber($text){
+    $validation = array('number' => 'required|numeric');
+    return $this->validateReply($text, $validation);
+  }
+
+
+  public function validateReply($text, $validation){
+    $validator = Validator::make($text, $validation);
+    if($validator->fails()){
+      return false;
+    }
+    else
+      return true;
+  }
+
+    public function field($column){
+      $db_field = "temp_custom_fields_storage";
+
+      $condition = [
+          ['id', '=', $this->tracker->getEditFieldId()]
+      ];
+      $result = DB::retrieve($db_field, $condition, null);
+
+      if(sizeof($result) > 0){
+          return $result[0][$column];
+      }
+      else
+        return null;
+    }
+
+    public function fieldByController($column,$id){
+      $request = new Request();
+      $controller = 'App\Http\Controllers\QueueFormFieldController';
+
+      $condition[] = [  
+          "column"  => 'id',
+          "clause"  => "=",
+          "value"   => $id
+      ];
+      $request['condition'] = $condition;
+      $field = Controller::retrieve($request, $controller);
+
+      return (sizeof($field) > 0)?$field[0][$column]:null;
+  }
 }

@@ -44,8 +44,18 @@ class Text{
             $this->form->reply($reply);
             break;
           case $this->code->replyStageEdit:
-            $this->bot->reply($this->edit->inform(), false);
-            $this->bot->reply($this->edit->update($reply), false);
+            /*
+              1. Validate
+              2. Check
+            */
+            $validate = $this->edit->validate($reply);
+            if($validate['status'] == true){
+              $this->bot->reply($this->edit->inform(), false);
+              $this->bot->reply($this->edit->update($reply), false);
+            }
+            else{
+              $this->bot->reply('Please enter a valid '.$validate['type'].'! '.$validate['description'], true);
+            }
             break;
           case $this->code->replyStageShortCodes:
             $this->shortCodes();

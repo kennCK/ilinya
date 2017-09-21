@@ -15,6 +15,8 @@ class Tracker{
   
   protected $status;
 
+  protected $prevStatusError;
+
   protected $stage;
   
   protected $category;
@@ -48,6 +50,9 @@ class Tracker{
     $this->retrieve();
   }
 
+  public function getPrevStatusError(){
+    return $this->prevStatusError;
+  }
   public function getEditFieldId(){
     return $this->editFieldId;
   }
@@ -117,6 +122,14 @@ class Tracker{
         "stage"   => $this->code->stageStart,
         "tracker_flag"  => 1
       ];
+    }
+    else if($current <= $this->code->pCategories && $this->stage >= $this->code->stageForm){
+      $response = [
+        "status"  => $this->code->error,
+        "stage"   => $this->code->stageForm,
+        "tracker_flag"  => 4
+      ];
+      echo json_encode($response);
     }
     else if($current < $this->code->message && $current >= $this->code->postback){
       $response = [
@@ -188,6 +201,7 @@ class Tracker{
               $this->searchOption = $key['search_option'];
               $this->reply        = $key['reply'];  
               $this->editFieldId  = $key['edit_field_id'];
+              $this->prevStatusError = $key['prev_status'];
           }
           $this->retrieveCompanyData($this->companyId);
       }

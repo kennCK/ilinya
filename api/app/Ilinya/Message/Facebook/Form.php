@@ -48,7 +48,7 @@ class Form{
   }
 
   public function manageForms($forms){
-    if($forms){
+    if(sizeof($forms) > 0){
         if(sizeof($forms) > 1){
           //Show Forms
           $this->bot->reply($this->response->selectForms($forms),false);
@@ -105,7 +105,7 @@ class Form{
       //Reset Reply to 0
       //Retrieve new Field
       $this->update($replyText, $fieldId);
-      $this->retrieve(null);
+      $this->retrieve(null, null);
     }
     else{
       //Ask again
@@ -181,10 +181,10 @@ class Form{
       $request['condition'] = $condition;
       $field = Controller::retrieve($request, $controller);
 
-      return ($field)?$field[0][$column]:null;
+      return (sizeof($field) > 0)?$field[0][$column]:null;
   }
 
-  public function retrieve($formId = null){
+  public function retrieve($formId = null, $sequenceFlag = null){
 
     /*
       Check if Empty
@@ -197,7 +197,7 @@ class Form{
     $field = null;
 
     if($formSequence){
-      $newSequence = intval($formSequence) + 1;
+      $newSequence = ($sequenceFlag == true)?intval($formSequence):intval($formSequence) + 1;
       $request = new Request();
       $condition[] = [
           "column"  => 'queue_form_id',
