@@ -29,6 +29,28 @@
         },
         inputs: {
           title: {},
+          detail: {
+            placeholder: 'Describe the purpose, availability, important things about this form',
+            input_type: 'textarea'
+          },
+          availability: {
+            input_type: 'select',
+            input_setting: {
+              options: [{
+                label: 'Select Availability',
+                value: null
+              }, {
+                label: 'Open',
+                value: 1
+              }, {
+                label: 'Close',
+                value: 2
+              }, {
+                label: 'Busy',
+                value: 3
+              }]
+            }
+          },
           queue_form_fields: {
             label_colspan: 12,
             input_name: 'Form Fields',

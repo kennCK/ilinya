@@ -12,10 +12,12 @@ global.$ = global.jQuery
 // require('bootstrap/dist/css/bootstrap.min.css')
 // require('bootstrap')
 // require('font-awesome/css/font-awesome.css')
+global.Popper = require('assets/js/min/popper.min.js').default
+
 require('assets/style/bootstrap.min.css')
 require('assets/style/bootstrap-grid.min.css')
 require('assets/style/bootstrap-reboot.min.css')
-global.Popper = require('assets/js/min/popper.min.js')
+
 require('assets/js/min/bootstrap.min.js')
 require('assets/style/theme.css')
 require('assets/style/select2.min.css')

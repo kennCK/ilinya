@@ -205,7 +205,6 @@
           Vue.set(this.formData, fieldName, null)
         }
         Vue.set(this.formData, fieldName, value)
-
       }
     }
   }

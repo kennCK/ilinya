@@ -1,6 +1,12 @@
 <template>
   <div>
-    <textarea>
+    <textarea class="form-control" rows="3"
+      v-bind:name="db_name"
+      v-bind:placeholder="placeholder"
+      v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
+
+    >
+
     </textarea>
   </div>
 </template>
@@ -11,16 +17,26 @@
 
     },
     mounted(){
-
+      this.init()
     },
     data(){
       return {
-
+        defaultValue: null
       }
     },
     props: {
+      db_name: String,
+      field_name: String,
+      placeholder: String,
+      form_data: Object,
+      form_status: String,
+      default_value: [String, Number]
+
     },
     methods: {
+      init(){
+        this.defaultValue = this.default_value ? this.default_value : null
+      }
     }
 
   }

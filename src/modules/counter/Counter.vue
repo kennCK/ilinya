@@ -27,7 +27,10 @@
         <span v-if="isLoadingCard" class="float-right"><i class="fa fa-hourglass-2" aria-hidden="true"></i> Please wait...</span>
       </div>
       <div slot="body">
-        <form ref="queueCardForm">
+        <div v-if="queue_card_id === -1" class="alert alert-danger text-center">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i> The Queue Card is not available. It may have been deleted by the user.
+        </div>
+        <form v-else ref="queueCardForm">
           <input-cell
             :input_name="'Form'"
             :db_name="'queue_form_id'"
@@ -59,7 +62,7 @@
             <div class="col-sm-12 text-center">
 
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
-              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="pageUser(selected_queue_card.facebook_user.account_number, 'Please come to the counter')" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
+              <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="selected_queue_card.facebook_user ? pageUser(selected_queue_card.facebook_user.account_number, 'Please come to the counter') : null" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
@@ -118,28 +121,44 @@
       }
       let filterSetting = {}
       filterSetting = {
-        number: {},
+        number: {
+          default_value: 1
+        },
         status: {
+          input_type: 'hidden',
+          default_value: 3,
+          clause: '!='
+        },
+        status_dummy: {
+          is_dummy: true,
+          label: 'status',
           input_type: 'select',
           clause: '!=',
+          default_value: 4,
           input_setting: {
             options: [
               {value: null, label: 'Any'},
-              {value: 3, label: 'Active'},
+              {value: 4, label: 'Active'},
               {value: 1, label: 'On Queue'},
               {value: 2, label: 'Serving'},
               {value: 3, label: 'Finished'}
             ]
           },
           value_function: (form) => {
-            console.log(form)
+            let newForm = {
+            }
             if(form){
-              if(form.status === 0){
+              console.log('status_dummy : ' + form.status_dummy)
+              if(form.status_dummy * 1 === 4){
                 this.filterSetting['status']['clause'] = '!='
+                newForm.status = 3
               }else{
                 this.filterSetting['status']['clause'] = '='
+                newForm.status = form.status_dummy
               }
+              console.log('status: ' + newForm.status)
             }
+            return newForm
           }
         }
 
@@ -219,11 +238,10 @@
           id: this.queue_card_id,
           status: status
         }
-        if(status * 1 === 2){
+        if(status * 1 === 2 && this.selected_queue_card.facebook_user){
           this.pageUser(this.selected_queue_card.facebook_user.account_number, "It's your turn!")
         }
         this.APIRequest('queue_card/update', requestParam, (response) => {
-          console.log(status)
           if(response['data']){
             this.selected_queue_card['status'] = status
             if(status * 1 === 2 || status * 1 === 1){
@@ -231,13 +249,14 @@
             }else{
               this.$refs.queueCardTable.deleteRow(this.rowIndex)
             }
-            if(status * 1 === 3){
+            if(status * 1 === 3 && this.selected_queue_card.facebook_user){
               this.pageUser(this.selected_queue_card.facebook_user.account_number, 'Thank you!')
             }
           }
         })
       },
       rowClicked(index, entryID){
+        this.queue_card_id = 0
         this.isLoadingCard = true
         this.showQueueCard(0)
         this.rowIndex = index
@@ -248,7 +267,6 @@
             'facebook_user'
           ]
         }
-        console.log('loadng')
         this.APIRequest('queue_card/retrieve', requestoption, (response) => {
           if(response['data']){
             this.queue_card_id = response['data']['id']
@@ -262,6 +280,9 @@
             this.formStatus = (response['data']['status'] * 1 === 3) ? 'view' : 'editing'
             // this.showQueueCard(this.queue_card_id)
 
+          }else{
+            this.queue_card_id = -1
+            this.$refs.queueCardTable.deleteRow(index)
           }
           this.isLoadingCard = false
         })

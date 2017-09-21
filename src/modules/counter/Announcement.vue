@@ -25,9 +25,8 @@
             <strong>Announcements</strong>
           </div>
           <div  class="col-sm-12">
-
             <div v-for="latestAnnouncement in latestAnnouncements" class="card card-outline-secondary mb-3">
-              <div class="card-block">
+              <div class="card-body">
                 <blockquote class="card-blockquote">
                   <p>{{latestAnnouncement['message']}}</p>
                   <small ><cite title="Date and Time Announced">{{latestAnnouncement['created_at'] | formatDate}}</cite></small>

@@ -24,6 +24,7 @@
             :input_style="input['input_style']"
             :colspan="input['colspan']"
             :label_colspan="input['label_colspan']"
+            :label="input['label']"
             :placeholder="input['placeholder']"
             :default_value="input['default_value']"
             :feedback_message="input['feedback_message']"
@@ -67,7 +68,12 @@
     },
     props: {
       inputs: Object,
-      form_data: Object,
+      form_data: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
       form_data_updated: Boolean,
       form_status: String,
       error_list: Object
@@ -87,6 +93,7 @@
             this.formDataChanged(fieldName, this.form_data[dbName])
           }
         }
+
       }
     },
     methods: {
@@ -96,16 +103,18 @@
       valueChanged(e, customName){
         let dbName = typeof customName !== 'undefined' ? customName : $(e.target).attr('name')
         if(typeof this.valueFunctionList[dbName] !== 'undefined'){
+          this.formDataChanged(this.fieldNameList[dbName], $(e.target).val())
           let newFormData = this.valueFunctionList[dbName](this.form_data)
+
           for(let formKey in newFormData){
             this.formDataChanged(this.fieldNameList[formKey], newFormData[formKey])
           }
         }else{
           this.formDataChanged(this.fieldNameList[dbName], $(e.target).val())
         }
-
       },
       formDataChanged(fieldName, value){
+
         this.$emit('form_data_changed', fieldName, this.dataFormat(fieldName, value))
       },
       initializeInput(){
@@ -126,11 +135,13 @@
           typeof this.inputList[key]['input_name'] === 'undefined' ? Vue.set(this.inputList[key], 'input_name', this.StringUnderscoreToPhrase(key)) : ''
           typeof this.inputList[key]['input_type'] === 'undefined' ? Vue.set(this.inputList[key], 'input_type', 'text') : ''
           typeof this.inputList[key]['col'] === 'undefined' ? Vue.set(this.inputList[key], 'col', '12') : ''
-
+          Vue.set(this.fieldNameList, this.inputList[key]['db_name'], this.inputList[key]['field_name'])
           Vue.set(this.inputList[key], 'feedback_status', 0)
           Vue.set(this.inputList[key], 'feedback_message', '')
           if(typeof this.inputList[key]['default_value'] === 'undefined'){
             Vue.set(this.inputList[key], 'default_value', null)
+          }else{
+            this.formDataChanged(key, this.inputList[key]['default_value'])
           }
           if(typeof this.inputList[key]['data_format'] === 'undefined'){
             let defaultDataFormat
@@ -144,7 +155,7 @@
           if(typeof this.inputList[key]['value_function'] !== 'undefined'){
             this.valueFunctionList[key] = this.inputList[key]['value_function']
           }
-          Vue.set(this.fieldNameList, this.inputList[key]['db_name'], this.inputList[key]['field_name'])
+
         }
         this.inputInitialized = true
       },
@@ -152,7 +163,8 @@
         if(typeof fieldName === 'undefined'){
           return null
         }
-        let finalValue = value || this.inputList[fieldName]['default_value']
+        console.log(fieldName + ' : ' + value)
+        let finalValue = value // || this.inputList[fieldName]['default_value']
         switch(this.inputList[fieldName]['data_format']){
           case 'decimal':
             return (finalValue * 1).toFixed(2)
