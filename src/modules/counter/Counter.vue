@@ -122,7 +122,6 @@
       let filterSetting = {}
       filterSetting = {
         number: {
-          default_value: 1
         },
         status: {
           input_type: 'hidden',
