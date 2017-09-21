@@ -32,7 +32,7 @@
                   <small ><cite title="Date and Time Announced">{{latestAnnouncement['created_at'] | formatDate}}</cite></small>
                 </blockquote>
               </div>
-            </div>
+            </div> 
           </div>
         </div>
       </div>
