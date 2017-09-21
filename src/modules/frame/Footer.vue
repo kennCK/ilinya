@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                     <i class="fa fa-copyright" aria-hidden="true"></i> 
-                    <b>i</b>Linya2017 by <b>Go</b>Central Software Solutions
+                    <b>i</b>Linya Technologies
                     </div>
                 </div>
             </div>
