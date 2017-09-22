@@ -55,7 +55,7 @@ class PostbackResponse{
     public function start(){
         $this->user();
 
-        $title =  "Hi ".$this->user->getFirstName()."! I'm Ilinya your personal assistant!";
+        $title =  "Hi ".$this->user->getFirstName()." :) I'm Ilinya your personal assistant.";
         $subtitle = "Just follow me and you will be good to go!";
         $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
         $elements[] = GenericElement::title($title)
@@ -128,6 +128,11 @@ class PostbackResponse{
         $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('priority@yes');
         $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('priority@no');
         return QuickReplyTemplate::toArray('Are you sure you want cancel your current conversation?', $quickReplies);
+    }
+
+    public function informAboutQCard(){
+        $this->user();
+        return ['text' => "Hi ".$this->user->getFirstName()." :) To get Reservation, Ticket or Priority Number kindly click the Get QCard Button. Thank You :)"];
     }
    
 }

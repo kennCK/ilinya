@@ -114,7 +114,7 @@ class Form{
         $controller,$column, $vaue, $limit = null, $sort = null
       */
        $desc = $this->field('description');
-       $this->bot->reply('Please enter a valid '.$this->field('type').'! '.$desc, true);
+       $this->bot->reply("I'm sorry but you replied an invalid ".$this->field('type')." :'( Again, ".$desc, true);
     }
   }
 
