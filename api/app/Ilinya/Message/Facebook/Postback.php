@@ -9,6 +9,7 @@ use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\SendResponse;
+use App\Ilinya\Response\Facebook\SearchResponse;
 use App\Ilinya\Response\Facebook\EditResponse;
 use App\Ilinya\Response\Facebook\QueueCardsResponse;
 use App\Ilinya\Response\Facebook\DisregardResponse;
@@ -24,6 +25,7 @@ class Postback{
     protected $edit;
     protected $qc;
     protected $disregard;
+
     function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
         $this->post   = new PostbackResponse($messaging);
@@ -35,6 +37,7 @@ class Postback{
         $this->edit   = new EditResponse($messaging);
         $this->qc     = new QueueCardsResponse($messaging);
         $this->disregard = new DisregardResponse($messaging);
+        $this->search = new SearchResponse($messaging);
     }
 
     public function manage($custom){
@@ -54,10 +57,11 @@ class Postback{
             $this->bot->reply($this->post->categories(), false);
             break;
           case $this->code->pCategorySelected:
+            $this->bot->reply($this->post->informAboutQCard(), false);
             $this->bot->reply($this->category->companies($custom['parameter']), false);
             break;
           case $this->code->pSearch:
-            $this->bot->reply($this->category->searchOption(), false);
+            $this->bot->reply($this->search->searchOption(), false);
             break;
           case $this->code->pGetQueueCard:
             $this->forms->retrieveForms($custom['parameter']);

@@ -98,7 +98,7 @@ class QueueCardsResponse{
           foreach ($qc as $card) {
             $cardId = $card['id'];
             $title =  "Queue Card #:".$cardId;
-            $subtitle = "QC Status:".$this->getStatus($card['status']);
+            $subtitle = "Status: ".$this->getStatus($card['status']);
             $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
             $buttons = [];
 
@@ -127,7 +127,7 @@ class QueueCardsResponse{
 
     public function getStatus($status){
       switch ($status) {
-        case 1: return "OnQueue";
+        case 1: return "On Queue";
         case 2: return "Serving";
         case 3: return "Finished";
         default:

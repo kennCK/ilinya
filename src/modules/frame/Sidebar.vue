@@ -306,13 +306,15 @@ export default {
 /*-------------- Extra Small Screen for Mobile Phones --------------*/
 @media (max-width: 767px){
   .main-sidebar{
-    width: 70%;
+    width: 100%;
+    float: left;
   }
   .content-holder{
     width: 10px;
-    min-width: 26%;
+    min-width: 96%;
     overflow-y: hidden;
     margin: 20px 2% 0 2%;
+    float: left;
   }
    .sm-title{
     text-align: center;
@@ -334,7 +336,7 @@ export default {
 @media (max-width: 239px){
 
   .main-sidebar{
-    width: 70%;
+    width: 100%;
   }
   .sm-title,.header{
     display: none;
@@ -351,9 +353,10 @@ export default {
     display: none;
   }
   .content-holder{
-    width: 26%;
+    width: 96%;
     overflow: hidden;
     margin: 20px 2% 0 2%;
+    float: left;
   }
   .main-sidebar.hidden{
     margin-left: 0%;

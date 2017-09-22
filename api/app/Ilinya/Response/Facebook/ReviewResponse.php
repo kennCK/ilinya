@@ -107,7 +107,7 @@ class ReviewResponse{
     }
     public function inform(){
         $this->user();
-        return "Hi ".$this->user->getFirstName()."! Kindly review your information below:";
+        return "Hi ".$this->user->getFirstName()." :) Kindly review your information below:";
     }
 
 }

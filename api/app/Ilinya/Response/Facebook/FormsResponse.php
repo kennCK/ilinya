@@ -55,7 +55,7 @@ class FormsResponse{
  public function confirmation($form){
       $this->user();
       $companyData = $this->tracker->getCompanyData();
-      $title = "Hi ".$this->user->getFirstName().'! You are about to get *'.$companyData[0]['name'].'* *'.$form['title'].' Form.* Are you sure you want to continue?';
+      $title = "Hi ".$this->user->getFirstName()." :) You are about to get ".$companyData[0]['name'].' '.$form['title'].' Form. Are you sure you want to continue?';
       $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload($form['id'].'@qrFormCancel');
       $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload($form['id'].'@qrFormContinue');
       return QuickReplyTemplate::toArray($title, $quickReplies);

@@ -9,6 +9,7 @@ use App\Ilinya\Message\Facebook\Form;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\EditResponse;
+use App\Ilinya\Response\Facebook\SearchResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Text{
@@ -27,6 +28,7 @@ class Text{
       $this->tracker= new Tracker($messaging);
       $this->code   = new Codes(); 
       $this->edit   = new EditResponse($messaging);
+      $this->search = new SearchResponse($messaging);
   }
 
   public function manage($reply){
@@ -37,8 +39,8 @@ class Text{
     else{
         switch ($this->tracker->getReplyStage()) {
           case $this->code->replyStageSearch:
-            $this->bot->reply(1, true);
-            //$this->search();
+            $this->bot->reply($this->post->informAboutQCard(), false);
+            $this->bot->reply($this->search->manage($reply), false);
             break;
           case $this->code->replyStageForm:
             $this->form->reply($reply);
@@ -71,10 +73,6 @@ class Text{
       return true;
     }
     return false;
-  }
-
-  public function search(){
-
   }
 
   public function form(){
