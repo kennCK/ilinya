@@ -8,6 +8,7 @@ class QueueCardController extends APIController
 {
   function __construct(){
     $this->model = new DBItem();
+    $this->useUserCompanyID = false;
     $this->editableForeignTable = array(
       'queue_card_fields'
     );
