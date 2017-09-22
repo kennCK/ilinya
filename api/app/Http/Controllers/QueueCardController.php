@@ -33,7 +33,6 @@ class QueueCardController extends APIController
   public function update(Request $request){
     $reqArray = $request->toArray();
     if(isset($reqArray['status'])){
-      $this->response['debug'][] = $reqArray['status'];
       switch($reqArray['status'] * 1){
         case 2:
           $reqArray['datetime_served'] = date('Y-m-d H:i:s', time());

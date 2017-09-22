@@ -8,7 +8,7 @@ Vue.mixin({
   },
   methods: {
     APIRequest(link, parameter, callback, errorCallback){
-      let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token + '&company_id=' + AUTH.user.company_id + '&company_branch_id=' + AUTH.user.company_branch_id : ''
+      let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token + '&selected_company_id=' + AUTH.user.company_id + '&selected_company_branch_id=' + AUTH.user.company_branch_id : ''
       let request = jQuery.post(CONFIG.API_URL + link + tokenStringParam, parameter, (response) => {
         this.APISuccessRequestHandler(response, callback)
       }).fail((jqXHR) => {
@@ -17,7 +17,7 @@ Vue.mixin({
       return request
     },
     APIFormRequest(link, formRef, callback, errorCallback){
-      let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token + '&company_id=' + AUTH.user.company_id + '&company_branch_id=' + AUTH.user.company_branch_id : ''
+      let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token + '&selected_company_id=' + AUTH.user.company_id + '&selected_company_branch_id=' + AUTH.user.company_branch_id : ''
       let formData = new FormData($(formRef)[0])
       $.ajax({
         url: CONFIG.API_URL + link + tokenStringParam,

@@ -91,6 +91,7 @@ class APIController extends Controller
       }
       else{
       }
+
       $this->updateEntry($request->all());
 
       return $this->output();
@@ -128,16 +129,15 @@ class APIController extends Controller
       array_pop($this->tableColumns);//updated at
       array_pop($this->tableColumns);//created at
       foreach($this->tableColumns as $column){
-        // $column == 'company_id' ? $request['company_id'] = $this->getUserCompanyID() : '';
         $this->validation[$column] = (isset($this->validation[$column])) ? $this->validation[$column] : '';
         if(!in_array($column, $this->notRequired) && !isset($this->defaultValue[$column])){//requiring all field by default
           if($action !== "update"){
             $this->validation[$column] = $this->validation[$column].($this->validation[$column] ? "| ":"")."required";
           }else if($action === "update"){
-
             if(in_array($column, $request)){
               $this->validation[$column] = $this->validation[$column].($this->validation[$column] ? "| ":"")."required";
             }else{
+
               unset($this->validation[$column]);
             }
           }
@@ -154,7 +154,7 @@ class APIController extends Controller
       if(count($this->validation)){
         foreach($this->validation as $validationKey => $validationValue){
           if($action == "update"){
-            if( strpos( $validationValue, "unique" ) !== false ) { //check if rule has unique
+            if(strpos( $validationValue, "unique" ) !== false ) { //check if rule has unique
               $rules = explode("|", $this->validation[$validationKey]);
               foreach($rules as $ruleKey => $ruleValue){ //find the unique rule
                 if(strpos( $ruleValue, "unique" ) !== false){
@@ -173,7 +173,6 @@ class APIController extends Controller
             $this->validation[$validationKey] = $this->validation[$validationKey]."|exists:".$table.",id";
           }
         }
-        $this->response['debug'][] = $this->validation;
         $validator = Validator::make($request, $this->validation);
         if ($validator->fails()) {
           if(!$subTableName){
@@ -409,8 +408,8 @@ class APIController extends Controller
         }else if(isset($this->defaultValue[$columnName]) && isset($request[$columnName])){
           $this->model->$columnName = $this->defaultValue[$columnName];
         }
-      }
 
+      }
       $result = $this->model->save();
       if($result && count($this->singleImageFileUpload) && !$noFile){
         $id = $this->model->id;
