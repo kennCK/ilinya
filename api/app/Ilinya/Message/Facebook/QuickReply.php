@@ -11,6 +11,7 @@ use App\Ilinya\Message\Facebook\Postback;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\SendResponse;
+use App\Ilinya\Response\Facebook\SearchResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 
@@ -34,12 +35,18 @@ class QuickReply{
         $this->send   = new SendResponse($messaging);
         $this->error  = new Error($messaging);
         $this->postback = new Postback($messaging);
+        $this->search = new SearchResponse($messaging);
   }
   public function manage($custom){
       $parameter = $custom['quick_reply']['parameter'];
       switch ($this->code->getCode($custom)) {
         case $this->code->qrSearch:
-          $this->bot->reply($this->category->question($parameter),true);
+          $this->bot->reply($this->search->question($parameter),true);
+          $data = [
+            "search_option" => $parameter,
+            "reply" => $this->code->replyStageSearch
+          ];
+          $this->tracker->update($data);
           return null;
           break;
         case $this->code->qrPriorityYes:

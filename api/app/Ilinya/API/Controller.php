@@ -17,6 +17,7 @@ class Controller{
   public static function create(Request $request, $controller){
     $result = app($controller)->create($request);
     $result = json_decode($result->getContent(), true);
+    echo json_encode($result);
     return $result['data'];
   }
   public static function insert(Request $request, $controller){

@@ -43,7 +43,7 @@ class Curl{
 
     public function prepare($url, $flag){
       $request = curl_init();
-      $page_access_token = "access_token=EAACfJZAjQCwcBAPzl0vDpbrx9il9Uj1PRPZBiXN9z0vBoZAbI14wScUuq7lp4y31qI0tEOdpy9NzDaWFaUHtfwvxbLsXOKMLn95AAZCOi4Rolx0jDZC9tZCegp9Gtujqgac8xpo1ugw0skoc3Lj4bEJsYQPhN3SvuSMt2KrmQBOc3wKZC94voP2";
+      $page_access_token = "access_token=EAACfJZAjQCwcBAADc7qxhvxK0mOSLOIaeY3ZBLZBhVW8NZCTzqfl5rZAGJnsXRMtvkAKQOkRLAy7ZAMfNXhVZB033AFSd3BwyfVxJV9B2z3PGgZA7MeR3DnqT2HSS5bqBZCqPyYgw6kTyRCM7CEiS7ppau7bmpOTvVDCj6Gy3kxZAjZA3XwCZAhUl2vZB";
 
       $url .= ($flag == false)? '?'.$page_access_token:'&'.$page_access_token;  
         

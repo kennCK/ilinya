@@ -75,8 +75,8 @@ class SendResponse{
 
     public function queueCard(){
         $this->user();
-        $title =  "Hi ".$this->user->getFirstName()."! Here's your Queue Card #:".$this->cardId;
-        $subtitle = "QC Status: Onqueue";
+        $title =  "Hi ".$this->user->getFirstName()." :) Here's your Queue Card #:".$this->cardId;
+        $subtitle = "Status: On Queue";
         $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
         $buttons[] = ButtonElement::title("Cancel")
                     ->type('postback')
@@ -158,13 +158,13 @@ class SendResponse{
 
         $result = Controller::retrieve($reCon, $controller);
 
-
         if(!$result){
           $request = new Request();
           $request['company_id'] = $companyId;
           $request['queue_form_id'] = $queueFormId;
           $request['facebook_user_id'] = $this->userId;
           $request['number']  = 0;
+          echo json_encode($request->all());
           $result = Controller::create($request, $controller);
           $this->cardId = ($result != false)? $result:null;  
         }

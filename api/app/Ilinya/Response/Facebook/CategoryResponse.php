@@ -6,8 +6,8 @@ namespace App\Ilinya\Response\Facebook;
 */
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
-use App\Ilinya\StatusChecker;
 use Illuminate\Http\Request;
+use App\Ilinya\Tracker;
 /*
     @Template
 */
@@ -35,21 +35,11 @@ use App\Ilinya\API\Controller;
 class CategoryResponse{
 
   protected $messaging;
+  protected $tracker;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
-  }
-
-  public function searchOption(){
-      $quickReplies[] = QuickReplyElement::title('Company Name')->contentType('text')->payload('company_name@qrSearch');
-      $quickReplies[] = QuickReplyElement::title('Company Location')->contentType('text')->payload('company_location@qrSearch');
-      $quickReplies[] = QuickReplyElement::title('')->contentType('location')->payload('');
-
-      return QuickReplyTemplate::toArray('Select options for search:', $quickReplies);
-  }
-
-  public function question($value){
-    return ($value == "company_name")? "Enter Company Name:":"Enter Company Location:";
+      $this->tracker   = new Tracker($messaging);
   }
 
   public function companies($businessTypeId){
@@ -64,34 +54,37 @@ class CategoryResponse{
      return $this->retrieve($request);
   }
 
-  public function search($data){
+  public function search($value, $category = null){
     $request = new Request();
     $condition = [];
 
-    switch ($$data['search_option']) {
+    switch ($this->tracker->getSearchOption()) {
       case 1:
         $condition[] = [
           "column"  => "name",
           "clause"  => "like",
-          "value"   => "%".$data['value'].'%'
+          "value"   => "%".$value.'%'
         ];
         break;
       case 2:
         $condition[] = [
           "column"  => "address",
           "clause"  => "like",
-          "value"   => "%".$data['value'].'%'
+          "value"   => "%".$value.'%'
         ];
         break;
       default:
         break;
     }
 
-    $condition[] = [
-      "column"  => "business_type_id",
-      "clause"  => "=",
-      "value"   => $data['category']
-    ];
+    if($category){
+        $condition[] = [
+          "column"  => "business_type_id",
+          "clause"  => "=",
+          "value"   => $category
+        ];
+    }
+   
     
     $request['condition'] = $condition;
     $request['limit']     = 10;
@@ -112,7 +105,7 @@ class CategoryResponse{
       foreach ($datas as $data) {
         $buttons = [];
         $availability = $this->availability($data['id']);
-        $buttons[] = ($availability == true)?ButtonElement::title("Get Queue Cards")
+        $buttons[] = ($availability == true)?ButtonElement::title("Get QCard")
                     ->type('postback')
                     ->payload($data['id'].'@pGetQueueCard')
                     ->toArray():ButtonElement::title("View Location")
