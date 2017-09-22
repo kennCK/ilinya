@@ -173,13 +173,14 @@ class APIController extends Controller
             $this->validation[$validationKey] = $this->validation[$validationKey]."|exists:".$table.",id";
           }
         }
+        $this->response['debug'][] = $this->validation;
         $validator = Validator::make($request, $this->validation);
         if ($validator->fails()) {
-            if($subTableName){
-              $this->response["error"]["status"] = 100;
-              $this->response["error"]["message"] = $validator->errors()->toArray();
-            }
-            return false;
+          if(!$subTableName){
+            $this->response["error"]["status"] = 100;
+            $this->response["error"]["message"] = $validator->errors()->toArray();
+          }
+          return false;
         }else{
           return true;
         }
@@ -194,7 +195,6 @@ class APIController extends Controller
       if(!$this->isValid($request, "create")){
         return $this->output();
       }
-
       unset($tableColumns[0]);
       foreach($tableColumns as $columnName){
         if(isset($request[$columnName])){
@@ -547,6 +547,7 @@ class APIController extends Controller
       } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
         return response()->json(['token_absent'], $e->getStatusCode());
       } catch(\Tymon\JWTAuth\Exceptions\JWTException $e){//general JWT exception
+        $this->response['debug'][] = 'No token parsed';
         return false;
       }
       // the token is valid and we have found the user via the sub claim
@@ -557,7 +558,7 @@ class APIController extends Controller
       if(!$this->userSession){
         $this->getAuthenticatedUser();
       }
-      if(!isset($this->userSession['company_id']) && $this->userSession['company_id']){
+      if(!isset($this->userSession['company_id']) && $this->userSession){
         $company = (new CompanyBranchEmployee())->with(['company_branch'])->where('account_id', $this->userSession['id'])->get()->toArray();
         $this->userSession['company_id'] = $company[0]['company_branch']['company_id'];
       }

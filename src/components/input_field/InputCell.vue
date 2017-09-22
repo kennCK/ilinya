@@ -181,7 +181,6 @@
     },
     watch: {
       form_status(value){
-        console.log(value)
       },
       form_data_updated(value){
         this.feedbackStatus = 0

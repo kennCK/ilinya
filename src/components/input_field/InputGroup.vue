@@ -163,7 +163,6 @@
         if(typeof fieldName === 'undefined'){
           return null
         }
-        console.log(fieldName + ' : ' + value)
         let finalValue = value // || this.inputList[fieldName]['default_value']
         switch(this.inputList[fieldName]['data_format']){
           case 'decimal':

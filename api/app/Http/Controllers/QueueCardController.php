@@ -12,7 +12,7 @@ class QueueCardController extends APIController
       'queue_card_fields'
     );
     $this->notRequired = array(
-      'user_id',
+      'facebook_user_id',
       'status',
       'datetime_finished',
       'datetime_served'

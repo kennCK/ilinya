@@ -147,7 +147,6 @@
             let newForm = {
             }
             if(form){
-              console.log('status_dummy : ' + form.status_dummy)
               if(form.status_dummy * 1 === 4){
                 this.filterSetting['status']['clause'] = '!='
                 newForm.status = 3
@@ -155,7 +154,6 @@
                 this.filterSetting['status']['clause'] = '='
                 newForm.status = form.status_dummy
               }
-              console.log('status: ' + newForm.status)
             }
             return newForm
           }
