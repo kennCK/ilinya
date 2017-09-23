@@ -46,7 +46,8 @@ class ErrorResponse{
     public function stage(){
     $this->user();
       $companyData = $this->tracker->getCompanyData();
-      $title = "Hi ".$this->user->getFirstName().'! Are you sure you want to cancel your current transaction to '.$companyData[0]['name'].'?';
+     $mode = (intval($companyData[0]['id']) == 6 || $companyData[0]['id'] == '6') ? "survey" : "transaction";
+        $title = "Hi ".$this->user->getFirstName()." :) Are you sure you want to cancel your ".$mode." to ".$companyData[0]['name']."?";
       $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('0@qrStageError');
       $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('1@qrStageError');
       return QuickReplyTemplate::toArray($title, $quickReplies);

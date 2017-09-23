@@ -104,31 +104,33 @@ class CategoryResponse{
       
       foreach ($datas as $data) {
         $buttons = [];
-        $availability = $this->availability($data['id']);
-        $buttons[] = ($availability == true)?ButtonElement::title("Get QCard")
-                    ->type('postback')
-                    ->payload($data['id'].'@pGetQueueCard')
-                    ->toArray():ButtonElement::title("View Location")
-                    ->type('web_url')
-                    ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
-                    ->ratio('full')
-                    ->toArray();
-        $buttons[] = ($availability == true)?ButtonElement::title("View Location")
-                    ->type('web_url')
-                    ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
-                    ->ratio('full')
-                    ->toArray():ButtonElement::title("Back to Categories")
-                    ->type('postback')
-                    ->payload('@pCategories')
-                    ->toArray();
-       
-        $availabilityText = ($availability == true)? ' is Available':' is not Available';
-        $availabilityText .= ' for Transaction!';
-        $elements[] = GenericElement::title($data['name'].$availabilityText)
-                            ->imageUrl($imgUrl)
-                            ->subtitle('Address: '.$data['address'])
-                            ->buttons($buttons)
-                            ->toArray();
+        if($data['id'] != '6' || intval($data['id']) != 6){
+          $availability = $this->availability($data['id']);
+          $buttons[] = ($availability == true)?ButtonElement::title("Get QCard")
+                      ->type('postback')
+                      ->payload($data['id'].'@pGetQueueCard')
+                      ->toArray():ButtonElement::title("View Location")
+                      ->type('web_url')
+                      ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
+                      ->ratio('full')
+                      ->toArray();
+          $buttons[] = ($availability == true)?ButtonElement::title("View Location")
+                      ->type('web_url')
+                      ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
+                      ->ratio('full')
+                      ->toArray():ButtonElement::title("Back to Categories")
+                      ->type('postback')
+                      ->payload('@pCategories')
+                      ->toArray();
+         
+          $availabilityText = ($availability == true)? ' is Available':' is not Available';
+          $availabilityText .= ' for Transaction!';
+          $elements[] = GenericElement::title($data['name'].$availabilityText)
+                              ->imageUrl($imgUrl)
+                              ->subtitle('Address: '.$data['address'])
+                              ->buttons($buttons)
+                              ->toArray();
+        }
       }
       $response =  GenericTemplate::toArray($elements);
       return $response;

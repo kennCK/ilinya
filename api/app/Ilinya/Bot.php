@@ -26,4 +26,8 @@ class Bot{
         $message = ['text' => $message];
         Curl::send($recipientId, $message);
     }
+
+    public static function survey($recipientId, $message){
+        Curl::send($recipientId, $message);
+    }
 }
