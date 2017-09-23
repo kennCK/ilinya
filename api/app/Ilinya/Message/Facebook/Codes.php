@@ -57,6 +57,7 @@ class Codes{
   public $qrFormContinue = 324;
   public $qrDisregard    = 325;
   public $qrStageError   = 326;
+  public $qrSurvey       = 327;
 
   /**
     TEXT CODES
@@ -101,7 +102,8 @@ class Codes{
       "@qrFormCancel"   => $this->qrFormCancel,
       "@qrFormContinue" => $this->qrFormContinue,
       "@qrDisregard"    => $this->qrDisregard,
-      "@qrStageError"   => $this->qrStageError
+      "@qrStageError"   => $this->qrStageError,
+      "@qrSurvey"       => $this->qrSurvey
     );
   }
 

@@ -10,6 +10,8 @@ use App\Ilinya\Message\Facebook\Codes;
 use App\Ilinya\Response\Facebook\FormsResponse;
 use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\ReviewResponse;
+use App\Ilinya\Response\Facebook\SendResponse;
+use App\Ilinya\Response\Facebook\SurveyResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use Illuminate\Support\Facades\Validator;
 /*
@@ -31,6 +33,8 @@ class Form{
   protected $post;
   protected $db_field = "temp_custom_fields_storage";
   protected $pageID = "133610677239344";
+  protected $send;
+  protected $survey;
 
   function __construct(Messaging $messaging){
     $this->messaging  = $messaging;
@@ -40,6 +44,8 @@ class Form{
     $this->code       = new Codes();
     $this->post       = new PostbackResponse($messaging);
     $this->review     = new ReviewResponse($messaging);
+    $this->send       = new SendResponse($messaging);
+    $this->survey     = new SurveyResponse($messaging);
   }
   
  public function retrieveForms($companyId){
@@ -231,8 +237,15 @@ class Form{
             2. Set Reply to 0
             3. Review Details
           */
+          if($this->tracker->getCompanyId() == 6){
+            $this->send->submit();
+            $this->bot->reply($this->survey->appreciate(), false);
+
+          }
+          else{
             $this->bot->reply($this->review->inform(), true);
-            $this->bot->reply($this->review->display(), false);
+            $this->bot->reply($this->review->display(), false); 
+          }
         }
         else{ 
           $this->bot->reply("Not Available!", true);

@@ -79,7 +79,7 @@ Route::get('/migrate', function () {
 Route::get("/bot/hook","IlinyaController@hook")->middleware("verify");
 Route::post("/bot/hook","IlinyaController@hook");
 Route::get("/bot/broadcast/{companyId}/{message}","IlinyaController@broadcast");
-Route::get("/bot/paging/{recipientId}/{message}","IlinyaController@paging");
-Route::get("/bot/reminder/{recipientId}/{message}","IlinyaController@reminder");
+Route::get("/bot/paging/{recipientId}/{message}/{surveyMode}","IlinyaController@paging");
+Route::get("/bot/reminder/{recipientId}/{message}/{surveyMode}","IlinyaController@reminder");
 Route::get("/bot/image","IlinyaController@createImage");
 Route::get("/bot/test/{size}","IlinyaController@test");

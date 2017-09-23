@@ -61,6 +61,16 @@ class CompaniesTableSeeder extends Seeder
             "email" => "usc@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
+          ),
+          array(
+            "id"    => "6",
+            "business_type_id" => "0",
+            "name"  => "iLinya Technologies",
+            "address"   => "Cebu City",
+            "contact_number"    => "09423873602",
+            "email" => "support@ilinya.com",
+            "lat"   => "123.1234556",
+            "lng"   => "5.1234556"
           )
         ));
     }

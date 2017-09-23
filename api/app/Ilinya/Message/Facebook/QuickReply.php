@@ -12,6 +12,7 @@ use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\SendResponse;
 use App\Ilinya\Response\Facebook\SearchResponse;
+use App\Ilinya\Response\Facebook\SurveyResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 
@@ -24,6 +25,7 @@ class QuickReply{
     protected $send;
     protected $error;
     protected $postback;
+    protected $survey;
 
   function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
@@ -36,6 +38,7 @@ class QuickReply{
         $this->error  = new Error($messaging);
         $this->postback = new Postback($messaging);
         $this->search = new SearchResponse($messaging);
+        $this->survey = new SurveyResponse($messaging);
   }
   public function manage($custom){
       $parameter = $custom['quick_reply']['parameter'];
@@ -99,6 +102,15 @@ class QuickReply{
               //Continue Current Transaction
              $this->form->retrieve(null, true);
           }
+          break;
+        case $this->code->qrSurvey:
+            if(intval($parameter) == 1 || $parameter == '1'){
+             $formdId = 6;  
+             $this->form->retrieve($formdId, null);
+            }
+            else{
+              $this->bot->reply($this->survey->appreciate(), false);
+            }
           break;
         default:
           //Statement Here

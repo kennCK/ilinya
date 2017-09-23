@@ -173,6 +173,19 @@ class Tracker{
     }
   }
 
+  public function insertSurvey($data){
+     if($this->messaging->getSenderId() != $this->pageID){
+        $condition = [
+            ['facebook_id','=',$this->messaging->getSenderId()]
+        ];
+        $flag = DB::retrieve($this->db_tracker, $condition, null);
+        if(!$flag){
+          $data['facebook_id'] = $this->messaging->getSenderId();
+          return DB::insert($this->db_tracker, $data); 
+        }
+      }
+  }
+
   public function update($data){
         $condition = [
             ['facebook_id','=',$this->messaging->getSenderId()]

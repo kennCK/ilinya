@@ -46,7 +46,8 @@ class DisregardResponse{
         $this->user();
         $companyData = $this->tracker->getCompanyData();
         //echo json_encode($companyData);
-        $title = "Hi ".$this->user->getFirstName()." :) Are you sure you want to disregard your transaction to ".$companyData[0]['name']."?";
+        $mode = (intval($companyData[0]['id']) == 6 || $companyData[0]['id'] == '6') ? "survey" : "transaction";
+        $title = "Hi ".$this->user->getFirstName()." :) Are you sure you want to disregard your ".$mode." to ".$companyData[0]['name']."?";
         $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('0@qrDisregard');
         $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('1@qrDisregard');
         return QuickReplyTemplate::toArray($title, $quickReplies);

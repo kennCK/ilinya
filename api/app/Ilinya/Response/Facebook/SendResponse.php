@@ -19,6 +19,7 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 use App\Ilinya\API\Controller;
 use App\Ilinya\API\CustomFieldModel;
 use App\Ilinya\ImageGenerator;
+use App\Ilinya\API\Facebook;
 
 
 class SendResponse{
@@ -63,8 +64,11 @@ class SendResponse{
           $cRequest['value'] = $field['field_value'];
           $this->createQueueCardFields($cRequest);
         }
-        $response = $this->queueCard();
-        $this->tracker->delete();
+         if($this->tracker->getCompanyId() != 6){
+          $response = $this->queueCard();
+         }
+        
+         $this->tracker->delete();
         //ImageGenerator::create($this->cardId);
       }
       else{
@@ -151,7 +155,7 @@ class SendResponse{
         $condition[] = [
           "column"  => "facebook_user_id",
           "clause"  => "=",
-          "value"   => $this->getFacebookUserId()
+          "value"   => Facebook::getDynamicField($this->messaging->getSenderId(), 'id')
         ];
 
         $reCon['condition'] = $condition;
@@ -183,21 +187,5 @@ class SendResponse{
 
         return ($result != null)? true:false;
     }
-
-    public function getFacebookUserId(){
-      $controller = 'App\Http\Controllers\FacebookUserController';
-      $request = new Request();
-
-      $condition [] = [
-        'column'  => 'account_number',
-        'clause'  => '=',
-        'value'   => $this->messaging->getSenderId()
-      ];
-
-      $request['condition'] = $condition;
-      $userField = Controller::retrieve($request, $controller);
-      return $userField[0]['id'];
-    }
-
 
 }

@@ -9,6 +9,8 @@ use App\Ilinya\Bot;
 use App\Jobs\TestDatabaseQueryEffect;
 use App\Jobs\ChatbotBroadcast;
 use App\Ilinya\ImageGenerator;
+use App\Ilinya\Response\Facebook\SurveyResponse;
+
 class IlinyaController extends Controller
 {
     public function hook(Request $request){
@@ -26,12 +28,22 @@ class IlinyaController extends Controller
         dispatch(new ChatbotBroadcast($companyId, $message));
     }
 
-    public function paging($recepientId, $message){
+    public function paging($recepientId, $message, $surveyMode){
         Bot::notify($recepientId, $message);
+        if(intval($surveyMode) == 1 || $surveyMode == '1'){    
+            //Set to survey mode
+            $surveyMessage = SurveyResponse::requestForSurvey($recepientId);
+            Bot::survey($recepientId, $surveyMessage);
+        }       
     }
 
-    public function reminder($recepientId, $message){
+    public function reminder($recepientId, $message, $surveyMode){
         Bot::notify($recepientId, $message);
+        if(intval($surveyMode) == 1 || $surveyMode == '1'){    
+            //Set to survey mode
+            $surveyMessage = SurveyResponse::requestForSurvey($recepientId);
+            Bot::survey($recepientId, $surveyMessage);
+        }   
     }
 
     public function createImage(){
