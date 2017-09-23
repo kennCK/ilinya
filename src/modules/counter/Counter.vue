@@ -212,9 +212,10 @@
     props: {
     },
     methods: {
-      pageUser(accountNumber, message, callback){
+      pageUser(accountNumber, message, callback, finish){
         this.isCalling = true
-        $.get(CONFIG.BACKEND_URL + '/bot/reminder/' + accountNumber + '/' + message, {}, (response) => {
+        finish = (typeof finish === 'undefined') ? 0 : finish
+        $.get(CONFIG.BACKEND_URL + '/bot/reminder/' + accountNumber + '/' + message + '/' + finish, {}, (response) => {
           this.isCalling = false
           if(callback){
             callback()
@@ -247,7 +248,7 @@
               this.$refs.queueCardTable.deleteRow(this.rowIndex)
             }
             if(status * 1 === 3 && this.selected_queue_card.facebook_user){
-              this.pageUser(this.selected_queue_card.facebook_user.account_number, 'Thank you!')
+              this.pageUser(this.selected_queue_card.facebook_user.account_number, 'Thank you!', null, 1)
             }
           }
         })
