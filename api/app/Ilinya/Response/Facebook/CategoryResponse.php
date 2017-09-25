@@ -93,6 +93,7 @@ class CategoryResponse{
 
   public function retrieve(Request $request){
     $data = Controller::retrieve($request, "App\Http\Controllers\CompanyController");
+    echo json_encode($data);
     return $this->manageResult($data);
   }
 

@@ -1,6 +1,6 @@
 
-let LIVE_BACKEND_URL = 'https://bfac0d17.ngrok.io/ilinya/api' // 'http://johnenrick.com'
-let DEV_BACKEND_URL = 'http://localhost/ilinya/api'
+let LIVE_BACKEND_URL = 'https://app.ilinya.com/api' // 'http://johnenrick.com'
+let DEV_BACKEND_URL = 'https://app.ilinya.com/api'
 let isDev = true
 let BACKEND_URL = isDev ? DEV_BACKEND_URL : LIVE_BACKEND_URL
 export default{
