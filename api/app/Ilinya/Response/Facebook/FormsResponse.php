@@ -74,4 +74,9 @@ class FormsResponse{
     return ['text' => 'Hi '.$this->user->getFirstName().', I am very sorry but you have missed something. I will take you form the start. Kindly select the options below.'];
   }
 
+  public function duplicate(){
+    $this->user();
+    return ['text' => "Hi ".$this->user->getFirstName().", You're QCard is still active."];
+  }
+
 }

@@ -43,7 +43,16 @@ class Curl{
 
     public function prepare($url, $flag){
       $request = curl_init();
-      $page_access_token = "access_token=EAACfJZAjQCwcBAADc7qxhvxK0mOSLOIaeY3ZBLZBhVW8NZCTzqfl5rZAGJnsXRMtvkAKQOkRLAy7ZAMfNXhVZB033AFSd3BwyfVxJV9B2z3PGgZA7MeR3DnqT2HSS5bqBZCqPyYgw6kTyRCM7CEiS7ppau7bmpOTvVDCj6Gy3kxZAjZA3XwCZAhUl2vZB";
+      $page_access_token = "";
+      $envFbStatus = env('FB_TOKEN_STATUS');
+      echo  $envFbStatus;
+      // true = live, false = test
+      if($envFbStatus == true){
+        $page_access_token = "access_token=EAACfJZAjQCwcBAADc7qxhvxK0mOSLOIaeY3ZBLZBhVW8NZCTzqfl5rZAGJnsXRMtvkAKQOkRLAy7ZAMfNXhVZB033AFSd3BwyfVxJV9B2z3PGgZA7MeR3DnqT2HSS5bqBZCqPyYgw6kTyRCM7CEiS7ppau7bmpOTvVDCj6Gy3kxZAjZA3XwCZAhUl2vZB"; 
+      }
+      else{
+        $page_access_token = "access_token=EAAFRBiltHcQBAIYYtykZCXcu657vdX8mlKSZAJZBS0qC6IGly4ZCf8H3jm37N3qeQKSbx6R3lxMoOS0ZBlZAOgbuQPhSGLpEZCOklt1EcRyx6DPd3QB1CpZBnfzQpZBj3F2uJIXfB5ZCEItxlXbYzWFqNZBZAGMfWZBlozctFYzssVpR443q2o8VZC0yWW";
+      }
 
       $url .= ($flag == false)? '?'.$page_access_token:'&'.$page_access_token;  
         

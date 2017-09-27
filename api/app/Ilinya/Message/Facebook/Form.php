@@ -55,6 +55,10 @@ class Form{
 
   public function manageForms($forms){
     if(sizeof($forms) > 0){
+
+        /*
+          Check if have existing reservation
+        */
         if(sizeof($forms) > 1){
           //Show Forms
           $this->bot->reply($this->response->selectForms($forms),false);
