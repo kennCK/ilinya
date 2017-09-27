@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ApiTestResults extends APIModel
 {   
-    use SoftDeletes;
     protected $primaryKey = 'id';
     protected $table = 'api_test_results';
 }

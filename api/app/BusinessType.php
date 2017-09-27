@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BusinessType extends APIModel
 {
-    use SoftDeletes;
     protected $primaryKey = 'id';
     protected $table = 'business_types';
 
