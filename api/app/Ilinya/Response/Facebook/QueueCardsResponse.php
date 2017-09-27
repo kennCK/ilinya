@@ -149,5 +149,37 @@ class QueueCardsResponse{
         return ['text' => "Server Error! Please try again."];
     }
 
+    public function manageResult($result){
+      if(sizeof($result) > 0){
+          $queueCards = '';
+          $elements = [];
+          foreach ($result as $card) {
+            $cardId = $card['id'];
+            $title =  "Queue Card #:".$cardId;
+            $subtitle = "Status: ".$this->getStatus($card['status']);
+            $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
+            $buttons = [];
+
+            if($card['status'] == 1 || $card['status'] == 2){
+              $buttons[] = ButtonElement::title("Cancel")
+                        ->type('postback')
+                        ->payload($cardId.'@pCancelQC')
+                        ->toArray();
+              $buttons[] = ButtonElement::title("Postpone")
+                        ->type('postback')
+                        ->payload($cardId.'@pPostponeQC')
+                        ->toArray();
+            }
+            $elements[] = GenericElement::title($title)
+                                ->imageUrl($imageUrl)
+                                ->subtitle($subtitle)
+                                ->buttons($buttons)
+                                ->toArray();
+          }
+        return GenericTemplate::toArray($elements);
+      }
+      return ['text' => 'No Cards Found!'];
+    }
+
 
 }
