@@ -14,6 +14,7 @@ use App\Ilinya\Response\Facebook\SendResponse;
 use App\Ilinya\Response\Facebook\SearchResponse;
 use App\Ilinya\Response\Facebook\SurveyResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
+use App\Ilinya\Response\Facebook\QueueCardsResponse;
 
 
 class QuickReply{
@@ -26,6 +27,7 @@ class QuickReply{
     protected $error;
     protected $postback;
     protected $survey;
+    protected $qc;
 
   function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
@@ -39,9 +41,15 @@ class QuickReply{
         $this->postback = new Postback($messaging);
         $this->search = new SearchResponse($messaging);
         $this->survey = new SurveyResponse($messaging);
+        $this->qc     = new QueueCardsResponse($messaging);
   }
   public function manage($custom){
       $parameter = $custom['quick_reply']['parameter'];
+      $parameter2 = null;
+        if(strpos($parameter, ',')){
+          list($parameter, $parameter2) = explode(',', $parameter);
+        }
+        else{}
       switch ($this->code->getCode($custom)) {
         case $this->code->qrSearch:
           $this->bot->reply($this->search->question($parameter),true);
@@ -111,6 +119,22 @@ class QuickReply{
             else{
               $this->bot->reply($this->survey->appreciate(), false);
             }
+          break;
+        case $this->code->qrQueueCardCancel:
+            if(intval($parameter) == 1 || $parameter == '1'){
+             $this->bot->reply($this->qc->cancel($parameter2), false);
+            }
+            else{
+              $this->bot->reply($this->qc->noInform(), false);
+            }
+          break;
+        case $this->code->qrQueueCardPostpone:
+          if(intval($parameter) == 1 || $parameter == '1'){
+             $this->bot->reply($this->qc->postpone($parameter2), false);
+          }
+          else{
+            $this->bot->reply($this->qc->noInform(), false);
+          }
           break;
         default:
           //Statement Here

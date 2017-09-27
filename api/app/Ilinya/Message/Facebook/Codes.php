@@ -58,6 +58,8 @@ class Codes{
   public $qrDisregard    = 325;
   public $qrStageError   = 326;
   public $qrSurvey       = 327;
+  public $qrQueueCardCancel    = 328;
+  public $qrQueueCardPostpone  = 329;
 
   /**
     TEXT CODES
@@ -103,7 +105,9 @@ class Codes{
       "@qrFormContinue" => $this->qrFormContinue,
       "@qrDisregard"    => $this->qrDisregard,
       "@qrStageError"   => $this->qrStageError,
-      "@qrSurvey"       => $this->qrSurvey
+      "@qrSurvey"       => $this->qrSurvey,
+      "@qrQueueCardCancel" => $this->qrQueueCardCancel,
+      "@qrQueueCardPostpone" => $this->qrQueueCardPostpone
     );
   }
 
