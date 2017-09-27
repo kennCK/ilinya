@@ -7,6 +7,7 @@ use App\Ilinya\Http\Curl;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
 use App\Ilinya\Tracker;
+use App\Ilinya\Bot;
 use App\Ilinya\API\Database as DB;
 use App\Ilinya\Templates\Facebook\QuickReplyTemplate;
 use App\Ilinya\Templates\Facebook\ButtonTemplate;
@@ -21,6 +22,7 @@ use App\Ilinya\API\Controller;
 use App\Ilinya\API\CustomFieldModel;
 use App\Ilinya\API\Company;
 use App\Ilinya\API\QueueCard;
+use App\Ilinya\API\QueueCardFields;
 
 
 class QueueCardsResponse{
@@ -30,6 +32,7 @@ class QueueCardsResponse{
     protected $tracker;
     protected $db_field = "temp_custom_fields_storage";
     protected $review;
+    protected $bot;
 
 
     public function __construct(Messaging $messaging){
@@ -37,6 +40,7 @@ class QueueCardsResponse{
         $this->curl = new Curl();
         $this->tracker = new Tracker($messaging);
         $this->review  = new ReviewResponse($messaging);
+        $this->bot     = new Bot($messaging);
     }  
 
     /*
@@ -123,7 +127,7 @@ class QueueCardsResponse{
         return GenericTemplate::toArray($elements);
       }
       else{
-        return ['text' => 'No Cards Found!'];
+        return ['text' => "No QCards Found :'("];
       }
     }
 
@@ -139,18 +143,75 @@ class QueueCardsResponse{
     }
 
     public function cancel($id){
-      $request = new Request();
-      $controller = 'App\Http\Controllers\QueueCardController';
-      $request['id'] = $id;
       $companyId = QueueCard::retrieveById($id, 'company_id');
       $companyName = Company::retrieve(["id" => $companyId], "name");
-      $result = Controller::delete($request, $controller);
+      $result = $this->delete($id);
       if($result == 1){
         return ['text' => "You're QCard at ".$companyName." has been cancelled. Thank You :)"];
       }else if($result == 0){
         return ['text' => "QCard was not found :'( "];
       }
         return ['text' => "We're very sorry but the SERVER IS DOWN :'(  Please try again later or email us: support@ilinya.com for more information."];
+    }
+
+    public function postpone($id){
+      /*
+        1. Delete QCard
+        2. Create new QCard
+      */
+      $prevQC = QueueCard::retrieveById($id, '*');
+      $result = $this->delete($id);
+
+      if($result == 1){
+        //retrieve queue cards field
+        //create new card
+        $data = [
+          "column" => "queue_card_id",
+          "value"  => $id
+        ];
+        $fields = QueueCardFields::retrieve($data);
+        echo json_encode($fields);
+        return $this->createNewQueueCard($fields, $prevQC);
+      }
+      else if($result == 0){
+        return ['text' => "QCard was not found :'( "];
+      }
+        return ['text' => "We're very sorry but the SERVER IS DOWN :'(  Please try again later or email us: support@ilinya.com for more information."];
+    }
+
+    public function createNewQueueCard($fields, $prevQC){
+      if(sizeof($fields) > 0){
+          $newCardId = QueueCard::create($prevQC);
+
+          if($newCardId == false){
+            return ["text" => "QCard still exist."];
+          }
+          else{
+            $flag = true;
+            foreach ($fields as $field) {
+              $field['queue_card_id'] = $newCardId;
+              $result = QueueCardFields::create($field);
+              if($result == false)
+                $flag = false;
+            }
+
+            if($flag == true){
+                $this->user();
+                $this->bot->reply(['text' => 'Hi '.$this->user->getFirstName()." :) Here's your new QCard."], false);
+                return $this->manageResult(QueueCard::retrieveById($newCardId));
+            }else{
+              return ["Something was wrong during the creation of new card :'( Kindly ask the support at support@ilinya.com :'( "];
+            }
+          }
+      }
+      return ['text' => "Empty Fields :'("];
+    }
+
+    public function delete($id){
+      $request = new Request();
+      $controller = 'App\Http\Controllers\QueueCardController';
+      $request['id'] = $id;
+      return Controller::delete($request, $controller);
     }
 
     public function manageResult($result){
@@ -183,6 +244,27 @@ class QueueCardsResponse{
         return GenericTemplate::toArray($elements);
       }
       return ['text' => 'No Cards Found!'];
+    }
+
+    public function informCancel($parameter){
+        $this->user();
+        $title = "Hi ".$this->user->getFirstName()." :) Are you sure you want to cancel this QCard?";
+        $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('0,'.$parameter.'@qrQueueCardCancel');
+        $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('1,'.$parameter.'@qrQueueCardCancel');
+        return QuickReplyTemplate::toArray($title, $quickReplies);
+    }
+
+    public function informPostpone($parameter){
+        $this->user();
+        $title = "Hi ".$this->user->getFirstName()." :) Are you sure you want to postpone this QCard? I hope you understand that by taking this action your new QCard will be placed on the last.";
+        $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('0,'.$parameter.'@qrQueueCardPostpone');
+        $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('1,'.$parameter.'@qrQueueCardPostpone');
+        return QuickReplyTemplate::toArray($title, $quickReplies);
+    }
+
+    public function noInform(){
+      $this->user();
+      return ['text' => "Hi ".$this->user->getFirstName()." :) I understand your action :P"];
     }
 
 

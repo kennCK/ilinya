@@ -44,9 +44,54 @@ class QueueCard{
 
       $request['condition'] = $condition;
       $qc = Controller::retrieve($request, $controller);
-      if($column)
+      if($column == "*")
+        return (sizeof($qc) > 0) ? $qc[0] : null;
+      else if($column != "*" && $column != null)
         return (sizeof($qc) > 0) ? $qc[0][$column] : null;
         return $qc;
+    }
+
+    public static function create($data){
+       /*
+        1. Get Fields
+        2. Tracker
+        3. Get New Card Number
+           - Get Previous  + 1
+      */
+        $controller = 'App\Http\Controllers\QueueCardController';
+        //@tracker
+        $reCon = new Request();
+        $condition[] = [
+          "column"  => "company_id",
+          "clause"  => "=",
+          "value"   => $data['company_id']
+        ];
+        $condition[] = [
+          "column"  => "queue_form_id",
+          "clause"  => "=",
+          "value"   => $data['queue_form_id']
+        ];
+        $condition[] = [
+          "column"  => "facebook_user_id",
+          "clause"  => "=",
+          "value"   => $data['facebook_user_id']
+        ];
+
+        $reCon['condition'] = $condition;
+        $result = Controller::retrieve($reCon, $controller);
+
+        if(!$result){
+          $request = new Request();
+          $request['company_id']        = $data['company_id'];
+          $request['queue_form_id']     = $data['queue_form_id'];
+          $request['facebook_user_id']  = $data['facebook_user_id'];
+          $request['number']  = 0;
+          $result = Controller::create($request, $controller);
+          return ($result != false)? $result:null;  
+        }
+        else{
+          return false;
+        }
     }
 
 }
