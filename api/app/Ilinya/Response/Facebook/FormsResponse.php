@@ -7,6 +7,7 @@ namespace App\Ilinya\Response\Facebook;
 use App\Ilinya\Http\Curl;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
+use App\Ilinya\Bot;
 use App\Ilinya\Tracker;
 use Illuminate\Http\Request;
 /*
@@ -31,15 +32,27 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
     @API
 */
 use App\Ilinya\API\Controller;
+use App\Ilinya\API\Facebook;
+use App\Ilinya\API\QueueCard;
+use App\Ilinya\API\Company;
+
+/*
+  @Response
+*/
+use App\Ilinya\Response\Facebook\QueueCardsResponse;
 
 class FormsResponse{
   protected $messaging;
   protected $tracker;
   protected $curl;
+  protected $bot;
+  protected $qc;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
       $this->tracker   = new Tracker($messaging);
+      $this->bot       = new Bot($messaging);
+      $this->qc        = new QueueCardsResponse($messaging);
       $this->curl = new Curl();
   }
 
@@ -53,12 +66,16 @@ class FormsResponse{
   }
 
  public function confirmation($form){
+  $validate = $this->validate($form); 
+    if($validate == true){
       $this->user();
       $companyData = $this->tracker->getCompanyData();
       $title = "Hi ".$this->user->getFirstName()." :) You are about to get ".$companyData[0]['name'].' '.$form['title'].' Form. Are you sure you want to continue?';
       $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload($form['id'].'@qrFormCancel');
       $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload($form['id'].'@qrFormContinue');
       return QuickReplyTemplate::toArray($title, $quickReplies);
+    }
+    return $this->duplicate($form);
   }
 
   public function emptyForm(){
@@ -74,9 +91,30 @@ class FormsResponse{
     return ['text' => 'Hi '.$this->user->getFirstName().', I am very sorry but you have missed something. I will take you form the start. Kindly select the options below.'];
   }
 
-  public function duplicate(){
+  public function validate($form){
+    $fbId = Facebook::getDynamicField($this->messaging->getSenderId(), 'id');
+    $data = [
+        "company_id"  => $form['company_id'],
+        "queue_form_id" => $form['id'],
+        "facebook_user_id"  => $fbId
+    ];
+    $status = QueueCard::retrieve($data, "status");
+    if($status == null)return true;
+    else if(intval($status) == 3)return true;
+    else if(intval($status) == 1 || intval($status) == 2)return false;
+  }
+  public function duplicate($form){
     $this->user();
-    return ['text' => "Hi ".$this->user->getFirstName().", You're QCard is still active."];
+    $companyName = Company::retrieve(['id' => $form['company_id']], 'name');
+    $this->bot->reply(['text' => "Hi ".$this->user->getFirstName().", You're QCard at ".$companyName." is still active."],false);
+    $fbId = Facebook::getDynamicField($this->messaging->getSenderId(), 'id');
+    $data = [
+        "company_id"  => $form['company_id'],
+        "queue_form_id" => $form['id'],
+        "facebook_user_id"  => $fbId
+    ];
+    $result = QueueCard::retrieve($data);
+    return $this->qc->manageResult($result);
   }
 
 }
