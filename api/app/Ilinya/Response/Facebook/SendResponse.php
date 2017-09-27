@@ -157,6 +157,11 @@ class SendResponse{
           "clause"  => "=",
           "value"   => Facebook::getDynamicField($this->messaging->getSenderId(), 'id')
         ];
+        $condition[] = [
+          "column"  => "status",
+          "clause"  => "!=",
+          "value"   => "3"
+        ];
 
         $reCon['condition'] = $condition;
 

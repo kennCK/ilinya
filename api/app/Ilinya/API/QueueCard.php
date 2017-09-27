@@ -76,6 +76,11 @@ class QueueCard{
           "clause"  => "=",
           "value"   => $data['facebook_user_id']
         ];
+        $condition[] = [
+          "column"  => "status",
+          "clause"  => "!=",
+          "value"   => "3"
+        ];
 
         $reCon['condition'] = $condition;
         $result = Controller::retrieve($reCon, $controller);
