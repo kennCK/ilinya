@@ -19,6 +19,8 @@ use App\Ilinya\Templates\Facebook\QuickReplyElement;
 use App\Ilinya\Response\Facebook\ReviewResponse;
 use App\Ilinya\API\Controller;
 use App\Ilinya\API\CustomFieldModel;
+use App\Ilinya\API\Company;
+use App\Ilinya\API\QueueCard;
 
 
 class QueueCardsResponse{
@@ -140,13 +142,15 @@ class QueueCardsResponse{
       $request = new Request();
       $controller = 'App\Http\Controllers\QueueCardController';
       $request['id'] = $id;
+      $companyId = QueueCard::retrieveById($id, 'company_id');
+      $companyName = Company::retrieve(["id" => $companyId], "name");
       $result = Controller::delete($request, $controller);
       if($result == 1){
-        return ['text' => "Successfully Cancelled"];
+        return ['text' => "You're QCard at ".$companyName." has been cancelled. Thank You :)"];
       }else if($result == 0){
-        return ['text' => "Queue Card not found or deleted already!"];
+        return ['text' => "QCard was not found :'( "];
       }
-        return ['text' => "Server Error! Please try again."];
+        return ['text' => "We're very sorry but the SERVER IS DOWN :'(  Please try again later or email us: support@ilinya.com for more information."];
     }
 
     public function manageResult($result){

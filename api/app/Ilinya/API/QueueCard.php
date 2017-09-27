@@ -27,10 +27,26 @@ class QueueCard{
           "value"   => $data['facebook_user_id']
         ];
       $request['condition'] = $condition;
-      $userField = Controller::retrieve($request, $controller);
+      $qc = Controller::retrieve($request, $controller);
       if($column)
-        return (sizeof($userField) > 0) ? $userField[0][$column] : null;
-        return $userField;
+        return (sizeof($qc) > 0) ? $qc[0][$column] : null;
+        return $qc;
     } 
+
+    public static function retrieveById($id, $column = null){
+      $controller = 'App\Http\Controllers\QueueCardController';
+      $request = new Request();
+       $condition[] = [
+          "column"  => "id",
+          "clause"  => "=",
+          "value"   => $id
+        ];
+
+      $request['condition'] = $condition;
+      $qc = Controller::retrieve($request, $controller);
+      if($column)
+        return (sizeof($qc) > 0) ? $qc[0][$column] : null;
+        return $qc;
+    }
 
 }
