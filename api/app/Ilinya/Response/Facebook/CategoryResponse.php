@@ -6,6 +6,7 @@ namespace App\Ilinya\Response\Facebook;
 */
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\User;
+use App\Ilinya\Bot;
 use Illuminate\Http\Request;
 use App\Ilinya\Tracker;
 /*
@@ -36,10 +37,12 @@ class CategoryResponse{
 
   protected $messaging;
   protected $tracker;
+  protected $bot;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
       $this->tracker   = new Tracker($messaging);
+      $this->bot       = new Bot($messaging);
   }
 
   public function companies($businessTypeId){
@@ -102,7 +105,7 @@ class CategoryResponse{
     $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
     if($size < 9 && $datas){
       $elements = [];
-      $this->informAboutQCard();
+      $this->bot->reply($this->informAboutQCard(), false);
       foreach ($datas as $data) {
         $buttons = [];
         if($data['id'] != '6' || intval($data['id']) != 6){
@@ -137,7 +140,7 @@ class CategoryResponse{
       return $response;
     }
     else if($size > 10 && $datas){
-        $this->informAboutQCard();
+       $this->bot->reply($this->informAboutQCard(), false);
         $buttons = [];
         $buttons[] = ButtonElement::title("Next")
             ->type('postback')
