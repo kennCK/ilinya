@@ -52,6 +52,7 @@ class QueueCardsResponse{
     }
 
     public function display(){
+      $this->user();
       /*
         1. Get User Id via Facebok Id
         2. Get Queue Cards
@@ -76,11 +77,12 @@ class QueueCardsResponse{
           return $this->getQueueCardByUserId($userField[0]['id']);
       }
       else{
-          return ['text' => "User ID:".$this->messaging->getSenderId().' is not on the Database.'];
+          return ['text' => "Hi ".$this->user->getFirstName()." :) You don't have transaction(s) yet. Kindly go to categories to make or get reservation to available establishments. Thank You :)"];
       }
     }
 
     public function getQueueCardByUserId($userId){
+      $this->user();
       $controller = 'App\Http\Controllers\QueueCardController';
       $request = new Request();
 
@@ -127,7 +129,7 @@ class QueueCardsResponse{
         return GenericTemplate::toArray($elements);
       }
       else{
-        return ['text' => "No QCards Found :'("];
+         return ['text' => "Hi ".$this->user->getFirstName()." :) You don't have Active QCard(s) yet. Kindly go to CATEGORIES to get QCard(s) to any available establishments. Thank You :)"];
       }
     }
 
@@ -214,13 +216,13 @@ class QueueCardsResponse{
       return Controller::delete($request, $controller);
     }
 
-    public function manageResult($result){
+    public function manageResult($result, $title = null){
       if(sizeof($result) > 0){
           $queueCards = '';
           $elements = [];
           foreach ($result as $card) {
             $cardId = $card['id'];
-            $title =  "Queue Card #:".$cardId;
+            $title =  ($title != null) ? $title : "Queue Card #:".$cardId;
             $subtitle = "Status: ".$this->getStatus($card['status']);
             $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
             $buttons = [];
