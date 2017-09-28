@@ -21,6 +21,7 @@ use App\Ilinya\API\CustomFieldModel;
 use App\Ilinya\ImageGenerator;
 use App\Ilinya\API\Facebook;
 use App\Ilinya\API\QueueCard;
+use App\Ilinya\Response\Facebook\QueueCardsResponse;
 
 class SendResponse{
     private $user;
@@ -30,12 +31,14 @@ class SendResponse{
     protected $db_field = "temp_custom_fields_storage";
     protected $userId;
     protected $cardId;
+    protected $qc;
 
 
     public function __construct(Messaging $messaging){
         $this->messaging = $messaging;
         $this->curl = new Curl();
         $this->tracker = new Tracker($messaging);
+        $this->qc = new QueueCardsResponse($messaging);
     }  
 
     public function user(){
@@ -78,25 +81,14 @@ class SendResponse{
     }
 
     public function queueCard(){
+
+        $queueCard = QueueCard::retrieveById($this->cardId, null);
         $this->user();
         $title =  "Hi ".$this->user->getFirstName()." :) Here's your Queue Card #:".$this->cardId;
-        $subtitle = "Status: On Queue";
-        $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
-        $buttons[] = ButtonElement::title("Cancel")
-                    ->type('postback')
-                    ->payload($this->cardId.'@pCancelQC')
-                    ->toArray();
-        $buttons[] = ButtonElement::title("Postpone")
-                    ->type('postback')
-                    ->payload($this->cardId.'@pPostponeQC')
-                    ->toArray();
-        $elements[] = GenericElement::title($title)
-                            ->imageUrl($imageUrl)
-                            ->subtitle($subtitle)
-                            ->buttons($buttons)
-                            ->toArray();
-        $response =  GenericTemplate::toArray($elements);
-        return $response;
+
+        if(sizeof($queueCard) > 0)
+        return $this->qc->manageResult($queueCard, $title);
+        return ["text" => "Something was wrong :'( Please try again later."];
     }
 
     public function manageUser(){

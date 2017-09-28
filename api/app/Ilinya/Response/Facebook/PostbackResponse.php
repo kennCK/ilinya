@@ -116,14 +116,6 @@ class PostbackResponse{
         return $response;
     }
 
-    public function myQueueCards(){
-        return "My Queue Cards";
-    }
-
-    public function userGuide(){
-        return "User Guide";
-    }
-
     public function priorityError(){
         $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload('priority@yes');
         $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload('priority@no');
