@@ -9,6 +9,7 @@ use App\Ilinya\User;
 use App\Ilinya\Bot;
 use Illuminate\Http\Request;
 use App\Ilinya\Tracker;
+use App\Ilinya\Http\Curl;
 /*
     @Template
 */
@@ -37,12 +38,19 @@ class CategoryResponse{
 
   protected $messaging;
   protected $tracker;
-  protected $bot;
+  protected $bot; 
+  private $curl;
 
   public function __construct(Messaging $messaging){
       $this->messaging = $messaging;
       $this->tracker   = new Tracker($messaging);
       $this->bot       = new Bot($messaging);
+      $this->curl = new Curl();
+  }
+  
+  public function user(){
+    $user = $this->curl->getUser($this->messaging->getSenderId());
+    $this->user = new User($this->messaging->getSenderId(), $user['first_name'], $user['last_name']);
   }
 
   public function companies($businessTypeId){
