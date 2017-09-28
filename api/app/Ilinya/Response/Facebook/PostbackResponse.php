@@ -122,9 +122,6 @@ class PostbackResponse{
         return QuickReplyTemplate::toArray('Are you sure you want cancel your current conversation?', $quickReplies);
     }
 
-    public function informAboutQCard(){
-        $this->user();
-        return ['text' => "Hi ".$this->user->getFirstName()." :) To get Reservation, Ticket or Priority Number kindly click the Get QCard Button. Thank You :)"];
-    }
+   
    
 }

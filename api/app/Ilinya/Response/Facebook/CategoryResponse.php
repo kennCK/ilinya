@@ -102,7 +102,7 @@ class CategoryResponse{
     $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
     if($size < 9 && $datas){
       $elements = [];
-      
+      $this->informAboutQCard();
       foreach ($datas as $data) {
         $buttons = [];
         if($data['id'] != '6' || intval($data['id']) != 6){
@@ -137,6 +137,7 @@ class CategoryResponse{
       return $response;
     }
     else if($size > 10 && $datas){
+        $this->informAboutQCard();
         $buttons = [];
         $buttons[] = ButtonElement::title("Next")
             ->type('postback')
@@ -197,6 +198,11 @@ class CategoryResponse{
     }
     return $response;
   }
+
+   public function informAboutQCard(){
+        $this->user();
+        return ['text' => "Hi ".$this->user->getFirstName()." :) To get Reservation, Ticket or Priority Number kindly click the Get QCard Button. Thank You :)"];
+    }
 
 
 }

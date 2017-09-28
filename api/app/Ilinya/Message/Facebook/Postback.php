@@ -13,6 +13,8 @@ use App\Ilinya\Response\Facebook\SearchResponse;
 use App\Ilinya\Response\Facebook\EditResponse;
 use App\Ilinya\Response\Facebook\QueueCardsResponse;
 use App\Ilinya\Response\Facebook\DisregardResponse;
+use App\Ilinya\Response\Facebook\DetailsResponse;
+use App\Ilinya\Response\Facebook\EditDetailsResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 
 class Postback{
@@ -25,6 +27,8 @@ class Postback{
     protected $edit;
     protected $qc;
     protected $disregard;
+    protected $details;
+    protected $editDetails;
 
     function __construct(Messaging $messaging){
         $this->bot    = new Bot($messaging);
@@ -38,6 +42,8 @@ class Postback{
         $this->qc     = new QueueCardsResponse($messaging);
         $this->disregard = new DisregardResponse($messaging);
         $this->search = new SearchResponse($messaging);
+        $this->details = new DetailsResponse($messaging);
+        $this->editDetails = new EditDetailsResponse($messaging);
     }
 
     public function manage($custom){
@@ -57,7 +63,6 @@ class Postback{
             $this->bot->reply($this->post->categories(), false);
             break;
           case $this->code->pCategorySelected:
-            $this->bot->reply($this->post->informAboutQCard(), false);
             $this->bot->reply($this->category->companies($custom['parameter']), false);
             break;
           case $this->code->pSearch:
@@ -81,17 +86,18 @@ class Postback{
           case $this->code->pDisregard:
             $this->bot->reply($this->disregard->inform(), false);
             break;
+          case $this->code->pQCViewDetails:
+            //View Details
+            $this->bot->reply($this->details->viewDetails($custom['parameter']), false);
+            break;
           case $this->code->pCancelQC:
-            /*
-                Cancel QC
-            */
-                $this->bot->reply($this->qc->informCancel($custom['parameter']), false);
+            $this->bot->reply($this->qc->informCancel($custom['parameter']), false);
             break;
           case $this->code->pPostponeQC:
-            /*
-                Postpone QC
-            */
-                $this->bot->reply($this->qc->informPostpone($custom['parameter']), false);
+            $this->bot->reply($this->qc->informPostpone($custom['parameter']), false);
+            break;
+          case $this->code->pEditDetails:
+            $this->bot->reply($this->editDetails->manage($custom['parameter']), true);
             break;
           default:
             //Error

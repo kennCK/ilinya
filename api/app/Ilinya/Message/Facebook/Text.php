@@ -10,7 +10,9 @@ use App\Ilinya\Response\Facebook\PostbackResponse;
 use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\EditResponse;
 use App\Ilinya\Response\Facebook\SearchResponse;
+use App\Ilinya\Response\Facebook\EditDetailsResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
+use App\Ilinya\Helper\Validation;
 
 class Text{
     protected $form;
@@ -19,7 +21,8 @@ class Text{
     protected $code;
     protected $tracker;
     protected $edit;
-
+    protected $editDetails;
+    protected $validation;
   function __construct(Messaging $messaging){
       $this->bot    = new Bot($messaging);
       $this->post   = new PostbackResponse($messaging);
@@ -29,6 +32,8 @@ class Text{
       $this->code   = new Codes(); 
       $this->edit   = new EditResponse($messaging);
       $this->search = new SearchResponse($messaging);
+      $this->editDetails = new EditDetailsResponse($messaging);
+      $this->validation = new Validation($messaging);
   }
 
   public function manage($reply){
@@ -56,7 +61,21 @@ class Text{
               $this->bot->reply($this->edit->update($reply), false);
             }
             else{
-              $this->bot->reply('Please enter a valid '.$validate['type'].'! '.$validate['description'], true);
+              $this->bot->reply('Sorry you have entered an '.$validate['type']." :'( ".$validate['description'], true);
+            }
+            break;
+          case $this->code->replyEditDetails:
+            /*
+              1. Validate
+              2. Check
+            */
+            $validate = $this->validation->validate($reply);
+            if($validate['status'] == true){
+              $this->bot->reply($this->editDetails->update($reply), false);
+              $this->bot->reply($this->editDetails->inform(), false);
+            }
+            else{
+              $this->bot->reply('Sorry you have entered an invalid '.$validate['type']." :'( ".$validate['description'], true);
             }
             break;
           case $this->code->replyStageShortCodes:
