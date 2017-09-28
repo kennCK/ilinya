@@ -20,7 +20,7 @@ use App\Ilinya\API\Controller;
 use App\Ilinya\API\CustomFieldModel;
 use App\Ilinya\ImageGenerator;
 use App\Ilinya\API\Facebook;
-
+use App\Ilinya\API\QueueCard;
 
 class SendResponse{
     private $user;
@@ -99,7 +99,6 @@ class SendResponse{
         return $response;
     }
 
-
     public function manageUser(){
       $fbController = 'App\Http\Controllers\FacebookUserController';
       $request = new Request();
@@ -131,66 +130,24 @@ class SendResponse{
        }
     }
     public function createQueueCard(){
-      /*
-        1. Get Fields
-        2. Tracker
-        3. Get New Card Number
-           - Get Previous  + 1
-      */
-        $controller = 'App\Http\Controllers\QueueCardController';
-        //@tracker
-        $companyId = $this->tracker->getCompanyId();
-        $queueFormId = $this->tracker->getFormId();
-        $reCon = new Request();
-        $condition[] = [
-          "column"  => "company_id",
-          "clause"  => "=",
-          "value"   => $companyId
-        ];
-        $condition[] = [
-          "column"  => "queue_form_id",
-          "clause"  => "=",
-          "value"   => $queueFormId
-        ];
-        $condition[] = [
-          "column"  => "facebook_user_id",
-          "clause"  => "=",
-          "value"   => Facebook::getDynamicField($this->messaging->getSenderId(), 'id')
-        ];
-        $condition[] = [
-          "column"  => "status",
-          "clause"  => "!=",
-          "value"   => "3"
+        $data = [
+            "company_id"        => $this->tracker->getCompanyId(),
+            "queue_form_id"     => $this->tracker->getFormId(),
+            "facebook_user_id"  => Facebook::getDynamicField($this->messaging->getSenderId(), 'id')
         ];
 
-        $reCon['condition'] = $condition;
-
-        $result = Controller::retrieve($reCon, $controller);
-
-        if(!$result){
-          $request = new Request();
-          $request['company_id'] = $companyId;
-          $request['queue_form_id'] = $queueFormId;
-          $request['facebook_user_id'] = $this->userId;
-          $request['number']  = 0;
-          echo json_encode($request->all());
-          $result = Controller::create($request, $controller);
-          $this->cardId = ($result != false)? $result:null;  
-        }
-        else{
-          $this->cardId = $result[0]['id'];
-        }
+        $this->cardId = QueueCard::create($data);
     }
 
     public function createQueueCardFields(Request $request){
        $controller = 'App\Http\Controllers\QueueCardFieldController';
-      /*
+       /*
         1. Get Queue Card ID - Given
         2. Get Queue Form Field ID - Given
-      */
-        $result = Controller::insert($request, $controller);
+       */
+       $result = Controller::insert($request, $controller);
 
-        return ($result != null)? true:false;
+       return ($result != null)? true:false;
     }
 
 }
