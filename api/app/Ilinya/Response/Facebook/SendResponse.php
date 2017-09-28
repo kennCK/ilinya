@@ -84,11 +84,11 @@ class SendResponse{
         $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
         $buttons[] = ButtonElement::title("Cancel")
                     ->type('postback')
-                    ->payload($this->cardId.'@pCancelQueueCard')
+                    ->payload($this->cardId.'@pCancelQC')
                     ->toArray();
         $buttons[] = ButtonElement::title("Postpone")
                     ->type('postback')
-                    ->payload($this->cardId.'@pPostponeQueueCard')
+                    ->payload($this->cardId.'@pPostponeQC')
                     ->toArray();
         $elements[] = GenericElement::title($title)
                             ->imageUrl($imageUrl)
