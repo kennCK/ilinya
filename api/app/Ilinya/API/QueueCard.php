@@ -95,7 +95,7 @@ class QueueCard{
           return ($result != false)? $result:null;  
         }
         else{
-          return false;
+          return  $result[0]['id'];
         }
     }
 
