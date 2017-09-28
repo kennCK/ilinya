@@ -21,6 +21,15 @@ class QueueCardFields{
      return Controller::retrieve($request, $controller);
   }
 
+  public function update($data, $condition){
+     $controller = 'App\Http\Controllers\QueueCardFieldController';
+     $request = new Request();
+     $request['queue_card_id']         = $data['queue_card_id'];
+     $request['queue_form_field_id']   = $data['queue_form_field_id'];
+     $request['value']                 = $data['value'];
+    return Controller::update($request, $controller);
+  }
+
   public static function create($data){
      $controller = 'App\Http\Controllers\QueueCardFieldController';
      $request = new Request();

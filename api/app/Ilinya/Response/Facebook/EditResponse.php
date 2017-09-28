@@ -109,6 +109,11 @@ class EditResponse{
     }
 
     public function inform(){
+      $dataTracker = [
+                'reply' => NULL,
+                'edit_field_id' => NULL
+              ];
+      $this->tracker->update($dataTracker);
       return ['text' => 'Successfully Edited! Kindly check review again your forms.'];
     }
 

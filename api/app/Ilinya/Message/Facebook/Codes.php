@@ -32,6 +32,8 @@ class Codes{
   public $pSearch      = 212;
   public $pCancelQC    = 213;
   public $pPostponeQC  = 214;
+  public $pQCViewDetails = 215;
+  public $pEditDetails = 216;
 
 
 
@@ -68,6 +70,7 @@ class Codes{
   public $replyStageSearch     = 1;
   public $replyStageForm       = 2;
   public $replyStageEdit       = 3;
+  public $replyEditDetails     = 4;
   public $replyStageShortCodes = 10;
   
   public $stageStart = 1000;
@@ -94,7 +97,9 @@ class Codes{
       "@pDisregard" => $this->pDisregard,
       "@pSearch"    => $this->pSearch,
       "@pCancelQC"  => $this->pCancelQC,
-      "@pPostponeQC"=> $this->pPostponeQC
+      "@pPostponeQC"=> $this->pPostponeQC,
+      "@pQCViewDetails" => $this->pQCViewDetails,
+      "@pEditDetails" => $this->pEditDetails
     );
 
     $this->quickReplyPayloads = array(
