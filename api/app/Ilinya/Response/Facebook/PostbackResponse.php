@@ -52,11 +52,16 @@ class PostbackResponse{
         $this->user = new User($this->messaging->getSenderId(), $user['first_name'], $user['last_name']);
     }
 
+    public function testMessage(){
+        $this->user();
+        $message = "Hi ".$this->user->getFirstName()." :) I'm ILinya, I can help you to get ticket or make reservation to any establishment(s) or event(s) you want. I'm Currently on a TEST MODE right now, so all of the data are just sample and not really connected to the establishment that will be mentioned in our conversation later. ";
+        return ["text" => $message];
+    }
     public function start(){
         $this->user();
 
-        $title =  "Hi ".$this->user->getFirstName()." :) I'm Ilinya your personal assistant.";
-        $subtitle = "Just follow me and you will be good to go!";
+        $title =  "Hi ".$this->user->getFirstName().". I'm Ilinya your personal assistant.";
+        $subtitle = "Kindly click the buttons to navigate.";
         $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
         $elements[] = GenericElement::title($title)
                             ->imageUrl($imageUrl)
