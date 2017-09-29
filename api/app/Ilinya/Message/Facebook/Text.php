@@ -11,8 +11,10 @@ use App\Ilinya\Response\Facebook\CategoryResponse;
 use App\Ilinya\Response\Facebook\EditResponse;
 use App\Ilinya\Response\Facebook\SearchResponse;
 use App\Ilinya\Response\Facebook\EditDetailsResponse;
+use App\Ilinya\Response\Facebook\DetailsResponse;
 use App\Ilinya\Webhook\Facebook\Messaging;
 use App\Ilinya\Helper\Validation;
+use App\Ilinya\API\QueueCardFields;
 
 class Text{
     protected $form;
@@ -23,6 +25,7 @@ class Text{
     protected $edit;
     protected $editDetails;
     protected $validation;
+    protected $details;
   function __construct(Messaging $messaging){
       $this->bot    = new Bot($messaging);
       $this->post   = new PostbackResponse($messaging);
@@ -34,6 +37,7 @@ class Text{
       $this->search = new SearchResponse($messaging);
       $this->editDetails = new EditDetailsResponse($messaging);
       $this->validation = new Validation($messaging);
+      $this->details = new DetailsResponse($messaging);
   }
 
   public function manage($reply){
@@ -71,8 +75,13 @@ class Text{
             */
             $validate = $this->validation->validate($reply);
             if($validate['status'] == true){
+              $data = [
+                  "column"  => "id",
+                  "value"   => $this->tracker->getEditFieldId()
+              ];
+              $qCardId = QueueCardFields::retrieveByCustom($data, "queue_card_id");
               $this->bot->reply($this->editDetails->update($reply), false);
-              $this->bot->reply($this->editDetails->inform(), false);
+              $this->bot->reply($this->details->viewDetails($qCardId), false);
             }
             else{
               $this->bot->reply('Sorry you have entered an invalid '.$validate['type']." :'( ".$validate['description'], true);
