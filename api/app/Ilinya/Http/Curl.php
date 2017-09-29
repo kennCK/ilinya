@@ -48,7 +48,7 @@ class Curl{
       echo  $envFbStatus;
       // true = live, false = test
       if($envFbStatus == true){
-        $page_access_token = "access_token=EAACfJZAjQCwcBAADc7qxhvxK0mOSLOIaeY3ZBLZBhVW8NZCTzqfl5rZAGJnsXRMtvkAKQOkRLAy7ZAMfNXhVZB033AFSd3BwyfVxJV9B2z3PGgZA7MeR3DnqT2HSS5bqBZCqPyYgw6kTyRCM7CEiS7ppau7bmpOTvVDCj6Gy3kxZAjZA3XwCZAhUl2vZB"; 
+        $page_access_token = "access_token=EAACfJZAjQCwcBAHGVRzk0BazJOn5ZBm8ZAtG6ZB3Bft8ZAdAUPEZB6z9bo4QpsdQl5vciEPiO7p2KLCTvxoyGOcHL4HHv22DiDgaroCjpVrCrbzdAWuqEPGV2uQwrtB5wiBbROEJFxWHRkRvTT1WXJjWhZBUuPL1RYcbzMltE28lhRbThpKYoUY"; 
       }
       else{
         $page_access_token = "access_token=EAAFRBiltHcQBAO1VFEe37bKHt7SA27ACcNaepjFYCRWMoE3Ke2a2SSwC8KYBZAchwlYbWlyk1nIZAVmVtq43ZBfa62ZBUIvTfhf7OO1PrlGAefZAsdue2jNpwkfeZAxe1dfZBelF0093yauIAd58M8nCZAMGqnkuy70mliBzIUUWTZCDI41noMfxe";
