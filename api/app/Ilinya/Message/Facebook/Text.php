@@ -65,7 +65,7 @@ class Text{
               $this->bot->reply($this->edit->update($reply), false);
             }
             else{
-              $this->bot->reply('Sorry you have entered an '.$validate['type']." :'( ".$validate['description'], true);
+              $this->bot->reply('Sorry you have entered an invalid '.$validate['type']." :'( Again, ".$validate['description'], true);
             }
             break;
           case $this->code->replyEditDetails:
@@ -84,7 +84,7 @@ class Text{
               $this->bot->reply($this->details->viewDetails($qCardId), false);
             }
             else{
-              $this->bot->reply('Sorry you have entered an invalid '.$validate['type']." :'( ".$validate['description'], true);
+              $this->bot->reply('Sorry you have entered an invalid '.$validate['type']." :'( Again, ".$validate['description'], true);
             }
             break;
           case $this->code->replyStageShortCodes:

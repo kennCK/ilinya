@@ -70,6 +70,6 @@ class SurveyResponse{
 
     public function appreciate(){
         $this->user();
-        return ['text' => "Hi ".$this->user->getFirstName()." :) We really appreciate your participation :)"];
+        return ['text' => "Hi ".$this->user->getFirstName()." :) We really appreciate your participation :) We're excited to serve you soon :) "];
     }
 }

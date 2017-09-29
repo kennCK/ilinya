@@ -92,20 +92,23 @@ class QueueFormFieldsTableSeeder extends Seeder
             iLinya Survey Form
           */
           array(
-            "id"    => "19", "queue_form_id" => "6", "sequence" => "1","description"  => "Rate how easy are the instructions replied by iLinya?[5 Highest - 1 Lowest]", "type" => "number"
+            "id"    => "19", "queue_form_id" => "6", "sequence" => "1","description"  => "Are the statements or instructions clear and easily understood?[5 Highest - 1 Lowest]", "type" => "number"
           ),
           array(
-            "id"    => "20", "queue_form_id" => "6", "sequence" => "2","description"  => "Rate how easy it is to navigate the different functionalities of iLinya?[5 Highest - 1 Lowest]", "type" => "number"
+            "id"    => "20", "queue_form_id" => "6", "sequence" => "2","description"  => "Are the functionalities easy to navigate?[5 Highest - 1 Lowest]", "type" => "number"
           ),
           array(
-            "id"    => "21", "queue_form_id" => "6", "sequence" => "3","description"  => "How likely will you use iLinya in the future?", "type" => "text"
+            "id"    => "21", "queue_form_id" => "6", "sequence" => "3","description"  => "What do you like most about iLinya?", "type" => "text"
           ),
           array(
-            "id"    => "22", "queue_form_id" => "6", "sequence" => "4","description"  => "How would you rate iLinya?", "type" => "text"
+            "id"    => "22", "queue_form_id" => "6", "sequence" => "4","description"  => "What are the issues you encountered by using iLinya?", "type" => "text"
           ),
-
-
-
+          array(
+            "id"    => "23", "queue_form_id" => "6", "sequence" => "5","description"  => "What are the areas need to improve about iLinya?", "type" => "text"
+          ),
+          array(
+            "id"    => "24", "queue_form_id" => "6", "sequence" => "6","description"  => "Are you excited to use Ilinya soon?[5 Highest - 1 Lowest]", "type" => "number"
+          ),
         ));
     }
 }
