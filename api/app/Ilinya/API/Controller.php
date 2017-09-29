@@ -31,4 +31,10 @@ class Controller{
     $result = json_decode($result->getContent(), true);
     return $result['data'];
   }
+
+  public static function update(Request $request, $controller){
+    $result = app($controller)->update($request);
+    $result = json_decode($result->getContent(), true);
+    return $result['data'];
+  }
 }

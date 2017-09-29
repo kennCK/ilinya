@@ -81,7 +81,15 @@ class EditDetailsResponse{
         2. update Queue Card Field
         3. Set tracker reply and edit_field to emply
       */
-        return ["text" => "Update supposed here"];
+        $data = [
+          "id"    => $this->tracker->getEditFieldId(),
+          "value" => $reply
+        ];
+        $result = QueueCardFields::update($data);
+        
+        if($result == true)
+          return $this->inform();
+          return ["text" => "I'm sorry, Unable to Update :'( Something was wrong with the server. Kindly, contact us at support@ilinya.com"];
     }
 
     public function inform(){
