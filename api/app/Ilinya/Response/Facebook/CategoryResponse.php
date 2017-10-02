@@ -70,14 +70,14 @@ class CategoryResponse{
     $condition = [];
 
     switch ($this->tracker->getSearchOption()) {
-      case 1:
+      case 2:
         $condition[] = [
           "column"  => "name",
           "clause"  => "like",
           "value"   => "%".$value.'%'
         ];
         break;
-      case 2:
+      case 3:
         $condition[] = [
           "column"  => "address",
           "clause"  => "like",
@@ -104,7 +104,13 @@ class CategoryResponse{
 
   public function retrieve(Request $request){
     $data = Controller::retrieve($request, "App\Http\Controllers\CompanyController");
-    echo json_encode($data);
+    if(sizeof($data) > 0){
+      $trackerData = [
+        "search_option" => null,
+        "reply" => null
+      ];
+      $this->tracker->update($trackerData);
+    }else{}
     return $this->manageResult($data);
   }
 
@@ -171,7 +177,7 @@ class CategoryResponse{
       return $response;
     }
     else{
-      return ["text" => "Search not found :'("];
+      return ["text" => "Search not found :'( Enter again: "];
     }
   }
   

@@ -21,4 +21,16 @@ class Company{
       return (sizeof($results) > 0) ? $results[0][$column] : null;
     } 
 
+    public static function retrieveAll($data){
+      $controller = 'App\Http\Controllers\CompanyController';
+      $request = new Request();
+       $condition[] = [
+          "column"  => $data['column'],
+          "clause"  => "=",
+          "value"   => $data['value']
+        ];
+      $request['condition'] = $condition;
+      return Controller::retrieve($request, $controller);
+    }
+
 }

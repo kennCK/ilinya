@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 */
 
 use App\Ilinya\API\Controller;
+use App\Ilinya\API\Company;
 
 class Form{
 
@@ -55,7 +56,6 @@ class Form{
 
   public function manageForms($forms){
     if(sizeof($forms) > 0){
-
         /*
           Check if have existing reservation
         */
@@ -65,7 +65,12 @@ class Form{
         }
         else{
           //Direct Display
-          $this->bot->reply($this->response->confirmation($forms[0]),false);
+          $data = [
+              "column"  => "id",
+              "value"   => $forms[0]['company_id']
+          ];
+          $company = Company::retrieveAll($data);
+          $this->bot->reply($this->response->confirmation($forms[0], (sizeof($company) > 0) ? $company[0] : null),false);
         }
     }
     else{

@@ -65,12 +65,13 @@ class FormsResponse{
       return ['text'  => "Select form:"];
   }
 
- public function confirmation($form){
+ public function confirmation($form, $companyDataF = null){
   $validate = $this->validate($form); 
     if($validate == true){
       $this->user();
-      $companyData = $this->tracker->getCompanyData();
-      $title = "Hi ".$this->user->getFirstName()." :) You are about to get ".$companyData[0]['name'].' '.$form['title'].' Form. Are you sure you want to continue?';
+      $companyData = ($companyDataF) ? $companyDataF : $this->tracker->getCompanyData();
+      $name = ($companyDataF) ? $companyDataF["name"] : $companyData[0]['name'];
+      $title = "Hi ".$this->user->getFirstName()." :) You are about to get ".$name.' '.$form['title'].' Form. Are you sure you want to continue?';
       $quickReplies[] = QuickReplyElement::title('No')->contentType('text')->payload($form['id'].'@qrFormCancel');
       $quickReplies[] = QuickReplyElement::title('Yes')->contentType('text')->payload($form['id'].'@qrFormContinue');
       return QuickReplyTemplate::toArray($title, $quickReplies);
