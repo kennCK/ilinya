@@ -48,9 +48,13 @@ class Text{
     else{
         switch ($this->tracker->getReplyStage()) {
           case $this->code->replyStageSearch:
-            $this->bot->reply($this->post->informAboutQCard(), false);
-            $this->bot->reply($this->search->manage($reply), false);
-            break;
+            if(intval($this->tracker->getSearchOption()) >= 2){
+              $this->bot->reply($this->search->manage($reply), false);
+            }
+            else{
+              $this->bot->reply($this->search->manageSearchByCode($reply), false);
+            }   
+            break;  
           case $this->code->replyStageForm:
             $this->form->reply($reply);
             break;
