@@ -4,7 +4,7 @@
 -->
 <template>
   <div class="system-body"> 
-     <div class="main-sidebar navbar-collapse sidebar-collapse" v-bind:class="hide + ' ' + toggleOnClick" id="godigitSidebar" >
+     <div class="main-sidebar sidebar-collapse collapse" v-bind:class="hide + ' ' + toggleOnClick" id="iLinyaSidebar" >
       <div class="sidebar">
         <ul class="sidebar-menu">
             <li class="header">
@@ -14,7 +14,7 @@
                 <input type="text" class="form-control" id="search"  v-model="search" placeholder="Search Module">
               </div> -->
                 Main Tasks
-                <i v-bind:class="toggleSidebar + ' pull-right'" aria-hidden="true" v-on:click="changeToggleSidebarIcon()"></i>
+                <i v-bind:class="toggleSidebar + ' pull-right'" aria-hidden="true" v-on:click="changeToggleSidebarIcon()" id="toggleIcon"></i>
             </li>
            <!--  <li v-for="(item,index) in menu" v-if="item.parent_id === 0 && search === ''" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
                 <a v-on:click="navigateTo(item.path, (item.id === menu[index+1].parent_id) ? false : true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
@@ -308,7 +308,10 @@ export default {
   }
   
   .main-sidebar.hidden{
-    margin-left: 0%;
+    display: none;
+  }
+  #toggleIcon{
+    display: none;
   }
 }
 
@@ -338,18 +341,19 @@ export default {
    .sm-title{
     text-align: center;
   }
-   .sidebar-collapse{
-    display: none;
-  }
+
   .sidebar-menu .header span{
     display: none;
   }
   .main-sidebar.hidden{
-    margin-left: 0%;
+    display: none;
   }
   .header .input-group{
     width: 90%;
     margin: 0 5% 0 5%;
+  }
+  #toggleIcon{
+    display: none;
   }
 }
 @media (max-width: 239px){
@@ -384,11 +388,14 @@ export default {
     display: none;
   }
   .main-sidebar.hidden{
-    margin-left: 0%;
+    display: none;
   }
   .header .input-group{
     width: 90%;
     margin: 0 5% 0 5%;
+  }
+  #toggleIcon{
+    display: none;
   }
 }
 </style>
