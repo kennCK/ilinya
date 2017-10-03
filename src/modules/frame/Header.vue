@@ -11,7 +11,7 @@
       </a>
     </div>
     <nav class="header-navbar">
-      <span class="navbar-menu-toggler-md" data-toggle="collapse" data-target="#godigitSidebar" aria-controls="godigitSidebar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-menu-toggler-md" data-toggle="collapse" data-target="#iLinyaSidebar" aria-controls="iLinyaSidebar" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fa fa-bars" aria-hidden="true"></i>
       </span>
       <!--- 
