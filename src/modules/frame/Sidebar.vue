@@ -135,7 +135,6 @@ export default {
 <style>
 .main-sidebar, .content-holder{  
   min-height: 84.5vh;
-  float: left;
   overflow: hidden;
   transition: all 1s ease 0s;
 }
@@ -240,6 +239,7 @@ export default {
   .content-holder{
     width: 79%;
     margin: 20px 1% 0 1%;
+    float: left;
   }
   /*  Change with Menu Toggled */
   .main-sidebar.hidden{
@@ -248,6 +248,7 @@ export default {
   .content-holder.hidden{
     width: 94%;
     margin: 20px 1% 0 1%;
+    float: left;
   }
 }
 
@@ -255,10 +256,12 @@ export default {
 @media screen (min-width: 992px), screen and (max-width: 1199px){
   .main-sidebar{
     width: 23%;
+    float: left;
   }
   .content-holder{
     width: 71%;
     margin: 20px 2% 0 2%;
+    float: left;
   }
   .main-sidebar.active{
     padding-left:15%;
@@ -277,12 +280,18 @@ export default {
   .content-holder.hidden{
     width: 92%;
     margin: 20px 2% 0 2%;
+    float: left;
   }
 }
 /*-------------- Small Screen for Mobile Phones  --------------*/
 @media screen (min-width: 768px), screen and (max-width: 991px){
   .main-sidebar{
-    width: 100%;
+    width: 90%;
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 10;
+    background: #fff;
   }
   .content-holder{
     width: 96%;
@@ -307,7 +316,12 @@ export default {
 @media (max-width: 767px){
   .main-sidebar{
     width: 100%;
-    float: left;
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+    margin-top: 100px;
   }
   .content-holder{
     width: 10px;
@@ -315,6 +329,11 @@ export default {
     overflow-y: hidden;
     margin: 20px 2% 0 2%;
     float: left;
+  }
+  .main-sidebar ul{
+    background: #fff;
+    width: 90%;
+    min-height: 84.5vh;
   }
    .sm-title{
     text-align: center;
@@ -336,7 +355,19 @@ export default {
 @media (max-width: 239px){
 
   .main-sidebar{
-    width: 100%;
+    width: 90%;
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 10;
+    background: #fff;
+    margin-top: 100px;
+  }
+
+  .content-holder{
+    width: 96%;
+    margin: 20px 2% 0 2%;
+    float: left;
   }
   .sm-title,.header{
     display: none;
@@ -351,12 +382,6 @@ export default {
   }
   .sidebar-menu .header span{
     display: none;
-  }
-  .content-holder{
-    width: 96%;
-    overflow: hidden;
-    margin: 20px 2% 0 2%;
-    float: left;
   }
   .main-sidebar.hidden{
     margin-left: 0%;
