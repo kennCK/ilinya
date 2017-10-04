@@ -45,10 +45,10 @@ class Tracker{
 
 
   function __construct(Messaging $messaging){
+    $this->pageID = (env("FB_TOKEN_STATUS") == true) ? "133610677239344" : "136273293774342";
     $this->messaging = $messaging;
     $this->code = new Codes();
     $this->retrieve();
-    $this->pageID = (env("FB_TOKEN_STATUS") == true) ? "133610677239344" : "136273293774342";
   }
 
   public function getPrevStatusError(){
@@ -195,7 +195,6 @@ class Tracker{
   }
 
   public function retrieve(){
-    $pageID = "133610677239344";
 
     if($this->messaging->getSenderId() != $this->pageID){
       $condition = [
