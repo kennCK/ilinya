@@ -37,7 +37,7 @@ class Tracker{
 
   protected $code;
 
-  protected $pageID = "133610677239344";
+  protected $pageID;
 
   protected $companyData;
 
@@ -48,6 +48,7 @@ class Tracker{
     $this->messaging = $messaging;
     $this->code = new Codes();
     $this->retrieve();
+    $this->pageID = (env("FB_TOKEN_STATUS") == true) ? "133610677239344" : "136273293774342";
   }
 
   public function getPrevStatusError(){
@@ -136,7 +137,7 @@ class Tracker{
         "status"  => $this->code->postback,
         "stage"   => null,
         "tracker_flag"  => 2
-      ];
+      ];  
     }
     else if($current < $this->code->error && $current >= $this->code->message){
       $response = [

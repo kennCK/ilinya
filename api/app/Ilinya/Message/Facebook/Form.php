@@ -246,15 +246,21 @@ class Form{
             2. Set Reply to 0
             3. Review Details
           */
+          $data = [
+            "reply" => null,
+            "form_sequence" => null,
+            "stage" => $this->code->stageReview
+          ];
+
           if($this->tracker->getCompanyId() == 6){
             $this->send->submit();
             $this->bot->reply($this->survey->appreciate(), false);
-
           }
           else{
             $this->bot->reply($this->review->inform(), true);
             $this->bot->reply($this->review->display(), false); 
           }
+          $this->tracker->update($data);
         }
         else{ 
           $this->bot->reply("Not Available!", true);
