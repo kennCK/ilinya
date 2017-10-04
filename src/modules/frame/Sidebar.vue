@@ -3,8 +3,13 @@
   Filename: Sidebar.vue
 -->
 <template>
+<!-- <<<<<<< HEAD -->
   <div class="system-body">
      <div class="main-sidebar sidebar-collapse collapse" v-bind:class="hide + ' ' + toggleOnClick" id="iLinyaSidebar" >
+<!-- =======
+  <div class="system-body">
+     <div class="main-sidebar sidebar-collapse navbar-collapse" v-bind:class="hide + ' ' + toggleOnClick" id="iLinyaSidebar" >
+>>>>>>> 44d3853296af6d414049b87ddfb2f3750b85dbaf -->
       <div class="sidebar">
         <ul class="sidebar-menu">
             <li class="header">
@@ -39,8 +44,13 @@
                 </ul>
               </li> -->
               <li v-for="(item,index) in menu" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
+<!-- <<<<<<< HEAD -->
                 <a v-on:click="navigateTo(item.path, true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
                   <i></i>
+<!-- =======
+                <a v-on:click="navigateTo(item.path, true)" data-toggle="collapse" :data-target="'#iLinyaSidebar'" v-bind:class="hide">
+                  <i></i>
+>>>>>>> 44d3853296af6d414049b87ddfb2f3750b85dbaf -->
                   <span v-bind:class="'sm-title'" >{{item.description}}
                   </span>
                   <span v-bind:class="'pull-right-container'">
@@ -111,8 +121,8 @@ export default {
       this.activeItem = ''
     },
     navigateTo(method, toggleCondition){
-      this.$router.push('/' + method)
       this.toggleOnClick = (toggleCondition === true) ? 'collapse' : ''
+      this.$router.push('/' + method)
     },
     changeToggleSidebarIcon(){
       this.toggleSidebarFlag = !this.toggleSidebarFlag
@@ -308,9 +318,12 @@ export default {
   }
 
   .main-sidebar.hidden{
-    display: none;
+     margin-left: 0;
   }
   #toggleIcon{
+    display: none;
+  }
+  .force-collapse{
     display: none;
   }
 }
@@ -346,13 +359,16 @@ export default {
     display: none;
   }
   .main-sidebar.hidden{
-    display: none;
+    margin-left: 0;
   }
   .header .input-group{
     width: 90%;
     margin: 0 5% 0 5%;
   }
   #toggleIcon{
+    display: none;
+  }
+  .force-collapse{
     display: none;
   }
 }
@@ -388,13 +404,17 @@ export default {
     display: none;
   }
   .main-sidebar.hidden{
-    display: none;
+    margin-left: 0;
   }
   .header .input-group{
     width: 90%;
     margin: 0 5% 0 5%;
   }
   #toggleIcon{
+    display: none;
+  }
+
+  .force-collapse{
     display: none;
   }
 }
