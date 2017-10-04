@@ -12,8 +12,8 @@
         {{option['label']}}
       </option>
     </select>
-
     <span v-else class="form-control">{{this.option_lookup[form_data[db_name]]}} &nbsp;</span>
+
   </div>
 </template>
 <script>

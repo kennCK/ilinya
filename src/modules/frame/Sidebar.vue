@@ -3,7 +3,7 @@
   Filename: Sidebar.vue
 -->
 <template>
-  <div class="system-body"> 
+  <div class="system-body">
      <div class="main-sidebar sidebar-collapse collapse" v-bind:class="hide + ' ' + toggleOnClick" id="iLinyaSidebar" >
       <div class="sidebar">
         <ul class="sidebar-menu">
@@ -22,7 +22,7 @@
                   <i v-else></i>
                   <span v-bind:class="'sm-title'" >{{item.description}}
                   </span>
-                  <span v-bind:class="'pull-right-container'">  
+                  <span v-bind:class="'pull-right-container'">
                     <i v-bind:class="item.icon + ' pull-right'"></i>
                   </span>
                 </a>
@@ -40,10 +40,10 @@
               </li> -->
               <li v-for="(item,index) in menu" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
                 <a v-on:click="navigateTo(item.path, true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
-                  <i></i> 
+                  <i></i>
                   <span v-bind:class="'sm-title'" >{{item.description}}
                   </span>
-                  <span v-bind:class="'pull-right-container'">  
+                  <span v-bind:class="'pull-right-container'">
                     <i v-bind:class="item.icon + ' pull-right'"></i>
                   </span>
                 </a>
@@ -62,7 +62,7 @@
         </transition>
       </div>
     </div>
-  </div>  
+  </div>
 </template>
 <script>
 export default {
@@ -133,7 +133,7 @@ export default {
 }
 </script>
 <style>
-.main-sidebar, .content-holder{  
+.main-sidebar, .content-holder{
   min-height: 84.5vh;
   overflow: hidden;
   transition: all 1s ease 0s;
@@ -142,7 +142,7 @@ export default {
   padding:0 10px 0 10px;
 }
 .sidebar-menu .header{
-  font-weight: 700; 
+  font-weight: 700;
   padding: 15px 2% 15px 2%;
   color: #000;
   text-align: center;
@@ -219,7 +219,7 @@ export default {
   background: #f4f4f4;
 }
 
-/*---------------------------------------------------------          
+/*---------------------------------------------------------
 
                   RESPONSIVE HANDLER
 
@@ -306,7 +306,7 @@ export default {
   .sidebar-menu .header span{
     display: none;
   }
-  
+
   .main-sidebar.hidden{
     display: none;
   }

@@ -157,6 +157,12 @@
             }
             return newForm
           }
+        },
+        start_created_at: {
+          db_name: 'created_at',
+          input_type: 'date',
+          clause: '>=',
+          label: 'Start Date'
         }
 
       }
@@ -171,6 +177,9 @@
         column_setting: {
           id: {},
           number: {},
+          created_at: {
+
+          },
           status: {
             type: 'html',
             value_function: (row) => {
@@ -196,6 +205,18 @@
               class: 'btn-primary btn-sm',
               label: '<i class="fa fa-bell-o" aria-hidden="true"></i> Call'
             }
+          }
+        },
+        tableExportSetting: {
+          file_name: 'QueueCards',
+          column_setting: {
+            id: {
+              column_name: '#',
+              value_function: (entryData, rowIndex) => {
+                return rowIndex + 1
+              }
+            },
+            created_at: {}
           }
         },
         retrieveParameter: {
@@ -227,6 +248,9 @@
         this.APIRequest('queue_card/delete', {id: this.queue_card_id}, (response) => {
           if(response['data']){
             this.$refs.queueCardTable.deleteRow(this.rowIndex)
+            if(this.selected_queue_card.facebook_user){
+              this.pageUser(this.selected_queue_card.facebook_user.account_number, 'You QCard: ' + this.queue_card_id + ' has been removed')
+            }
             this.closeQueueCardModal()
           }
         })

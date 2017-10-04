@@ -36,6 +36,18 @@
 
           >
         </select-input>
+        <date-picker
+          v-else-if="inputType === 'date'"
+          :input_setting="input_setting"
+          :db_name="dbName"
+          :field_name="field_name"
+          :form_data="form_data"
+          :form_status="form_status"
+          :default_value="default_value"
+          v-on:change="valueChanged"
+
+          >
+        </date-picker>
         <single-image
           v-else-if="inputType === 'single_image'"
           :input_setting="input_setting"
@@ -104,7 +116,7 @@
         </template>
         <template v-else>
           <input
-            v-if="form_status !== 'view'"
+            v-if="form_status !== 'view' && !read_only"
             v-bind:name="db_name"
             v-bind:placeholder="inputPlaceholder"
             v-bind:type="inputType"
@@ -131,7 +143,8 @@
       'select2': require('./Select2.vue'),
       'textarea-input': require('./Textarea.vue'),
       'single-image': require('./SingleImage.vue'),
-      'table-input': require('./TableInput.vue')
+      'table-input': require('./TableInput.vue'),
+      'date-picker': require('./DatePicker.vue')
     },
     create(){
 
@@ -160,7 +173,8 @@
       form_data_updated: Boolean,
       form_status: String,
       default_value: [String, Number],
-      error_list: Object
+      error_list: Object,
+      read_only: Boolean
     },
     data(){
       return {
@@ -212,14 +226,13 @@
     },
     methods: {
       initSetting(){
-
         this.dbName = this.db_name
         this.labelText = this.label ? this.label : this.input_name
         this.labelStyle = this.label_style
         this.labelColspan = typeof this.label_colspan !== 'undefined' ? this.label_colspan : 4
         this.inputType = this.input_type ? this.input_type : 'text'
         this.inputStyle = this.input_style
-        this.inputPlaceholder = this.placeholder ? this.placeholder : this.input_name
+        this.inputPlaceholder = this.placeholder ? this.placeholder : this.labelText
       },
       formDataUpdated(){
       },

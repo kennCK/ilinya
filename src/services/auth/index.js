@@ -37,7 +37,7 @@ export default {
   },
   setToken(token){
     if(token === null){
-      console.log('TOKEN IS NULLLLLLLLLLLLLL')
+      alert('TOKEN IS NULLLLLLLLLLLLLL')
     }
     this.tokenData.token = token
     localStorage.setItem('usertoken', token)
@@ -48,9 +48,11 @@ export default {
           console.log(response)
           this.setToken(response['token'])
         }, (response) => {
+          console.log(response)
+          alert('failed to get token')
           ROUTER.go('/')
         })
-      }, 1000 * 60 * 40) // 50min
+      }, 1000 * 60 * 30) // 50min
     }
   },
   authenticate(username, password, callback, errorCallback){

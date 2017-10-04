@@ -41,7 +41,7 @@
               class="form-control"
               v-bind:name="db_name + '[' + index + '][' + columnSetting['db_name'] + ']'"
             >
-              <option v-for="option in columnSetting['select_option']" v-bind:value="option['value']" v-bind:selected="(tableEntry[columnSetting['db_name']] || columnSetting['default_value'])  === option['value'] ? 'selected' : false">{{option['label']}}</option>
+              <option v-for="option in columnSetting['input_setting']['options']" v-bind:value="option['value']" v-bind:selected="(tableEntry[columnSetting['db_name']] || columnSetting['default_value'])  === option['value'] ? 'selected' : false">{{option['label']}}</option>
             </select>
             <input v-else
               class="form-control"

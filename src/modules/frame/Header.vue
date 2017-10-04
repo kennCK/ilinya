@@ -1,8 +1,8 @@
  <template>
   <div>
-      <!--- 
+      <!---
 
-              Header Brand 
+              Header Brand
 
       -->
     <div class="system-header">
@@ -14,16 +14,16 @@
       <span class="navbar-menu-toggler-md" data-toggle="collapse" data-target="#iLinyaSidebar" aria-controls="iLinyaSidebar" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fa fa-bars" aria-hidden="true"></i>
       </span>
-      <!--- 
+      <!---
 
-              Header Profile 
+              Header Profile
 
       -->
       <div class="header-navbar-nav dropdown">
          <span data-toggle="dropdown" id="#account">
             <i class="fa fa-user-circle" aria-hidden="true"></i>
             <label>Hi {{user.username}}!</label>
-         </span> 
+         </span>
          <span class="dropdown-menu" id="account">
           <span class="dropdown-item-profile">
             <span class="account-picture text-center">
@@ -32,11 +32,11 @@
             <span class="account-info text-center">{{user.username}}</span>
           </span>
           <span class="dropdown-item-button text-center"><button class="btn btn-danger-hallow" v-on:click="logOut()">Logout</button></span>
-        </span> 
+        </span>
       </div>
-      <!--- 
+      <!---
 
-              Header Menu Toggler 
+              Header Menu Toggler
 
       -->
     </nav>
@@ -87,10 +87,10 @@ export default {
   .system-header .navbar-brand{
     color: #fff;
   }
-  
+
 /*---------------------------------------------
   HEADER ICONS
-      Contents: 
+      Contents:
           *Branch Switcher
           *Messages
 -----------------------------------------------*/
@@ -103,7 +103,7 @@ export default {
     height: 50px;
     float: left;
     text-align: center;
-    font-size: 16px; 
+    font-size: 16px;
     width: 5%;
     color: #fff;
     padding: 10px 0 15px 0;
@@ -114,7 +114,7 @@ export default {
   }
 
 /*---------------------------------------------
- 
+
 
         HEADER ACCOUNT PROFILE
 
@@ -142,8 +142,8 @@ export default {
     background: #006600;
   }
 /*---------------------------------------------
- 
- 
+
+
         HEADER TOGGLER MENU
 
 
@@ -214,7 +214,7 @@ export default {
   height: 40px;
   border-radius: 0;
   width: 100px;
-  margin-top: 5px;  
+  margin-top: 5px;
 }
 .dropdown-item-button button:hover{
   background: #ff0000;
@@ -225,7 +225,7 @@ export default {
 
 
 
-/*---------------------------------------------------------          
+/*---------------------------------------------------------
 
                   RESPONSIVE HANDLER
 

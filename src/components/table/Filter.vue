@@ -36,7 +36,9 @@
         filterList: {},
         filterInitialized: false,
         formData: {
-        }
+        },
+        dbNameLookUp: {},
+        fieldNameLookUp: {}
       }
     },
     props: {
@@ -48,20 +50,42 @@
         for(let key in this.filter_setting){
           Vue.set(this.filterList, key, this.filter_setting[key])
           typeof this.filterList[key]['name'] === 'undefined' ? Vue.set(this.filterList[key], 'name', this.StringUnderscoreToPhrase(key)) : ''
-          Vue.set(this.filterList[key], 'db_name', key)
+          typeof this.filterList[key]['db_name'] === 'undefined' ? Vue.set(this.filterList[key], 'db_name', key) : null
           typeof this.filterList[key]['col'] === 'undefined' ? Vue.set(this.filterList[key], 'col', 4) : ''
-          this.formData[key] = typeof this.filter_setting[key]['default_value'] !== 'undefined' ? this.filter_setting[key]['default_value'] : null
+          if(!this.filterList[key]['is_dummy']){
+            this.formData[this.filterList[key]['db_name']] = typeof this.filter_setting[key]['default_value'] !== 'undefined' ? this.filter_setting[key]['default_value'] : null
+            this.dbNameLookUp[key] = this.filterList[key]['db_name']
+            this.fieldNameLookUp[this.filterList[key]['db_name']] = key
+          }
         }
         this.filterInitialized = true
       },
       valueChanged(fieldName, value){
-        if(typeof this.formData[fieldName] === 'undefined'){
-          Vue.set(this.formData, fieldName, null)
+        if(typeof this.dbNameLookUp[fieldName] === 'undefined'){
+          return false
         }
-        Vue.set(this.formData, fieldName, value)
+        if(typeof this.formData[fieldName] === 'undefined'){
+          Vue.set(this.formData, this.dbNameLookUp[fieldName], null)
+        }
+        Vue.set(this.formData, this.dbNameLookUp[fieldName], value)
       },
-      getFormData(){
-        return this.formData
+      getFilter(){
+        let condition = []
+        let formInputs = this.formData
+        for(let x in formInputs){
+          if(formInputs[x] !== '' && formInputs[x] !== null){
+            let value = formInputs[x]
+            if(this.filterList[this.fieldNameLookUp[x]]['clause'] === 'like'){
+              value = '%' + value + '%'
+            }
+            condition.push({
+              column: x,
+              value: value,
+              clause: this.filterList[this.fieldNameLookUp[x]]['clause']
+            })
+          }
+        }
+        return condition
       },
       filterForm(){
         this.$emit('filter')

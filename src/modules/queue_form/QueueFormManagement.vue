@@ -15,7 +15,8 @@
     },
     data(){
       let columnSetting = {
-        title: {}
+        title: {},
+        created_at: {}
       }
       let tableSetting = {
         columnSetting: columnSetting
@@ -28,6 +29,14 @@
           ]
         },
         inputs: {
+          code: {
+            read_only: true,
+            value_function: (formData) => {
+              return {
+                code: (this.padNumber((formData['company_id'] * 1 + 29).toString(16), 3).split('').reverse().join('') + '-' + this.padNumber((formData['company_id']).toString(16), 4)).toUpperCase()
+              }
+            }
+          },
           title: {},
           detail: {
             placeholder: 'Describe the purpose, availability, important things about this form',
@@ -59,10 +68,20 @@
               column_setting: {
                 description: {
                 },
-                // type: {
-                //
-                // },
-                sequence: {},
+                type: {
+                  input_type: 'select',
+                  default_value: 'text',
+                  input_setting: {
+                    options: [
+                      {label: 'text', value: 'text'},
+                      {label: 'number', value: 'number'},
+                      {label: 'email', value: 'email'}
+                    ]
+                  }
+                },
+                sequence: {
+                  default_value: 1
+                },
                 additional_option: {
                   db_name: 'setting'
                 }

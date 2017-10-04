@@ -26,8 +26,6 @@ Vue.mixin({
       return isThreeLetter ? (month[monthIndex]).substring(0, 2) : month[monthIndex]
     },
     formatTime(datetimeObject){
-      console.log(datetimeObject)
-      console.log(datetimeObject.getHours())
       var hours = datetimeObject.getHours()
       var minutes = datetimeObject.getMinutes()
       var ampm = hours >= 12 ? 'pm' : 'am'
@@ -36,6 +34,11 @@ Vue.mixin({
       minutes = minutes < 10 ? '0' + minutes : minutes
       var strTime = hours + ':' + minutes + ' ' + ampm
       return strTime
+    },
+    padNumber(num, size) {
+      var s = num + ''
+      while (s.length < size) s = '0' + s
+      return s
     }
   }
 })
