@@ -82,9 +82,9 @@ class SearchResponse{
             $trackerData = [
               "company_id"    => $companyId,
               "search_option" => null,
-              "reply"         => 2,
+              "reply"         => null,
               "form_sequence" => null
-            ];
+            ];  
             $this->tracker->update($trackerData);
             $this->form->manageForms($formResult);
           }
