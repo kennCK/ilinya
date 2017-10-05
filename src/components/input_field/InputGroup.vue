@@ -14,7 +14,6 @@
           </input-group-recursive>
         </div>
         <div v-else v-bind:class="[input['input_type'] === 'hidden' ? 'hidden' : '', 'col-sm-' + input['col']]" >
-
           <input-cell
             :input_name="input['input_name']"
             :field_name="input['field_name']"
@@ -94,7 +93,6 @@
             this.formDataChanged(fieldName, this.form_data[dbName])
           }
         }
-
       }
     },
     methods: {
@@ -106,7 +104,6 @@
         if(typeof this.valueFunctionList[dbName] !== 'undefined'){
           this.formDataChanged(this.fieldNameList[dbName], $(e.target).val())
           let newFormData = this.valueFunctionList[dbName](this.form_data)
-
           for(let formKey in newFormData){
             this.formDataChanged(this.fieldNameList[formKey], newFormData[formKey])
           }

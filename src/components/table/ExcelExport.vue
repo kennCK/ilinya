@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="$emit('export_excel')"  class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
+    <button @click="$emit('export_excel')"  class="btn btn-outline-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
     <div ref="tableWrapper">
       <table >
         <thead>

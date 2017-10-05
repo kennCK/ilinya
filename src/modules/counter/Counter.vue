@@ -1,11 +1,15 @@
 <template>
   <div>
     <div class="row mb-5">
-      <div class="col-sm-6">
+
+      <div class="col-sm-3">
         <annoucement></annoucement>
       </div>
-      <div class="col-sm-6 text-center">
+      <div class="col-sm-3 text-center">
         <button @click="showQueueCard" class="btn btn-lg btn-primary"><i class="fa fa-vcard-o" aria-hidden="true"></i> Create Queue Entry</button>
+      </div>
+      <div class="col-sm-6 text-right">
+        <excel-export ref="excelExport" v-on:excel_export_clicked="excelExport"></excel-export>
       </div>
     </div>
     <div class="row">
@@ -87,6 +91,7 @@
   export default{
     name: '',
     components: {
+      'excel-export': require('./ExcelExport.vue'),
       'table-component': require('components/table/TableComponent.vue'),
       'modal': require('components/modal/Modal.vue'),
       'input-cell': require('components/input_field/InputCell.vue'),
@@ -121,6 +126,30 @@
       }
       let filterSetting = {}
       filterSetting = {
+        queue_form_id: {
+          label: 'Form',
+          input_type: 'select',
+          input_setting: {
+            option_function: (instance) => {
+              this.APIRequest('queue_form/retrieve', {}, (response) => {
+                if(response['data']){
+                  let options = []
+                  options.push({
+                    value: null,
+                    label: 'Select Form'
+                  })
+                  for(let x = 0; x < response['data'].length; x++){
+                    options.push({
+                      value: response['data'][x]['id'],
+                      label: response['data'][x]['title']
+                    })
+                  }
+                  instance.setOption(options)
+                }
+              })
+            }
+          }
+        },
         number: {
         },
         status: {
@@ -233,6 +262,11 @@
     props: {
     },
     methods: {
+      excelExport(){
+        this.$refs.excelExport.exportTable(this.$refs.queueCardTable.getFiter(), () => {
+
+        })
+      },
       pageUser(accountNumber, message, callback, finish){
         this.isCalling = true
         finish = (typeof finish === 'undefined') ? 0 : finish
@@ -240,7 +274,6 @@
           this.isCalling = false
           if(callback){
             callback()
-            console.log('callback!')
           }
         })
       },

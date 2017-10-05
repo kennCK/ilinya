@@ -30,7 +30,8 @@
         option_lookup: {},
         defaultValue: null,
         defaultFormat: 'MM/DD/YYYY',
-        dateInputTrueValue: null
+        dateInputTrueValue: null,
+        changeTriggered: false
       }
     },
     props: {
@@ -53,11 +54,30 @@
         this.defaultValue = this.default_value ? this.default_value : null
         $(this.$refs.datePickerInput).datetimepicker({
           format: 'MM/DD/YYYY',
-          enabledHours: false
+          enabledHours: false,
+          defaultDate: false,
+          useCurrent: false,
+          showClear: true,
+          showClose: true
         })
         .on('dp.change', (e) => {
+          console.log('changed : ')
+          console.log(e.date)
+          this.changeTriggered = true
           if(e.date){
             $(this.$refs.dateInput).val(this.dateInputTrueValue = e.date.year() + '-' + this.padNumber(e.date.month() + 1, 2) + '-' + this.padNumber(e.date.date(), 2))
+          }else{
+            $(this.$refs.dateInput).val(null)
+          }
+          $(this.$refs.dateInput).change()
+
+        })
+        .on('dp.show', (e) => {
+          this.changeTriggered = false
+        })
+        .on('dp.hide', (e) => {
+          if(this.changeTriggered === false && $(this.$refs.datePickerInput).val() === ''){
+            $(this.$refs.dateInput).val(null)
             $(this.$refs.dateInput).change()
           }
         })
@@ -66,7 +86,6 @@
         })
       },
       valueChanged(e){
-        console.log('huhu')
         this.$emit('change', e)
       }
     }

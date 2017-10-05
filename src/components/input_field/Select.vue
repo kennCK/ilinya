@@ -54,6 +54,9 @@
       initInputSetting(){
         (typeof this.input_setting['options'] !== 'undefined') ? this.setOption(this.input_setting['options']) : null
         this.defaultValue = this.default_value ? this.default_value : null
+        if(typeof this.input_setting['option_function'] !== 'undefined'){
+          this.input_setting['option_function'](this)
+        }
       },
       setOption(options){
         this.options = options
@@ -63,7 +66,7 @@
         }
       },
       valueChanged(e){
-        console.log($(e.target).val())
+
         this.$emit('change', e)
       }
     }

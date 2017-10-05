@@ -171,9 +171,24 @@
           requestOption['sort'] = {}
           requestOption['sort'][this.currentSort['db_name']] = orderLookUp[this.currentSort['sort']]
         }
+        $.merge(requestOption.condition, this.$refs.tableFilter.getFilter())
         this.$refs.tableExcelExport.exportTable(requestOption, () => {
           this.isLoadingData = false
         })
+      },
+      getFiter(){
+        let requestOption = {} // this.retrieve_parameter
+        for(let x in this.retrieve_parameter){
+          requestOption[x] = this.retrieve_parameter[x]
+        }
+        if(this.currentSort && this.currentSort['sort']){
+          let orderLookUp = ['', 'asc', 'desc']
+          requestOption['sort'] = {}
+          requestOption['sort'][this.currentSort['db_name']] = orderLookUp[this.currentSort['sort']]
+        }
+        typeof requestOption.condition === 'undefined' ? requestOption.condition = [] : null
+        $.merge(requestOption.condition, this.$refs.tableFilter.getFilter())
+        return requestOption
       },
       retrieveData(retrieveType, resetPage){
         this.isLoadingData = true
