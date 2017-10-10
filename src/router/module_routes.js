@@ -2,8 +2,12 @@ import AUTH from 'services/auth'
 let CONFIG = require('config.js')
 let beforeEnter = (to, from, next) => {
   // TODO Redirect if no token when token is required in meta.tokenRequired
+  if(!AUTH.tokenData.isPreviousAuthenticationChecked){
+    AUTH.checkAuthentication()
+  }
   AUTH.currentPath = to.path
-  if(AUTH.user.userID || to.meta.tokenRequired !== true){
+  let isTokenRequired = typeof to.meta.tokenRequired === 'undefined' ? true : to.meta.tokenRequired
+  if(AUTH.user.userID || isTokenRequired === false){
     next()
   }else{
     if(to.name !== 'login'){
@@ -12,7 +16,7 @@ let beforeEnter = (to, from, next) => {
           path: '/'
         })
       }
-    }else{
+    }else{ // if login page
       if(!AUTH.tokenData.verifyingToken){
         next()
       }
@@ -34,28 +38,29 @@ for(let x = 0; x < devRoutes.length; x++){
 let routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'login',
     component: resolve => require(['modules/home/LogIn.vue'], resolve),
     beforeEnter: beforeEnter
 
-  },
-  {
-    path: '/admin',
-    name: 'login',
-    component: resolve => require(['modules/home/LogIn.vue'], resolve),
-    beforeEnter: (to, from, next) => {
-      AUTH.currentPath = to.path
-      if(AUTH.user.userID){
-        next({
-          path: (AUTH.user.type === 1) ? '/product_management' : '/cashier'
-        })
-      }else{
-        if(!AUTH.tokenData.verifyingToken){
-          next()
-        }
-      }
-    }
   }
+  // ,
+  // {
+  //   path: '/admin',
+  //   name: 'login',
+  //   component: resolve => require(['modules/home/LogIn.vue'], resolve),
+  //   beforeEnter: (to, from, next) => {
+  //     AUTH.currentPath = to.path
+  //     if(AUTH.user.userID){
+  //       next({
+  //         path: (AUTH.user.type === 1) ? '/product_management' : '/cashier'
+  //       })
+  //     }else{
+  //       if(!AUTH.tokenData.verifyingToken){
+  //         next()
+  //       }
+  //     }
+  //   }
+  // }
 ]
 // if(CONFIG.default.IS_DEV){
 routes = routes.concat(devRoutes)

@@ -26,7 +26,7 @@ require('assets/js/min/select2.full.min.js')
 require('assets/js/min/jquery-confirm.min.js')
 require('assets/js/min/bootstrap-datetimepicker.min.js')
 require('assets/style/bootstrap-datetimepicker.min.css')
-AUTH.checkAuthentication()
+// AUTH.checkAuthentication()
 Vue.use(Router)
 export default new Router({
   routes: ModuleRoutes.routes

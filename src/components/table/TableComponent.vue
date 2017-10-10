@@ -105,7 +105,11 @@
     mounted(){
 
       this.initColumnSetting()
-      this.retrieveData('filter')
+      if(this.$refs.tableFilter){
+        this.$refs.tableFilter.filterForm()
+      }else{
+        this.retrieveData('filter')
+      }
     },
     data(){
       return {

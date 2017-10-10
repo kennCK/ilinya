@@ -33,7 +33,7 @@
             read_only: true,
             value_function: (formData) => {
               return {
-                code: (this.padNumber((formData['company_id'] * 1 + 29).toString(16), 3).split('').reverse().join('') + '-' + this.padNumber((formData['company_id']).toString(16), 4)).toUpperCase()
+                code: formData['company_id'] ? (this.padNumber((formData['company_id'] * 1 + 29).toString(16), 3).split('').reverse().join('') + '-' + this.padNumber((formData['id']).toString(16), 4)).toUpperCase() : null
               }
             }
           },
@@ -60,6 +60,19 @@
               }]
             }
           },
+          is_private: {
+            input_type: 'select',
+            default_value: 1,
+            input_setting: {
+              options: [{
+                label: 'Yes',
+                value: 1
+              }, {
+                label: 'No',
+                value: 0
+              }]
+            }
+          },
           queue_form_fields: {
             label_colspan: 12,
             input_name: 'Form Fields',
@@ -79,7 +92,20 @@
                     ]
                   }
                 },
+                is_admin_only: {
+                  name: 'Admin Only',
+                  input_type: 'select',
+                  default_value: '0',
+                  input_setting: {
+                    options: [
+                      {label: 'No', value: 0},
+                      {label: 'Yes', value: 1}
+                    ]
+                  }
+                },
                 sequence: {
+                  name: 'Sequence',
+                  input_type: 'number',
                   default_value: 1
                 },
                 additional_option: {

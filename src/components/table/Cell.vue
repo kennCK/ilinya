@@ -18,6 +18,11 @@
     <div v-else-if="type === 'button'" >
       <button v-if="if_condition(row_data)" @click="setting['on_click']($event, row_data)" v-html="setting['label']" v-bind:class="setting['class']" @click.stop type="button" class="btn"></button>
     </div>
+    <div v-else-if="type === 'multiple-button'" >
+      <template v-for="button in setting['buttons']">
+          <button v-if="button.if_condition(row_data)" @click="button.on_click($event, row_data)" v-html="button['label']" v-bind:class="button['class']"  @click.stop type="button" class="btn ml-2"></button>
+      </template>
+    </div>
     <div v-else>
       {{value}}
     </div>

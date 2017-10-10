@@ -12,8 +12,10 @@ export default {
   },
   tokenData: {
     token: null,
-    tokenTimer: false,
-    verifyingToken: false
+    tokenTimer: 1000 * 60 * 30,
+    verifyingToken: false,
+    isRefreshing: false,
+    isPreviousAuthenticationChecked: false
   },
   currentPath: false,
   setUser(userID, username, type){
@@ -36,23 +38,27 @@ export default {
     localStorage.setItem('company_branch_id', companyBranch)
   },
   setToken(token){
-    if(token === null){
-      alert('TOKEN IS NULLLLLLLLLLLLLL')
-    }
     this.tokenData.token = token
     localStorage.setItem('usertoken', token)
-    if(token){
+    token = token === 'null' ? null : token
+    if((token !== null) && !this.tokenData.isRefreshing){
+      /**
+        TODO
+          Multiple authenticate/refresh request has been sent. Comment the isRefreshing to see the error
+      */
+      this.tokenData.isRefreshing = true
       setTimeout(() => {
         let vue = new Vue()
         vue.APIRequest('authenticate/refresh', {}, (response) => {
-          console.log(response)
-          this.setToken(response['token'])
+          if(token){
+            this.setToken(response['token'])
+          }
+          this.tokenData.isRefreshing = false
         }, (response) => {
-          console.log(response)
-          alert('failed to get token')
+          this.tokenData.isRefreshing = false
           ROUTER.go('/')
         })
-      }, 1000 * 60 * 30) // 50min
+      }, this.tokenTimer) // 50min
     }
   },
   authenticate(username, password, callback, errorCallback){
@@ -78,6 +84,10 @@ export default {
     })
   },
   checkAuthentication(callback){
+    if(this.tokenData.verifyingToken){
+      return
+    }
+    this.tokenData.isPreviousAuthenticationChecked = true
     this.tokenData.verifyingToken = true
     let token = localStorage.getItem('usertoken')
     this.user.company_id = localStorage.getItem('company_id')
@@ -86,7 +96,6 @@ export default {
       this.setToken(token)
       let vue = new Vue()
       vue.APIRequest('authenticate/user', {}, (userInfo) => {
-
         this.setUser(userInfo.id, userInfo.username, userInfo.user_type_id)
         this.tokenData.verifyingToken = false
         if(this.currentPath){
