@@ -53,7 +53,7 @@
     methods: {
       initInputSetting(){
         console.debug('Select option initializing...!')
-        (typeof this.input_setting['options'] !== 'undefined') ? this.setOption(this.input_setting['options']) : null
+        typeof this.input_setting['options'] !== 'undefined' ? this.setOption(this.input_setting['options']) : null
         this.defaultValue = this.default_value ? this.default_value : null
         if(typeof this.input_setting['option_function'] !== 'undefined'){
           console.debug('option_function_fired!')
