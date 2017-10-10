@@ -14,7 +14,7 @@
             :inputs="inputs" :form_status="'create'" :error_list="errorList"
           ></input-group>
         </form>
-          <button class="btn btn-primary pull-right" v-on:click="register()">Register</button>
+          <button class="btn btn-primary pull-right" v-on:click="register()">Next</button>
       </div>
     </div>
 </template>
@@ -36,10 +36,9 @@ export default {
           input_setting: {
             option_function: (instance) => {
               let parameter = {
-                'sort': [
-                  'subcategory',
-                  'asc'
-                ]
+                'sort': {
+                  'sub_category': 'asc'
+                }
               }
               this.APIRequest('business_type/retrieve', parameter, (response) => {
                 if(response['data']){
@@ -51,7 +50,7 @@ export default {
                   for (let i = 0; i < response['data'].length; i++) {
                     options.push({
                       value: response['data'][i]['id'],
-                      label: response['data'][i]['subcategory']
+                      label: response['data'][i]['sub_category']
                     })
                   }
                   instance.setOption(options)
@@ -59,6 +58,20 @@ export default {
               })
             }
           }
+        },
+        email: {
+          label_colspan: 0,
+          db_name: 'accounts[email]',
+          placeholder: 'Email Address'
+        },
+        password: {
+          label_colspan: 0,
+          db_name: 'accounts[password]',
+          placeholder: 'Password'
+        },
+        confirm_password: {
+          label_colspan: 0,
+          placeholder: 'Confirm Password'
         },
         name: {
           label_colspan: 0,

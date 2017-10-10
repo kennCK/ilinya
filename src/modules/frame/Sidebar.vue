@@ -3,13 +3,8 @@
   Filename: Sidebar.vue
 -->
 <template>
-<!-- <<<<<<< HEAD -->
-  <div class="system-body">
-     <div class="main-sidebar sidebar-collapse collapse" v-bind:class="hide + ' ' + toggleOnClick" id="iLinyaSidebar" >
-<!-- =======
-  <div class="system-body">
+  <div class="system-body"> 
      <div class="main-sidebar sidebar-collapse navbar-collapse" v-bind:class="hide + ' ' + toggleOnClick" id="iLinyaSidebar" >
->>>>>>> 44d3853296af6d414049b87ddfb2f3750b85dbaf -->
       <div class="sidebar">
         <ul class="sidebar-menu">
             <li class="header">
@@ -27,7 +22,7 @@
                   <i v-else></i>
                   <span v-bind:class="'sm-title'" >{{item.description}}
                   </span>
-                  <span v-bind:class="'pull-right-container'">
+                  <span v-bind:class="'pull-right-container'">  
                     <i v-bind:class="item.icon + ' pull-right'"></i>
                   </span>
                 </a>
@@ -44,16 +39,11 @@
                 </ul>
               </li> -->
               <li v-for="(item,index) in menu" v-bind:class="{ appActive: isActive(item.id) }" v-on:click="setActive(item.id)">
-<!-- <<<<<<< HEAD -->
-                <a v-on:click="navigateTo(item.path, true)" data-toggle="collapse" :data-target="'#'+item.id" v-bind:class="hide">
-                  <i></i>
-<!-- =======
                 <a v-on:click="navigateTo(item.path, true)" data-toggle="collapse" :data-target="'#iLinyaSidebar'" v-bind:class="hide">
-                  <i></i>
->>>>>>> 44d3853296af6d414049b87ddfb2f3750b85dbaf -->
+                  <i></i> 
                   <span v-bind:class="'sm-title'" >{{item.description}}
                   </span>
-                  <span v-bind:class="'pull-right-container'">
+                  <span v-bind:class="'pull-right-container'">  
                     <i v-bind:class="item.icon + ' pull-right'"></i>
                   </span>
                 </a>
@@ -72,7 +62,7 @@
         </transition>
       </div>
     </div>
-  </div>
+  </div>  
 </template>
 <script>
 export default {
@@ -143,7 +133,7 @@ export default {
 }
 </script>
 <style>
-.main-sidebar, .content-holder{
+.main-sidebar, .content-holder{  
   min-height: 84.5vh;
   overflow: hidden;
   transition: all 1s ease 0s;
@@ -152,7 +142,7 @@ export default {
   padding:0 10px 0 10px;
 }
 .sidebar-menu .header{
-  font-weight: 700;
+  font-weight: 700; 
   padding: 15px 2% 15px 2%;
   color: #000;
   text-align: center;
@@ -229,7 +219,7 @@ export default {
   background: #f4f4f4;
 }
 
-/*---------------------------------------------------------
+/*---------------------------------------------------------          
 
                   RESPONSIVE HANDLER
 
@@ -316,7 +306,7 @@ export default {
   .sidebar-menu .header span{
     display: none;
   }
-
+  
   .main-sidebar.hidden{
      margin-left: 0;
   }
