@@ -74,7 +74,6 @@ export default {
       })
     },
     redirect(parameter){
-      alert('Parameter')
       ROUTER.push(parameter)
     }
   }

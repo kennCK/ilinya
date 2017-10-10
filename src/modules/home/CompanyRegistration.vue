@@ -1,18 +1,21 @@
 <template>
-    <div class="col-lg-4 offset-lg-4 custom-container">
-      <div class="header-title">
-        <i class="fa fa-home" aria-hidden="true" v-on:click="redirect()"></i>
-        <span>Company Registration</span>
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4 custom-container">
+        <div class="header-title">
+          <i class="fa fa-home" aria-hidden="true" v-on:click="redirect()"></i>
+          <span>Registration</span>
+        </div>
+        <span class="text-danger error-holder text-center" v-if="errorStatus !== ''">
+          <label>{{errorStatus}}</label>
+        </span>
+         <form ref="registration">
+          <input-group
+            :inputs="inputs" :form_status="'create'" :error_list="errorList"
+          ></input-group>
+        </form>
+          <button class="btn btn-primary pull-right" v-on:click="register()">Register</button>
       </div>
-      <span class="text-danger error-holder text-center" v-if="errorStatus !== ''">
-        <label>{{errorStatus}}</label>
-      </span>
-       <form ref="registration">
-        <input-group
-          :inputs="inputs" :form_status="'create'" :error_list="errorList"
-        ></input-group>
-      </form>
-        <button class="btn btn-primary pull-right" v-on:click="register()">Register</button>
     </div>
 </template>
 <script>
@@ -31,41 +34,41 @@ export default {
           label_colspan: 0,
           input_type: 'select',
           input_setting: {
-            options: [{
-              value: 1,
-              label: 'Call Center'
-            }]
+            option_function: (instance) => {
+              let parameter = {
+                'sort': [
+                  'subcategory',
+                  'asc'
+                ]
+              }
+              this.APIRequest('business_type/retrieve', parameter, (response) => {
+                if(response['data']){
+                  let options = []
+                  options.push({
+                    value: null,
+                    label: 'Select Categories:'
+                  })
+                  for (let i = 0; i < response['data'].length; i++) {
+                    options.push({
+                      value: response['data'][i]['id'],
+                      label: response['data'][i]['subcategory']
+                    })
+                  }
+                  instance.setOption(options)
+                }
+              })
+            }
           }
         },
         name: {
           label_colspan: 0,
-          db_name: 'company_branches[name]',
+          db_name: 'name',
           placeholder: 'Company Name'
-        },
-        code: {
-          label_colspan: 0,
-          db_name: 'company_branches[code]',
-          placeholder: 'Company Code'
-        },
-        email: {
-          label_colspan: 0,
-          db_name: 'company_branches[email]',
-          placeholder: 'Company Email'
         },
         address: {
           label_colspan: 0,
-          db_name: 'company_branches[address]',
-          placeholder: 'Company Address'
-        },
-        contact_number: {
-          label_colspan: 0,
-          db_name: 'company_branches[contact_number]',
-          placeholder: 'Company Contact Number'
-        },
-        fax_number: {
-          label_colspan: 0,
-          db_name: 'company_branches[fax_number]',
-          placeholder: 'Company Fax Number'
+          db_name: 'address',
+          placeholder: 'Address'
         }
       },
       errorList: {},
@@ -76,8 +79,8 @@ export default {
     register(){
       this.APIFormRequest('company/create', this.$refs.registration, response => {
         if(response.error.status === 100){
-          this.errorStatus = ('company_branches.email' in response.error.message && !('company_branches.name' in response.error.message)) ? 'Email Address already taken.' : 'Please fill up the required informations.'
-          console.log(response.error.message['company_branches.name'])
+          this.errorStatus = ('email' in response.error.message && !('name' in response.error.message)) ? 'Email Address already taken.' : 'Please fill up the required informations.'
+          console.log(response.error.message['name'])
         }else if(response.error.status !== 'undefined'){
           this.redirect()
         }
@@ -92,5 +95,9 @@ export default {
 <style>
   .error-holder label{
     padding: 5px 0 5px 0;
+  }
+  .row{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 </style>
