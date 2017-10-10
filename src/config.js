@@ -1,4 +1,4 @@
-let LIVE_BACKEND_URL = 'https://app.ilinya.com/api'
+let LIVE_BACKEND_URL = 'https://api.ilinya.com/api'
 let DEV_BACKEND_URL = 'http://localhost/ilinya/api'
 let isDev = false // Set to false in live
 let BACKEND_URL = isDev ? DEV_BACKEND_URL : LIVE_BACKEND_URL
