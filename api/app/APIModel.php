@@ -22,6 +22,9 @@ class APIModel extends Model
     public function getTableColumns() {
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
     }
+    public function getAttributes(){
+      return $this->attributes;
+    }
     // public function getTableDetail(){
     //   return $this->getConnection()->getSchemaBuilder()->listTableDetails("inventory");
     // }

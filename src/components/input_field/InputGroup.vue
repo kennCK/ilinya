@@ -14,11 +14,11 @@
           </input-group-recursive>
         </div>
         <div v-else v-bind:class="[input['input_type'] === 'hidden' ? 'hidden' : '', 'col-sm-' + input['col']]" >
-
           <input-cell
             :input_name="input['input_name']"
             :field_name="input['field_name']"
             :db_name="input['db_name']"
+            :read_only="input['read_only']"
             :input_setting="input['input_setting']"
             :input_type="input['input_type']"
             :input_style="input['input_style']"
@@ -93,7 +93,6 @@
             this.formDataChanged(fieldName, this.form_data[dbName])
           }
         }
-
       }
     },
     methods: {
@@ -105,7 +104,6 @@
         if(typeof this.valueFunctionList[dbName] !== 'undefined'){
           this.formDataChanged(this.fieldNameList[dbName], $(e.target).val())
           let newFormData = this.valueFunctionList[dbName](this.form_data)
-
           for(let formKey in newFormData){
             this.formDataChanged(this.fieldNameList[formKey], newFormData[formKey])
           }
@@ -133,6 +131,7 @@
           Vue.set(this.inputList[key], 'field_name', key)
           typeof this.inputList[key]['db_name'] === 'undefined' ? Vue.set(this.inputList[key], 'db_name', dbName) : ''
           typeof this.inputList[key]['input_name'] === 'undefined' ? Vue.set(this.inputList[key], 'input_name', this.StringUnderscoreToPhrase(key)) : ''
+          typeof this.inputList[key]['read_only'] === 'undefined' ? Vue.set(this.inputList[key], 'read_only', false) : ''
           typeof this.inputList[key]['input_type'] === 'undefined' ? Vue.set(this.inputList[key], 'input_type', 'text') : ''
           typeof this.inputList[key]['col'] === 'undefined' ? Vue.set(this.inputList[key], 'col', '12') : ''
           Vue.set(this.fieldNameList, this.inputList[key]['db_name'], this.inputList[key]['field_name'])

@@ -229,7 +229,7 @@ class APIController extends Controller
               }
               $result = $this->model->find($this->model->id)->$childTable()->save($foreignTable);
               $childID[$childTable][] = $result["id"];
-            }else{
+            }else{ // list
               foreach($child as $childValue){
                 if(!isset($childID[$childTable])){
                   $childID[$childTable] = array();
@@ -465,14 +465,15 @@ class APIController extends Controller
                     ->update($childValue);
                   // $foreignTable->save($foreignTable);
 
-                }else{
+                }else{ //create
                   $childValue[str_singular($this->model->getTable()).'_id'] = $this->model->id;
                   $foreignTable = $this->model->newModel($childTable, $childValue);
-                  foreach($childValue as $childValueKey => $childValueValue){
-                    if($childValueValue == null || $childValueValue == ""){
-                      $foreignTable->$childValueKey = $childValueValue;
-                    }
-                  }
+                  $this->printR($foreignTable->getAttributes());
+                  // foreach($childValue as $childValueKey => $childValueValue){
+                  //   if($childValueValue == null || $childValueValue == ""){
+                  //     $foreignTable->$childValueKey = $childValueValue;
+                  //   }
+                  // }
                   $result = $this->model->find($this->model->id)->$childTable()->save($foreignTable)->id;
                 }
                 $childID[$childTable][] = $result;

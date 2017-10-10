@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div v-if="table_export_setting" class="row">
+      <div  class="col-sm-12 text-right">
+        <table-excel-export ref="tableExcelExport"
+          v-on:export_excel="exportExcel"
+          :export_setting="table_export_setting"
+          :api="api"
+        ></table-excel-export>
+      </div>
+    </div>
     <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter', true)" :filter_setting="filter_setting" ref="tableFilter"></table-filter>
     <table class="table table-bordered table-condensed table-hover" >
       <thead>
@@ -90,13 +99,17 @@
   export default{
     components: {
       'table-filter': require('./Filter.vue'),
+      'table-excel-export': require('./ExcelExport.vue'),
       'table-cell': require('./Cell.vue')
     },
     mounted(){
 
       this.initColumnSetting()
-      console.log('table mounted')
-      this.retrieveData('filter')
+      if(this.$refs.tableFilter){
+        this.$refs.tableFilter.filterForm()
+      }else{
+        this.retrieveData('filter')
+      }
     },
     data(){
       return {
@@ -111,6 +124,7 @@
         totalPage: 1,
         totalResult: 0,
         prevRetrieveType: null,
+        exportTableSetting: Object,
         isLoadingData: false
       }
     },
@@ -118,6 +132,7 @@
       api: String,
       filter_setting: Object,
       column_setting: Object,
+      table_export_setting: Object,
       retrieve_parameter: {
         type: Object,
         default(){
@@ -149,6 +164,36 @@
         this.currentSort = this.columnSetting[rowIndex][columnIndex]
         this.retrieveData(this.prevRetrieveType)
       },
+      exportExcel(){
+        this.isLoadingData = true
+        let requestOption = {} // this.retrieve_parameter
+        for(let x in this.retrieve_parameter){
+          requestOption[x] = this.retrieve_parameter[x]
+        }
+        if(this.currentSort && this.currentSort['sort']){
+          let orderLookUp = ['', 'asc', 'desc']
+          requestOption['sort'] = {}
+          requestOption['sort'][this.currentSort['db_name']] = orderLookUp[this.currentSort['sort']]
+        }
+        $.merge(requestOption.condition, this.$refs.tableFilter.getFilter())
+        this.$refs.tableExcelExport.exportTable(requestOption, () => {
+          this.isLoadingData = false
+        })
+      },
+      getFiter(){
+        let requestOption = {} // this.retrieve_parameter
+        for(let x in this.retrieve_parameter){
+          requestOption[x] = this.retrieve_parameter[x]
+        }
+        if(this.currentSort && this.currentSort['sort']){
+          let orderLookUp = ['', 'asc', 'desc']
+          requestOption['sort'] = {}
+          requestOption['sort'][this.currentSort['db_name']] = orderLookUp[this.currentSort['sort']]
+        }
+        typeof requestOption.condition === 'undefined' ? requestOption.condition = [] : null
+        $.merge(requestOption.condition, this.$refs.tableFilter.getFilter())
+        return requestOption
+      },
       retrieveData(retrieveType, resetPage){
         this.isLoadingData = true
         let requestOption = {} // this.retrieve_parameter
@@ -163,25 +208,12 @@
         if(resetPage){
           this.currentPage = 1
         }
-        requestOption['limit'] = this.entry_per_page
-        requestOption['offset'] = this.entry_per_page * (this.currentPage - 1)
         if(retrieveType === 'filter' && this.$refs.tableFilter){
           typeof requestOption.condition === 'undefined' ? requestOption.condition = [] : null
-          let formInputs = this.$refs.tableFilter.getFormData() // $(this.$refs.tableFilter.$refs.form).serializeArray()
-          for(let x in formInputs){
-            if(formInputs[x] !== '' && formInputs[x] !== null && this.filter_setting[x]['is_dummy'] !== true){
-              let value = formInputs[x]
-              if(this.filter_setting[x]['clause'] === 'like'){
-                value = '%' + value + '%'
-              }
-              requestOption.condition.push({
-                column: x,
-                value: value,
-                clause: this.filter_setting[x]['clause']
-              })
-            }
-          }
+          $.merge(requestOption.condition, this.$refs.tableFilter.getFilter())
         }
+        requestOption['limit'] = this.entry_per_page
+        requestOption['offset'] = this.entry_per_page * (this.currentPage - 1)
         this.prevRetrieveType = retrieveType
         this.APIRequest(this.api + '/retrieve', requestOption, (response) => {
           this.tableEntries = []

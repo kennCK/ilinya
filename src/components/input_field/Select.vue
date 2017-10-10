@@ -12,8 +12,8 @@
         {{option['label']}}
       </option>
     </select>
-
     <span v-else class="form-control">{{this.option_lookup[form_data[db_name]]}} &nbsp;</span>
+
   </div>
 </template>
 <script>
@@ -52,8 +52,13 @@
     },
     methods: {
       initInputSetting(){
-        (typeof this.input_setting['options'] !== 'undefined') ? this.setOption(this.input_setting['options']) : null
+        console.debug('Select option initializing...!')
+        typeof this.input_setting['options'] !== 'undefined' ? this.setOption(this.input_setting['options']) : null
         this.defaultValue = this.default_value ? this.default_value : null
+        if(typeof this.input_setting['option_function'] !== 'undefined'){
+          console.debug('option_function_fired!')
+          this.input_setting['option_function'](this)
+        }
       },
       setOption(options){
         this.options = options
@@ -63,7 +68,7 @@
         }
       },
       valueChanged(e){
-        console.log($(e.target).val())
+
         this.$emit('change', e)
       }
     }

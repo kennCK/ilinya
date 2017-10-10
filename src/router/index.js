@@ -13,17 +13,20 @@ global.$ = global.jQuery
 // require('bootstrap')
 // require('font-awesome/css/font-awesome.css')
 global.Popper = require('assets/js/min/popper.min.js').default
-
+require('assets/style/font-awesome.min.css')
 require('assets/style/bootstrap.min.css')
+require('assets/style/jquery-confirm.min.css')
 require('assets/style/bootstrap-grid.min.css')
 require('assets/style/bootstrap-reboot.min.css')
-
+global.moment = require('moment')
 require('assets/js/min/bootstrap.min.js')
 require('assets/style/theme.css')
 require('assets/style/select2.min.css')
 require('assets/js/min/select2.full.min.js')
-import 'font-awesome/css/font-awesome.css'
-AUTH.checkAuthentication()
+require('assets/js/min/jquery-confirm.min.js')
+require('assets/js/min/bootstrap-datetimepicker.min.js')
+require('assets/style/bootstrap-datetimepicker.min.css')
+// AUTH.checkAuthentication()
 Vue.use(Router)
 export default new Router({
   routes: ModuleRoutes.routes

@@ -1,11 +1,15 @@
 <template>
   <div>
     <div class="row mb-5">
-      <div class="col-sm-6">
+
+      <div class="col-sm-3">
         <annoucement></annoucement>
       </div>
-      <div class="col-sm-6 text-center">
+      <div class="col-sm-3 text-center">
         <button @click="showQueueCard" class="btn btn-lg btn-primary"><i class="fa fa-vcard-o" aria-hidden="true"></i> Create Queue Entry</button>
+      </div>
+      <div class="col-sm-6 text-right">
+        <excel-export ref="excelExport" v-on:excel_export_clicked="excelExport"></excel-export>
       </div>
     </div>
     <div class="row">
@@ -31,6 +35,7 @@
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i> The Queue Card is not available. It may have been deleted by the user.
         </div>
         <form v-else ref="queueCardForm">
+          <input type="hidden" name="id" v-bind:value="queue_card_id">
           <input-cell
             :input_name="'Form'"
             :db_name="'queue_form_id'"
@@ -48,6 +53,7 @@
             :form_status="formStatus"
           ></input-cell>
           <template v-for="(queueFormField, index) in queueFormFields">
+            <input type="hidden" v-bind:name="'queue_card_fields['+index+'][id]'" v-bind:value="queueFormField['queue_card_field_id']">
             <input type="hidden" v-bind:name="'queue_card_fields['+index+'][queue_form_field_id]'" v-bind:value="queueFormField['id']">
             <input-cell
               :input_name="queueFormField['description']"
@@ -60,12 +66,12 @@
           </div>
           <div v-if="queue_card_id && selected_queue_card['status'] !== 3 && !isLoadingCard" class="row">
             <div class="col-sm-12 text-center">
-
               <button @click="removeQueueCard" type="button" class="btn btn-outline-danger pull-left "> <i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
               <button v-if="selected_queue_card.facebook_user_id" v-bind:disabled="isCalling" @click="selected_queue_card.facebook_user ? pageUser(selected_queue_card.facebook_user.account_number, 'Please come to the counter') : null" type="button" class="btn btn-primary "><i class="fa fa-bell-o" aria-hidden="true"></i> Call </button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(1)" type="button" class="btn btn-warning">Cancel Serving</button>
               <button v-else @click="changeQueueCardStatus(2)" type="button" class="btn btn-warning "> Serve</button>
               <button v-if="selected_queue_card['status'] === 2" @click="changeQueueCardStatus(3)" type="button" class="btn btn-success "><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finish</button>
+              <button @click="submitQueueCard" type="button" class="btn btn-outline-success pull-right"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
             </div>
           </div>
           <div v-else-if="selected_queue_card['status'] !== 3  && !isLoadingCard" class="row">
@@ -87,6 +93,7 @@
   export default{
     name: '',
     components: {
+      'excel-export': require('./ExcelExport.vue'),
       'table-component': require('components/table/TableComponent.vue'),
       'modal': require('components/modal/Modal.vue'),
       'input-cell': require('components/input_field/InputCell.vue'),
@@ -96,7 +103,6 @@
 
     },
     mounted(){
-
     },
     data(){
       let formSelectInputSetting = {
@@ -121,6 +127,30 @@
       }
       let filterSetting = {}
       filterSetting = {
+        queue_form_id: {
+          label: 'Form',
+          input_type: 'select',
+          input_setting: {
+            option_function: (instance) => {
+              this.APIRequest('queue_form/retrieve', {}, (response) => {
+                if(response['data']){
+                  let options = []
+                  options.push({
+                    value: null,
+                    label: 'Select Form'
+                  })
+                  for(let x = 0; x < response['data'].length; x++){
+                    options.push({
+                      value: response['data'][x]['id'],
+                      label: response['data'][x]['title']
+                    })
+                  }
+                  instance.setOption(options)
+                }
+              })
+            }
+          }
+        },
         number: {
         },
         status: {
@@ -157,6 +187,12 @@
             }
             return newForm
           }
+        },
+        created_at: {
+          db_name: 'created_at',
+          input_type: 'date',
+          clause: '>=',
+          label: 'Start Date'
         }
 
       }
@@ -171,6 +207,9 @@
         column_setting: {
           id: {},
           number: {},
+          created_at: {
+
+          },
           status: {
             type: 'html',
             value_function: (row) => {
@@ -196,6 +235,49 @@
               class: 'btn-primary btn-sm',
               label: '<i class="fa fa-bell-o" aria-hidden="true"></i> Call'
             }
+          },
+          remove: {
+            name: 'Action',
+            type: 'multiple-button',
+            setting: {
+              buttons: [{
+                if_condition: (row) => {
+                  return row['facebook_user_id'] && row['status'] !== 3
+                },
+                on_click: (event, row) => {
+                  $(event.target).attr('disabled', true)
+                  this.pageUser(row['facebook_user']['account_number'], 'Please come to the counter', () => {
+                    $(event.target).attr('disabled', false)
+                  })
+                },
+                class: 'btn-primary btn-sm',
+                label: '<i class="fa fa-bell-o" aria-hidden="true"></i> Call'
+              }, {
+                if_condition: (row) => {
+                  return true
+                },
+                on_click: (event, row) => {
+                  $(event.target).attr('disabled', true)
+                  // this.pageUser(row['facebook_user']['account_number'], 'Please come to the counter', () => {
+                  //   $(event.target).attr('disabled', false)
+                  // })
+                },
+                class: 'btn-danger btn-sm',
+                label: '<i class="fa fa-trash-o" aria-hidden="true"></i> Remove'
+              }]
+            }
+          }
+        },
+        tableExportSetting: {
+          file_name: 'QueueCards',
+          column_setting: {
+            id: {
+              column_name: '#',
+              value_function: (entryData, rowIndex) => {
+                return rowIndex + 1
+              }
+            },
+            created_at: {}
           }
         },
         retrieveParameter: {
@@ -212,6 +294,11 @@
     props: {
     },
     methods: {
+      excelExport(){
+        this.$refs.excelExport.exportTable(this.$refs.queueCardTable.getFiter(), () => {
+
+        })
+      },
       pageUser(accountNumber, message, callback, finish){
         this.isCalling = true
         finish = (typeof finish === 'undefined') ? 0 : finish
@@ -219,7 +306,6 @@
           this.isCalling = false
           if(callback){
             callback()
-            console.log('callback!')
           }
         })
       },
@@ -227,6 +313,9 @@
         this.APIRequest('queue_card/delete', {id: this.queue_card_id}, (response) => {
           if(response['data']){
             this.$refs.queueCardTable.deleteRow(this.rowIndex)
+            if(this.selected_queue_card.facebook_user){
+              this.pageUser(this.selected_queue_card.facebook_user.account_number, 'You QCard: ' + this.queue_card_id + ' has been removed')
+            }
             this.closeQueueCardModal()
           }
         })
@@ -269,12 +358,34 @@
           if(response['data']){
             this.queue_card_id = response['data']['id']
             this.selected_queue_card = response['data']
-            this.queueFormFields = response['data']['queue_card_fields']
-            for(let x = 0; x < this.queueFormFields.length; x++){
-              this.queueFormFields[x]['description'] = this.queueFormFields[x]['queue_form_field']['description']
-              this.queueFormFields[x]['queue_card_field_id'] = this.queueFormFields[x]['id']
-              this.queueFormFields[x]['id'] = this.queueFormFields[x]['queue_form_field_id']
+            let queueCardField = response['data']['queue_card_fields']
+            // retrieve queue form fields
+            let queueFormRequestCondition = {
+              condition: [{
+                column: 'queue_form_id',
+                value: response['data']['queue_form_id']
+              }],
+              sort: {
+                sequence: 'asc'
+              }
             }
+            this.APIRequest('queue_form_field/retrieve', queueFormRequestCondition, (queueFormResponse) => {
+              if(queueFormResponse['data']){
+                this.queueFormFields = queueFormResponse['data']
+                for(let queueFormFieldX = 0; queueFormFieldX < queueFormResponse['data'].length; queueFormFieldX++){
+                  this.queueFormFields[queueFormFieldX]['queue_card_field_id'] = null
+                  this.queueFormFields[queueFormFieldX]['value'] = ''
+                  for(let x = 0; x < queueCardField.length; x++){
+                    if(queueCardField[x]['queue_form_field_id'] * 1 === queueFormResponse['data'][queueFormFieldX]['id'] * 1){
+                      // this.queueFormFields[x]['description'] = this.queueFormFields[x]['queue_form_field']['description']
+                      this.queueFormFields[queueFormFieldX]['value'] = queueCardField[x]['value']
+                      this.queueFormFields[queueFormFieldX]['queue_card_field_id'] = queueCardField[x]['id']
+                    }
+                  }
+                }
+              }
+            })
+
             this.formStatus = (response['data']['status'] * 1 === 3) ? 'view' : 'editing'
             // this.showQueueCard(this.queue_card_id)
 
@@ -286,19 +397,24 @@
         })
       },
       submitQueueCard(){
+        this.isLoadingCard = true
         let link = this.queue_card_id ? 'queue_card/update' : 'queue_card/create'
         this.APIFormRequest(link, this.$refs.queueCardForm, (response) => {
           let prevFormStatus = this.formStatus
           if(response['data']){
             this.formStatus = 'success'
-            this.$refs.queueCardTable.retrieveData()
-            this.closeQueueCardModal()
+
+            if(!this.queue_card_id){
+              this.$refs.queueCardTable.retrieveData()
+              this.closeQueueCardModal()
+            }
           }else{
             this.formStatus = 'error'
           }
           setTimeout(() => {
             this.formStatus = prevFormStatus
           }, 2000)
+          this.isLoadingCard = false
         })
       },
       closeQueueCardModal(){
