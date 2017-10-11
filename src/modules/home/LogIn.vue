@@ -68,6 +68,7 @@ export default {
       this.isLoading = true
       AUTH.authenticate(this.username, this.password, (response) => {
         this.isLoading = false
+        ROUTER.push('dashboard')
       }, (response, status) => {
         this.errorMessage = (status === 401) ? 'Your Username and password didnot matched.' : 'Cannot log in? Contact us through email: support@ilinya.com'
         this.isLoading = false
