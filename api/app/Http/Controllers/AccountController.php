@@ -18,12 +18,22 @@ class AccountController extends APIController
           "company.address" => "required" 
         );
         $this->editableForeignTable = array(
-          'company'
+          'company',
+          'company_branch'
         );
         $this->foreignTable = array(
-          'company'
+          'company',
+          'company_branch'
         );
     } 
+
+    /*
+      1. account
+      2. account_information
+      3. companies
+      4. company_branches
+      5. company_branch_employees
+    */
 
     public function create(Request $request){
      $request = $request->all();
