@@ -1,12 +1,12 @@
  <template>
   <div v-if="!tokenData.verifyingToken && !tokenData.token">
     <div>
-      <div class="system-header">
-        <a class="navbar-brand" href="#">
+      <div class="login-system-header">
+        <a class="login-navbar-brand" href="#">
           <label class="navbar-brand"><b>i</b>Linya</label>
         </a>
       </div>
-      <nav class="header-navbar">
+      <nav class="login-header-navbar">
  <!--        <div class="header-margin"></div>
         <div class="nav-item" id="book-now">
           <span>
@@ -117,7 +117,7 @@ body{
   color: #ff0000;
   border-color: #ff0000;
 }
-  .system-header{
+  .login-system-header{
     float: left;
     height: 50px;
     font-size: 24px;
@@ -127,7 +127,7 @@ body{
     border-bottom: solid 1px #eee;
     margin-bottom: 20px;
   }
-  .header-navbar{
+  .login-header-navbar{
     background: #fff;
     height: 50px;
     float: left;
@@ -135,7 +135,7 @@ body{
     border-bottom: solid 1px #eee;
     margin-bottom: 20px;
   }/*-- navbar --*/
-  .system-header .navbar-brand{
+  .login-system-header .login-navbar-brand{
     color: #006600;
   }
   
@@ -152,24 +152,24 @@ body{
 
 
 -----------------------------------------------*/
-  .header-navbar-nav{
+  .login-header-navbar-nav{
       height: 50px;
       float: right;
       color: #fff;
       width: 20%;
   }
-  .header-navbar-nav label{
+  .login-header-navbar-nav label{
     font-size: 13px;
     font-weight: 500;
     vertical-align: middle;
     padding-left: 10px;
   }
-  .header-navbar-nav i{
+  .login-header-navbar-nav i{
     font-size: 24px;
      padding: 10px 0 0 5%;
   }
 
-  .header-navbar-nav:hover{
+  .login-header-navbar-nav:hover{
     cursor: pointer;
     background: #006600;
   }
@@ -183,7 +183,7 @@ body{
 
 -----------------------------------------------*/
 
-.nav-item{
+.login-nav-item{
   width: 15%;
   height: 50px;
   text-align: center;
@@ -191,18 +191,18 @@ body{
   color: #006600;
   display: inline;
 }
-.header-margin{
+.login-header-margin{
   height: 50px;
   float: left;
   width: 85%;
 }
 
-.nav-item span i{
+.login-nav-item span i{
   padding: 12px 0 15px 0;
   font-size: 16px;
 }
 
-.nav-item .label{
+.login-nav-item .label{
   z-index: 1000;
   background: #ff0000;
   padding: 5px;
@@ -212,7 +212,7 @@ body{
   border-color: solid 1px #009900;
 }
 
-.nav-item:hover{
+.login-nav-item:hover{
   background: #006600;
   cursor: pointer;
   color: #fff;
@@ -232,63 +232,62 @@ body{
 /*-------------- Medium and Large Screens for Tablets and Desktop --------------*/
 
  @media screen (min-width: 1200px){
-    .system-header{
+    .login-system-header{
       width: 23%;
     }
-    .header-navbar{
+    .login-header-navbar{
       width: 77%;
     }
-    .header-margin{
+    .login-header-margin{
       width: 85%;
     }
-    .nav-item{
+    .login-nav-item{
       width: 15%;
     }
   }
 
  @media screen (min-width: 992px), screen and (max-width: 1199px){
-    .system-header{
+    .login-system-header{
       width: 23%;
     }
-    .header-navbar{
+    .login-header-navbar{
       width: 77%;
     }
-    .header-margin{
+    .login-header-margin{
       width: 80%;
     }
-    .nav-item{
+    .login-nav-item{
       width: 20%;
     }
   }
 
 @media screen (min-width: 768px), screen and (max-width: 991px){
-   .system-header{
+   .login-system-header{
       width: 100%;
     }
-    .header-navbar{
-      width: 100%;
+    .login-header-navbar{
       display: none;
     }
-    .header-margin{
+    .login-header-margin{
       width: 70%;
     }
-    .nav-item{
+    .login-nav-item{
       width: 30%;
     }
  }
 
 /*-------------- Small Screen for Mobile Phones --------------*/
  @media (max-width: 767px){
-    .header-margin{
+    .login-header-margin{
      width: 50%;
     }
-    .system-header{
+    .login-system-header{
       width: 100%;
     }
-    .header-navbar{
+    .login-header-navbar{
       display: none;
     }
-    .nav-item{
+    .login-nav-item{
       width: 50%;
     }
   } 

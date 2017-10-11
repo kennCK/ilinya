@@ -318,6 +318,20 @@ body{
 
 -----------------------------------------------------------*/
 /*-------------- Medium and Large Screens for Tablets and Desktop --------------*/
+ @media screen (min-width: 1200px){
+    .system-header{
+      width: 23%;
+    }
+    .login-header-navbar{
+      width: 77%;
+    }
+    .header-margin{
+      width: 85%;
+    }
+    .nav-item{
+      width: 15%;
+    }
+  }
 
  @media screen (min-width: 992px), screen and (max-width: 1199px){
     .system-header{
