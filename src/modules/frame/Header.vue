@@ -2,7 +2,7 @@
   <div>
     
     <div class="system-header">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" v-on:click="redirect('dashboard')">
         <label class="navbar-brand"><b>i</b>Linya</label>
       </a>
     </div>
@@ -61,10 +61,14 @@ export default {
   methods: {
     logOut(){
       AUTH.deaunthenticate()
+      ROUTER.push('/')
       ROUTER.go('/')
     },
     accountProfile(){
       ROUTER.push('my_profile')
+    },
+    redirect(parameter){
+      ROUTER.push(parameter)
     }
   }
 }

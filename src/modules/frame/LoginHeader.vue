@@ -2,7 +2,7 @@
   <div v-if="!tokenData.verifyingToken && !tokenData.token">
     <div>
       <div class="login-system-header">
-        <a class="login-navbar-brand" href="#">
+        <a class="login-navbar-brand" v-on:click="redirect('/')">
           <label class="navbar-brand"><b>i</b>Linya</label>
         </a>
       </div>
@@ -31,6 +31,11 @@ export default {
     return {
       user: AUTH.user,
       tokenData: AUTH.tokenData
+    }
+  },
+  methods: {
+    redirect(parameter){
+      ROUTER.push(parameter)
     }
   }
 }
