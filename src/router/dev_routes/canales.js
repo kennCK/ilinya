@@ -17,7 +17,7 @@ export default{
     }
   },
   {
-    path: '/company_selection',
+    path: '/select',
     name: 'companySelection',
     component: resolve => require(['modules/home/CompanySelection.vue'], resolve),
     meta: {

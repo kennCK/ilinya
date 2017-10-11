@@ -57,25 +57,41 @@ export default {
     return {
       username: '',
       password: '',
-      isLoading: false,
       errorMessage: '',
       user: AUTH.user,
-      tokenData: AUTH.tokenData
+      tokenData: AUTH.tokenData,
+      company: []
     }
   },
   methods: {
     logIn(){
-      this.isLoading = true
       AUTH.authenticate(this.username, this.password, (response) => {
-        this.isLoading = false
-        ROUTER.push('dashboard')
+        this.setCompanyAuth()
       }, (response, status) => {
         this.errorMessage = (status === 401) ? 'Your Username and password didnot matched.' : 'Cannot log in? Contact us through email: support@ilinya.com'
-        this.isLoading = false
       })
     },
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    setCompanyAuth(){
+      let parameter = {
+        'condition': [{
+          'column': 'account_id',
+          'clause': '=',
+          'value': this.user.userID
+        }]
+      }
+      console.log(parameter)
+      this.APIRequest('company/retrieve', parameter).then(response => {
+        this.company = response.data
+        if(this.company.length > 1){
+          ROUTER.push('select')
+        }else{
+          AUTH.setCompany(this.company[0].id, 1)
+          ROUTER.push('dashboard')
+        }
+      })
     }
   }
 }
@@ -89,11 +105,6 @@ export default {
   4. Screen Changes
 */
 
-body{
-  font-size: 13px;
-  font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
-  font-weight: 400;
-}
 .app-img{
   float: left;
   width: 30%;
@@ -146,10 +157,6 @@ body{
             Forms
 
 ------------------------------------------*/
-.form-control{
-  height: 35px;
-  font-size: 12px;
-}
 .form-control-login{
   height: 45px;
 }
@@ -163,71 +170,6 @@ body{
 .btn-login{
   height: 45px;
 }/*-- form-control --*/
-
-.btn{
-  font-size: 12px;
-}
-.btn:hover{
-  cursor: pointer;
-}
-
-
-/*
-        SOLID
-*/
-.btn-primary{
-  background: #006600;
-  border-color: #006600;
-}
-
-.btn-primary:hover{
-  background: #009900;
-  border-color: #009900;
-}
-
-.btn-danger{
-  background: #aa0000;
-}
-
-.btn-danger:hover{
-  background: #ff0000;
-  border-color: #ff0000;
-}
-
-/*
-      HALLOW
-
-*/
-
-.btn-primary-hallow{
-  border-color: #006600;
-  color: #006600;
-  background: #fff;
-}
-.btn-primary-hallow:hover{
-  color: #009900;
-  border-color: #009900;
-}
-.btn-danger-hallow{
-  border-color: #aa0000;
-  background: #fff;
-  color: #aa0000;
-}
-.btn-danger-hallow:hover{
-  color: #ff0000;
-  border-color: #ff0000;
-}
-
-
-/*------------------------------------
-
-          TABLES
-
---------------------------------------*/
-
-.table{
-  font-size: 12px;
-}
 
 /*    Line with text on top  */
 .separator>*{
@@ -259,10 +201,6 @@ body{
     margin-right: -100%;
 }
 
-/*      Colors           */
-.primary-color{
-  color: #006600;
-}
 /*---------------------------------------------------------
 
                   RESPONSIVE HANDLER
