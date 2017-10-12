@@ -21,8 +21,4 @@ class Account extends APIModel
     public function account_positions(){
       return $this->hasOne('App\AccountPosition');
     }
-    
-    public function company(){
-      return $this->hasMany('App\Company');
-    }
 }

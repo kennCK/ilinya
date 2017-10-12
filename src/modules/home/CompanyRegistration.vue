@@ -34,7 +34,7 @@ export default {
         business_type_id: {
           label_colspan: 0,
           input_type: 'select',
-          db_name: 'company[business_type_id]',
+          db_name: 'business_type_id',
           input_setting: {
             option_function: (instance) => {
               let parameter = {
@@ -63,17 +63,17 @@ export default {
         },
         username: {
           label_colspan: 0,
-          db_name: 'username',
+          db_name: 'account[username]',
           placeholder: 'Username'
         },
         email: {
           label_colspan: 0,
-          db_name: 'email',
+          db_name: 'account[email]',
           placeholder: 'Email Address'
         },
         password: {
           label_colspan: 0,
-          db_name: 'password',
+          db_name: 'account[password]',
           placeholder: 'Password',
           input_type: 'password'
         },
@@ -84,12 +84,12 @@ export default {
         },
         name: {
           label_colspan: 0,
-          db_name: 'company[name]',
+          db_name: 'name',
           placeholder: 'Company or Organization Name'
         },
         address: {
           label_colspan: 0,
-          db_name: 'company[address]',
+          db_name: 'address',
           placeholder: 'Address'
         }
       },
@@ -97,7 +97,8 @@ export default {
       errorStatus: '',
       myData: {},
       passwordFlag: false,
-      usernameFlag: false
+      usernameFlag: false,
+      result: []
     }
   },
   methods: {
@@ -109,7 +110,6 @@ export default {
     },
     validate(){
       if('password' in this.myData || 'confirm_password' in this.myData){
-        console.log('validate')
         if(this.myData.password.localeCompare(this.myData.confirm_password) === 0){
           this.errorStatus = ''
           this.passwordFlag = true
@@ -119,8 +119,8 @@ export default {
         }
       }
       if('username' in this.myData){
-        if(this.myData.username.length < 10){
-          this.errorStatus = 'Username must be atleast 10 characters.'
+        if(this.myData.username.length < 6){
+          this.errorStatus = 'Username must be atleast 6 characters.'
           this.usernameFlag = false
         }else{
           this.errorStatus = ''
@@ -131,19 +131,29 @@ export default {
     },
     register(){
       if(this.passwordFlag === true && this.usernameFlag === true){
-        this.APIFormRequest('account/create', this.$refs.registration, response => {
-          if(response.error.status === 100){
-            this.errorStatus = ('email' in response.error.message && !('name' in response.error.message)) ? 'Email Address already taken.' : 'Please fill up the required informations.'
-          }else if(response.error.status !== 'undefined'){
-            this.login()
+        this.APIFormRequest('company/create', this.$refs.registration, response => {
+          this.result = JSON.parse(response)
+          if(this.result.error.status !== null){
+            if('email' in this.result.error.message && ('username' in this.result.error.message)){
+              this.errorStatus = 'Username and Email Address are already taken.'
+            }else if('email' in this.result.error.message){
+              this.errorStatus = 'Email Address is already taken.'
+            }else if('username' in this.result.error.message){
+              this.errorStatus = 'Username is already taken.'
+            }
+          }else if('flag' in this.result.data){
+            if(this.result.data.flag === true){
+              this.login()
+            }
           }
         })
       }else{
-        console.log('error')
+        this.errorStatus = 'Please fill up the required informations.'
       }
     },
     login(){
       AUTH.authenticate(this.myData.username, this.myData.password, (response) => {
+        AUTH.setCompany(this.result.data.company_id, this.result.data.company_branch_id)
         ROUTER.push('dashboard')
       }, (response, status) => {
         this.errorStatus = (status === 401) ? 'Your Username and password didnot matched.' : 'Cannot log in? Contact us through email: support@ilinya.com'
