@@ -56,6 +56,8 @@ export default {
           this.tokenData.isRefreshing = false
         }, (response) => {
           this.tokenData.isRefreshing = false
+          console.debug(response)
+          alert('failed to refresh token')
           ROUTER.go('/')
         })
       }, this.tokenTimer) // 50min

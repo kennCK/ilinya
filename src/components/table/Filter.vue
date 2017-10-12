@@ -58,37 +58,37 @@
           typeof this.filterList[key]['clause'] === 'undefined' ? Vue.set(this.filterList[key], 'clause', '=') : ''
           typeof this.filterList[key]['is_dummy'] === 'undefined' ? Vue.set(this.filterList[key], 'is_dummy', false) : ''
           this.dbNameLookUp[key] = this.filterList[key]['db_name']
-          Vue.set(this.formData, this.filterList[key]['db_name'], typeof this.filter_setting[key]['default_value'] !== 'undefined' ? this.filter_setting[key]['default_value'] : null)
+          Vue.set(this.formData, key, typeof this.filter_setting[key]['default_value'] !== 'undefined' ? this.filter_setting[key]['default_value'] : null)
           this.fieldNameLookUp[this.filterList[key]['db_name']] = key
         }
         this.filterInitialized = true
       },
       valueChanged(fieldName, value){
-        if(typeof this.dbNameLookUp[fieldName] === 'undefined'){
+        if(this.filterList[fieldName]['is_dummy'] === 'undefined'){
           return false
         }
-        if(typeof this.formData[fieldName] === 'undefined'){
-          Vue.set(this.formData, this.dbNameLookUp[fieldName], null)
-        }
-        Vue.set(this.formData, this.dbNameLookUp[fieldName], value)
+        Vue.set(this.formData, fieldName, value)
         // this.formDataChanged = !this.formDataChanged
       },
       getFilter(){
+        console.log(this.condition)
         return this.condition
       },
       filterForm(){
         let condition = []
         let formInputs = this.formData
         for(let x in formInputs){
-          if(formInputs[x] !== '' && formInputs[x] !== null && !this.filterList[this.fieldNameLookUp[x]]['is_dummy']){
+
+          if(formInputs[x] !== '' && formInputs[x] !== null && !this.filterList[x]['is_dummy']){
             let value = formInputs[x]
-            if(this.filterList[this.fieldNameLookUp[x]]['clause'] === 'like'){
+            console.log(x)
+            if(this.filterList[x]['clause'] === 'like'){
               value = '%' + value + '%'
             }
             condition.push({
-              column: x,
+              column: this.filterList[x]['db_name'],
               value: value,
-              clause: this.filterList[this.fieldNameLookUp[x]]['clause']
+              clause: this.filterList[x]['clause']
             })
           }
         }

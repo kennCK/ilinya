@@ -239,6 +239,7 @@
       valueChanged(e, customName){
         this.feedbackStatus = 0
         this.feedbackMessage = ''
+        $(e.target).attr('field_name', this.field_name)
         this.$emit('value_changed', e, customName)
       }
     }

@@ -50,6 +50,7 @@
               :value="columnSetting['value_function'](tableEntry, columnSetting['db_name'])"
               :setting="columnSetting['setting']"
               :row_data="tableEntry"
+              :row_index="index"
               :if_condition="columnSetting['if_condition']"
               >
             </table-cell>

@@ -4,6 +4,7 @@
   </div>
 </template>
 <script>
+  import AUTH from '../../services/auth'
   export default{
     name: '',
     components: {
@@ -18,7 +19,14 @@
         title: {},
         created_at: {}
       }
+      console.debug('company: ' + AUTH.user.company_id)
       let tableSetting = {
+        retrieveParameter: {
+          condition: [{
+            column: 'company_id',
+            value: AUTH.user.company_id
+          }]
+        },
         columnSetting: columnSetting
       }
       let formSetting = {

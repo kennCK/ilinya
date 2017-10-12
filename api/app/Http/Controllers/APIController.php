@@ -468,7 +468,6 @@ class APIController extends Controller
                 }else{ //create
                   $childValue[str_singular($this->model->getTable()).'_id'] = $this->model->id;
                   $foreignTable = $this->model->newModel($childTable, $childValue);
-                  $this->printR($foreignTable->getAttributes());
                   // foreach($childValue as $childValueKey => $childValueValue){
                   //   if($childValueValue == null || $childValueValue == ""){
                   //     $foreignTable->$childValueKey = $childValueValue;
@@ -560,8 +559,9 @@ class APIController extends Controller
       }
       if(!isset($this->userSession['company_id']) && $this->userSession){
         $company = (new CompanyBranchEmployee())->with(['company_branch'])->where('account_id', $this->userSession['id'])->get()->toArray();
-        $this->userSession['company_id'] = $company[0]['company_branch']['company_id'];
+        $this->userSession['company_id'] = $company ? $company[0]['company_branch']['company_id'] : 0;
       }
+      $this->response['debug'][] = $this->userSession;
       return $this->userSession['company_id'];
     }
     public function getUserID(){

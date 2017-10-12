@@ -188,11 +188,25 @@
             return newForm
           }
         },
-        created_at: {
+        start_date_filter: {
           db_name: 'created_at',
           input_type: 'date',
           clause: '>=',
-          label: 'Start Date'
+          label: 'Start Date',
+          input_setting: {
+            with_time: true
+          }
+        },
+        end_date_filter: {
+          db_name: 'created_at',
+          input_type: 'date',
+          clause: '<',
+          label: 'End Date',
+          input_setting: {
+            time_setting: {
+              default_time: '23:59:59'
+            }
+          }
         }
 
       }
@@ -207,6 +221,19 @@
         column_setting: {
           id: {},
           number: {},
+          details: {
+            sort: false,
+            type: 'html',
+            value_function: (row) => {
+              let summary = ''
+              if(row['queue_card_fields']){
+                for(let x in row['queue_card_fields']){
+                  summary += '<div class="col-sm-6 col-md-4"><strong>' + row['queue_card_fields'][x]['queue_form_field']['description'] + ': </strong>' + row['queue_card_fields'][x]['value'] + '</div>'
+                }
+              }
+              return '<small><div class="row">' + summary + '</div></small>'
+            }
+          },
           created_at: {
 
           },
@@ -220,23 +247,23 @@
               return status[row['status'] - 1]
             }
           },
-          call: {
-            type: 'button',
-            if_condition: (row) => {
-              return row['facebook_user_id'] && row['status'] !== 3
-            },
-            setting: {
-              on_click: (event, row) => {
-                $(event.target).attr('disabled', true)
-                this.pageUser(row['facebook_user']['account_number'], 'Please come to the counter', () => {
-                  $(event.target).attr('disabled', false)
-                })
-              },
-              class: 'btn-primary btn-sm',
-              label: '<i class="fa fa-bell-o" aria-hidden="true"></i> Call'
-            }
-          },
-          remove: {
+          // call: {
+          //   type: 'button',
+          //   if_condition: (row) => {
+          //     return row['facebook_user_id'] && row['status'] !== 3
+          //   },
+          //   setting: {
+          //     on_click: (event, row) => {
+          //       $(event.target).attr('disabled', true)
+          //       this.pageUser(row['facebook_user']['account_number'], 'Please come to the counter', () => {
+          //         $(event.target).attr('disabled', false)
+          //       })
+          //     },
+          //     class: 'btn-primary btn-sm',
+          //     label: '<i class="fa fa-bell-o" aria-hidden="true"></i> Call'
+          //   }
+          // },
+          action: {
             name: 'Action',
             type: 'multiple-button',
             setting: {
@@ -256,13 +283,19 @@
                 if_condition: (row) => {
                   return true
                 },
-                on_click: (event, row) => {
+                on_click: (event, row, rowIndex) => {
                   $(event.target).attr('disabled', true)
-                  // this.pageUser(row['facebook_user']['account_number'], 'Please come to the counter', () => {
-                  //   $(event.target).attr('disabled', false)
-                  // })
+                  this.APIRequest('queue_card/delete', {id: row['id']}, (response) => {
+                    if(response['data']){
+                      this.$refs.queueCardTable.deleteRow(rowIndex)
+                      if(row.facebook_user){
+                        this.pageUser(row.facebook_user.account_number, 'You QCard: ' + row['id'] + ' has been removed')
+                      }
+                      $(event.target).attr('disabled', false)
+                    }
+                  })
                 },
-                class: 'btn-danger btn-sm',
+                class: 'btn-outline-danger btn-sm',
                 label: '<i class="fa fa-trash-o" aria-hidden="true"></i> Remove'
               }]
             }
@@ -282,7 +315,8 @@
         },
         retrieveParameter: {
           with_foreign_table: [
-            'facebook_user'
+            'facebook_user',
+            'queue_card_fields'
           ]
         },
         formStatus: 'close',
