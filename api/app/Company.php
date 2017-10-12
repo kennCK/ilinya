@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends APIModel
 {
+
+  protected $fillable = ['business_type','account_id', 'name','address'];
   public function business_type(){
     return $this->belongsTo('App\BusinessType', 'id');
   }
@@ -15,7 +17,8 @@ class Company extends APIModel
     return $this->hasOne('App\CompanyLogo');
   }
 
-  public function company_branches(){
-    return $this->hasMany('App\CompanyBranch');
+  public function account(){
+    return $this->belongsTo('App\Account', 'id');
   }
+
 }

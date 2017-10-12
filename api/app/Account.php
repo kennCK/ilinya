@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Account extends APIModel
 {
     protected $hidden = array('password');
+    protected $fillable = ['email', 'username', 'password','company_id'];
 
     public function account_information(){
       return $this->hasOne('App\AccountInformation');
@@ -19,17 +20,5 @@ class Account extends APIModel
 
     public function account_positions(){
       return $this->hasOne('App\AccountPosition');
-    }
-
-    public function employee_status(){
-       return $this->hasOne('App\EmployeeStatus');
-    }
-
-    public function account_schedules(){
-        return $this->hasOne('App\AccountSchedule');
-    }
-    
-    public function company_branch_employees(){
-      return $this->hasMany('App\CompanyBranchEmployee');
     }
 }

@@ -13,25 +13,24 @@ class AccountController extends APIController
         $this->validation = array(  
           "email" => "unique:accounts",
           "username"  => "unique:accounts",
-          "account_information.first_name" => "required",
-          "account_information.last_name" => "required" ,
-          "company_branch_employees.identification_number" => "required",
-          "company_branch_employees.company_branch_id" => "required"
+          "account_information.account_type_id" => "required"
         );
         $this->editableForeignTable = array(
-          'account_information',
-          'company_branch_employees',
+          'account_information'
         );
         $this->foreignTable = array(
-          'account_information',
-          'company_branch_employees'
+          'account_information'
         );
     } 
 
+    /*
+      1. account
+      2. account_information
+    */
+
     public function create(Request $request){
      $request = $request->all();
-     $request['username'] = $request['email'];
-     $request['password'] = Hash::make($request['email']);
+     $request['password'] = Hash::make($request['password']);
      $this->createEntry($request);
      return $this->output();
     }

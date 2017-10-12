@@ -1,44 +1,41 @@
  <template>
   <div>
-      <!---
-
-              Header Brand
-
-      -->
+    
     <div class="system-header">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" v-on:click="redirect('dashboard')">
         <label class="navbar-brand"><b>i</b>Linya</label>
       </a>
     </div>
+
+
     <nav class="header-navbar">
       <span class="navbar-menu-toggler-md" data-toggle="collapse" data-target="#iLinyaSidebar" aria-controls="iLinyaSidebar" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fa fa-bars" aria-hidden="true"></i>
       </span>
-      <!---
 
-              Header Profile
 
-      -->
-      <div class="header-navbar-nav dropdown">
-         <span data-toggle="dropdown" id="#account">
-            <i class="fa fa-user-circle" aria-hidden="true"></i>
-            <label>Hi {{user.username}}!</label>
-         </span>
-         <span class="dropdown-menu" id="account">
-          <span class="dropdown-item-profile">
-            <span class="account-picture text-center">
-              <img src="../../assets/img/sample.jpg" class="rounded-circle" height="125" width="125">
+      <div class="dropdown">
+        <div class="header-navbar-nav" data-toggle="dropdown" id="account" aria-haspopup="true" aria-expanded="false">
+           <span>
+              <i class="fa fa-user-circle" aria-hidden="true"></i>
+              <label>Hi {{user.username}}!</label>
+           </span>
+           <span class="dropdown-menu" aria-labelledby="account" id="account-holder">
+            <span class="dropdown-item-profile">
+              <span class="account-picture text-center">
+                <img src="../../assets/img/sample.jpg" class="rounded-circle" height="125" width="125">
+              </span>
+              <span class="account-info text-center">{{user.username}}</span>
             </span>
-            <span class="account-info text-center">{{user.username}}</span>
+            <span class="dropdown-item-button text-center">
+              <button class="btn btn-default pull-left" v-on:click="accountProfile()" id="account-profile-btn">Account Profile</button>
+              <button class="btn btn-danger pull-right" v-on:click="logOut()" id="logout-btn">Logout</button>
+            </span>
           </span>
-          <span class="dropdown-item-button text-center"><button class="btn btn-danger-hallow" v-on:click="logOut()">Logout</button></span>
-        </span>
+        </div>
       </div>
-      <!---
 
-              Header Menu Toggler
 
-      -->
     </nav>
   </div>
 </template>
@@ -64,12 +61,101 @@ export default {
   methods: {
     logOut(){
       AUTH.deaunthenticate()
+      ROUTER.push('/')
       ROUTER.go('/')
+    },
+    accountProfile(){
+      ROUTER.push('my_profile')
+    },
+    redirect(parameter){
+      ROUTER.push(parameter)
     }
   }
 }
 </script>
 <style type="text/css">
+body{
+  font-size: 13px;
+  font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight: 400;
+}
+
+/*      Colors           */
+.primary-color{
+  color: #006600;
+}
+/*------------------------------------
+
+          FORMS
+
+--------------------------------------*/
+
+.form-control{
+  height: 35px;
+  font-size: 12px;
+}
+
+/*------------------------------------
+
+          TABLES
+
+--------------------------------------*/
+
+.table{
+  font-size: 12px;
+}
+  /*
+        CUSTOMIZE BUTTON
+*/
+.btn{
+  font-size: 12px;
+}
+.btn:hover{
+  cursor: pointer;
+}
+.btn-primary{
+  background: #006600;
+  border-color: #006600;
+}
+
+.btn-primary:hover{
+  background: #009900;
+  border-color: #009900;
+}
+
+.btn-danger{
+  background: #aa0000;
+}
+
+.btn-danger:hover{
+  background: #ff0000;
+  border-color: #ff0000;
+}
+
+/*
+      HALLOW
+
+*/
+
+.btn-primary-hallow{
+  border-color: #006600;
+  color: #006600;
+  background: #fff;
+}
+.btn-primary-hallow:hover{
+  color: #009900;
+  border-color: #009900;
+}
+.btn-danger-hallow{
+  border-color: #aa0000;
+  background: #fff;
+  color: #aa0000;
+}
+.btn-danger-hallow:hover{
+  color: #ff0000;
+  border-color: #ff0000;
+}
+
   .system-header{
     float: left;
     height: 50px;
@@ -165,13 +251,10 @@ export default {
 .dropdown-menu{
   width: 300px;
   border-radius: 0px !important;
-}
-#account{
-  height: 250px;
+  margin: 0 !important;
+  padding: 0 !important;
   right: 0;
-  left: auto;
-  background: #009900;
-  border: 0px;
+  border: 0 !important;
 }
 .dropdown-item{
   width: 100%;
@@ -185,11 +268,13 @@ export default {
   text-align: center;
   border-bottom: solid 1px #ccc;
 }
+
 .dropdown-item-profile{
   height: 200px;
   width: 100%;
   float: left;
   top: 0;
+  background: #009900;
 }
 .account-picture{
   height: 150px;
@@ -205,22 +290,28 @@ export default {
 .dropdown-item-button{
   height: 50px;
   width: 100%;
-  border-top:solid 1px #ccc;
+  border-bottom:solid 1px #eee;
+  border-left:solid 1px #eee;
+  border-right:solid 1px #eee;
   float: left;
   background: #fff;
-  border: solid 1px #009900;
 }
 .dropdown-item-button button{
   height: 40px;
-  border-radius: 0;
   width: 100px;
-  margin-top: 5px;
-}
-.dropdown-item-button button:hover{
-  background: #ff0000;
-  color: #fff;
+  margin: 5px;
 }
 
+#account-profile-btn:hover{
+  background: #009900;
+  color: #fff;
+  cursor: pointer;
+}
+
+#logout-btn:hover{
+  background: #ff0000;
+  cursor: pointer;
+}
 
 
 
@@ -231,6 +322,20 @@ export default {
 
 -----------------------------------------------------------*/
 /*-------------- Medium and Large Screens for Tablets and Desktop --------------*/
+ @media screen (min-width: 1200px){
+    .system-header{
+      width: 23%;
+    }
+    .login-header-navbar{
+      width: 77%;
+    }
+    .header-margin{
+      width: 85%;
+    }
+    .nav-item{
+      width: 15%;
+    }
+  }
 
  @media screen (min-width: 992px), screen and (max-width: 1199px){
     .system-header{
