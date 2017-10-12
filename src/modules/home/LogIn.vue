@@ -60,7 +60,8 @@ export default {
       errorMessage: '',
       user: AUTH.user,
       tokenData: AUTH.tokenData,
-      company: []
+      branchesEmployees: [],
+      branches: []
     }
   },
   methods: {
@@ -82,14 +83,25 @@ export default {
           'value': this.user.userID
         }]
       }
-      console.log(parameter)
-      this.APIRequest('company/retrieve', parameter).then(response => {
-        this.company = response.data
-        if(this.company.length > 1){
+      this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
+        this.branchesEmployees = response.data
+        if(this.branchesEmployees.length > 1){
           ROUTER.push('select')
         }else{
-          AUTH.setCompany(this.company[0].id, 1)
-          ROUTER.push('dashboard')
+          let parameter1 = {
+            'condition': [{
+              'column': 'id',
+              'clause': '=',
+              'value': this.branchesEmployees[0].company_branch_id
+            }]
+          }
+          this.APIRequest('company_branch/retrieve', parameter1).then(response => {
+            this.branches = response.data
+            if(this.branches.length === 1){
+              AUTH.setCompany(this.branches[0].company_id, this.branchesEmployees[0].company_branch_id)
+              ROUTER.push('dashboard')
+            }
+          })
         }
       })
     }

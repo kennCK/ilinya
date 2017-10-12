@@ -9,8 +9,21 @@ class CompanyBranchController extends APIController
 {
     function __construct(){
         $this->model = new CompanyBranch();
-        $this->validation = array(  
-          "email" => "unique:company_branches"
+
+        $this->notRequired = array(
+          "name",
+          "code",
+          "email",
+          "address",
+          "contact_number",
+          "fax_number"
         );
+
+        $this->useUserCompanyID = false;
+    }
+    public function create(Request $request){
+      $request = $request->all();
+      $this->createEntry($request);
+      return $this->output();
     }
 }
