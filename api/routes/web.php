@@ -53,6 +53,18 @@ Route::get('file/q_card/{filename}', function ($filename)
   $response->header("Content-Type", $type);
   return $response;
 });
+Route::get('file/account_profiles/{filename}', function ($filename)
+{
+  $path = storage_path('/account_profiles/' . $filename);
+  if (!File::exists($path)) {
+      abort(404);
+  }
+  $file = File::get($path);
+  $type = File::mimeType($path);
+  $response = Response::make($file, 200);
+  $response->header("Content-Type", $type);
+  return $response;
+});
 Route::get('/cache', function () {
     $exitCode = Artisan::call('config:cache');
     return 'hey'.$exitCode;

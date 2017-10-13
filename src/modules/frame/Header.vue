@@ -23,7 +23,8 @@
            <span class="dropdown-menu" aria-labelledby="account" id="account-holder">
             <span class="dropdown-item-profile">
               <span class="account-picture text-center">
-                <img src="../../assets/img/sample.jpg" class="rounded-circle" height="125" width="125">
+                <img v-bind:src="'file/account_profiles/' + profilePicture" style="margin-top:20px;" class="rounded-circle" height="125" width="125" v-if="profilePicture !== ''">
+                <i class="fa fa-user-circle-o" style="font-size:100px;color:#eee;margin-top:20px" v-else></i>
               </span>
               <span class="account-info text-center">{{user.username}}</span>
             </span>
@@ -34,8 +35,6 @@
           </span>
         </div>
       </div>
-
-
     </nav>
   </div>
 </template>
@@ -43,7 +42,11 @@
 import ROUTER from '../../router'
 import AUTH from '../../services/auth'
 export default {
+  mounted(){
+    this.getProfilePicture()
+  },
   created(){
+    this.getProfilePicture()
   },
   data(){
     return{
@@ -55,7 +58,8 @@ export default {
         ['Company Branches'],
         ['Messages'],
         ['Notifications']
-      ]
+      ],
+      profilePicture: ''
     }
   },
   methods: {
@@ -69,6 +73,22 @@ export default {
     },
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    getProfilePicture(){
+      let parameter = {
+        'condition': [{
+          'column': 'account_id',
+          'clause': '=',
+          'value': this.user.userID
+        }]
+      }
+      this.APIRequest('account_profile_picture/retrieve', parameter).then(response => {
+        if(response.data.length >= 1){
+          this.profilePicture = response.data[0].source
+        }else{
+          this.profilePicture = ''
+        }
+      })
     }
   }
 }

@@ -46,6 +46,7 @@ export default {
     return{
       user: AUTH.user,
       tokenData: AUTH.tokenData,
+      branches: [],
       company: [],
       selectCompany: ''
     }
@@ -57,11 +58,30 @@ export default {
           'column': 'account_id',
           'value': this.user.userID,
           'clause': '='
-        }]
+        }],
+        'with_foreign_table': [
+          'company_branch'
+        ]
       }
-      this.APIRequest('company/retrieve', parameter).then(response => {
-        this.company = response.data
+      this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
+        this.branches = response.data
+        this.getCompanyDetails()
       })
+    },
+    getCompanyDetails(){
+      for(let x = 0; x < this.branches.length; x++){
+        let parameter = {
+          'condition': [{
+            'column': 'id',
+            'clause': '=',
+            'value': this.branches[x].company_branch.company_id
+          }]
+        }
+        this.APIRequest('company/retrieve', parameter).then(response => {
+          this.company.push(response.data)
+        })
+      }
+      console.log(this.company)
     },
     loadSelectedBranch(){
       AUTH.setCompany(1, this.selectCompany)

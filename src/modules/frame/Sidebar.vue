@@ -91,7 +91,6 @@ export default {
       }
       this.APIRequest('modules/retrieve', parameter).then(response => {
         this.menu = response.data
-        console.log(this.menu)
       })
     },
     isActive(menuItem){
