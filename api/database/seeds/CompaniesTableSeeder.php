@@ -17,8 +17,6 @@ class CompaniesTableSeeder extends Seeder
             "business_type_id" => "1",
             "name"  => "K1",
             "address"   => "Crossroads, Cebu City",
-            "contact_number"    => "123456789",
-            "email" => "k1@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           ),
@@ -27,8 +25,6 @@ class CompaniesTableSeeder extends Seeder
             "business_type_id" => "3",
             "name"  => "Roble",
             "address"   => "Cebu City",
-            "contact_number"    => "123456789",
-            "email" => "roble@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           ),
@@ -37,8 +33,6 @@ class CompaniesTableSeeder extends Seeder
             "business_type_id" => "5",
             "name"  => "SM Cinema",
             "address"   => "Cebu City",
-            "contact_number"    => "123456789",
-            "email" => "sm@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           ),
@@ -47,8 +41,6 @@ class CompaniesTableSeeder extends Seeder
             "business_type_id" => "2",
             "name"  => "Pino Restaurant",
             "address"   => "Cebu City",
-            "contact_number"    => "123456789",
-            "email" => "pino@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           ),
@@ -57,8 +49,6 @@ class CompaniesTableSeeder extends Seeder
             "business_type_id" => "4",
             "name"  => "USC - TC Teller",
             "address"   => "Cebu City",
-            "contact_number"    => "123456789",
-            "email" => "usc@gmail.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           ),
@@ -67,8 +57,6 @@ class CompaniesTableSeeder extends Seeder
             "business_type_id" => "0",
             "name"  => "iLinya Technologies",
             "address"   => "Cebu City",
-            "contact_number"    => "09423873602",
-            "email" => "support@ilinya.com",
             "lat"   => "123.1234556",
             "lng"   => "5.1234556"
           )
