@@ -107,7 +107,7 @@ class QueueFormFieldsTableSeeder extends Seeder
             "id"    => "23", "queue_form_id" => "6", "is_admin_only" => '1', "sequence" => "5","description"  => "What are the areas need to improve about iLinya?", "type" => "text"
           ),
           array(
-            "id"    => "24", "queue_form_id" => "6" "is_admin_only" => '1',, "sequence" => "6","description"  => "Are you excited to use Ilinya soon?[5 Highest - 1 Lowest]", "type" => "number"
+            "id"    => "24", "queue_form_id" => "6", "is_admin_only" => '1', "sequence" => "6","description"  => "Are you excited to use Ilinya soon?[5 Highest - 1 Lowest]", "type" => "number"
           ),
         ));
     }
