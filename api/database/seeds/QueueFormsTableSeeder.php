@@ -17,42 +17,48 @@ class QueueFormsTableSeeder extends Seeder
             "company_id" => "1",
             "availability" => "1",
             "detail" => "KTV Reservation Form",
-            "title"  => "Reservation"
+            "title"  => "Reservation",
+            "is_private"  => "0"
           ),
           array(
             "id"    => "2",
             "company_id" => "2",
             "availability" => "1",
             "detail" => "Shippings Ticket from Cebu to Siquijor",
-            "title"  => "Ticket"
+            "title"  => "Ticket",
+            "is_private"  => "0"
           ),
           array(
             "id"    => "3",
             "company_id" => "3",
             "availability" => "1",
             "detail" => "Movie Ticket",
-            "title"  => "Ticket"
+            "title"  => "Ticket",
+            "is_private"  => "0"
           ),
           array(
             "id"    => "4",
             "company_id" => "4",
             "availability" => "1",
             "detail" => "Restaurant Reservation Form",
-            "title"  => "Reservation"
+            "title"  => "Reservation",
+            "is_private"  => "0"
           ),
           array(
             "id"    => "5",
             "company_id" => "5",
             "availability" => "1",
             "detail" => "Pay Tuition Fee Form",
-            "title"  => "Payment"
+            "title"  => "Payment",
+            "is_private"  => "0"
           ),
           array(
             "id"    => "6",
             "company_id" => "6",
             "availability" => "1",
             "detail" => "Survey Form",
-            "title"  => "Survey"
+            "title"  => "Survey",
+            "is_private"  => "0"
           )
         ));
     }
