@@ -1,14 +1,13 @@
 <template>
   <div>
     <div class="row mb-5">
-
-      <div class="col-sm-3">
+      <div class="col-sm-6 col-md-3 mb-2">
         <annoucement></annoucement>
       </div>
-      <div class="col-sm-3 text-center">
-        <button @click="showQueueCard" class="btn btn-lg btn-primary"><i class="fa fa-vcard-o" aria-hidden="true"></i> Create Queue Entry</button>
+      <div class="col-sm-6 col-md-3 text-center">
+        <button @click="showQueueCard" class="btn btn-lg btn-primary mb-2"><i class="fa fa-vcard-o" aria-hidden="true"></i> Create Queue Entry</button>
       </div>
-      <div class="col-sm-6 text-right">
+      <div class="col-sm-12 col-md-3 ml-auto text-sm-right">
         <excel-export ref="excelExport" v-on:excel_export_clicked="excelExport"></excel-export>
       </div>
     </div>

@@ -17,6 +17,18 @@
     data(){
       let columnSetting = {
         title: {},
+        availability: {
+          value_function: (data) => {
+            let label = ['Not Specified', 'Open', 'Close', 'Busy']
+            return label[data['availability']]
+          }
+        },
+        is_private: {
+          value_function: (data) => {
+            let label = ['Yes', 'No']
+            return label[data['is_private']]
+          }
+        },
         created_at: {}
       }
       console.debug('company: ' + AUTH.user.company_id)
