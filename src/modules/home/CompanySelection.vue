@@ -20,9 +20,9 @@
       <div class="row">
           <div class="col-sm-6 offset-sm-3">
               <div class="input-group">
-                <select class="form-control" v-model="selectCompany">
+                <select class="form-control" v-model="selectedBranch">
                   <option value='' selected hidden>Select a Company or Branches</option>
-                  <option v-for="(item, index) in company" v-bind:value="item.id">{{item.name}}</option>
+                  <option v-for="(item, index) in branches" v-bind:value="index">{{index}}</option>
                 </select>
               </div>
               <br>
@@ -48,7 +48,7 @@ export default {
       tokenData: AUTH.tokenData,
       branches: [],
       company: [],
-      selectCompany: ''
+      selectedBranch: ''
     }
   },
   methods: {
@@ -65,6 +65,7 @@ export default {
       }
       this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
         this.branches = response.data
+        console.log(this.branches)
         this.getCompanyDetails()
       })
     },
@@ -78,13 +79,14 @@ export default {
           }]
         }
         this.APIRequest('company/retrieve', parameter).then(response => {
-          this.company.push(response.data)
+          this.company[x] = response.data
         })
       }
       console.log(this.company)
     },
     loadSelectedBranch(){
-      AUTH.setCompany(1, this.selectCompany)
+      console.log(this.company[this.selectedBranch][0].id + ' / ' + this.branches[this.selectedBranch].company_branch_id)
+      AUTH.setCompany(this.company[this.selectedBranch][0].id, this.branches[this.selectedBranch].company_branch_id)
       ROUTER.push('dashboard')
     }
   }
