@@ -23,7 +23,7 @@
            <span class="dropdown-menu" aria-labelledby="account" id="account-holder">
             <span class="dropdown-item-profile">
               <span class="account-picture text-center">
-                <img v-bind:src="'file/account_profiles/' + profilePicture" style="margin-top:20px;" class="rounded-circle" height="125" width="125" v-if="profilePicture !== ''">
+                <img v-bind:src="profileDirectory + profilePicture" style="margin-top:20px;" class="rounded-circle" height="125" width="125" v-if="profilePicture !== ''">
                 <i class="fa fa-user-circle-o" style="font-size:100px;color:#eee;margin-top:20px" v-else></i>
               </span>
               <span class="account-info text-center">{{user.username}}</span>
@@ -41,12 +41,13 @@
 <script>
 import ROUTER from '../../router'
 import AUTH from '../../services/auth'
+import CONFIG from '../../config'
 export default {
   mounted(){
     this.getProfilePicture()
   },
   created(){
-    this.getProfilePicture()
+    // this.getProfilePicture()
   },
   data(){
     return{
@@ -59,7 +60,9 @@ export default {
         ['Messages'],
         ['Notifications']
       ],
-      profilePicture: ''
+      profilePicture: '',
+      config: CONFIG,
+      profileDirectory: CONFIG.BACKEND_URL + '/file/account_profiles/'
     }
   },
   methods: {

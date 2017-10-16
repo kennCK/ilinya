@@ -14,11 +14,11 @@ class Account extends APIModel
       return $this->hasOne('App\AccountInformation');
     }
 
-    public function account_profile_pictures(){
+    public function account_profile_picture(){
       return $this->hasOne('App\AccountProfilePicture');
     }
 
-    public function account_positions(){
+    public function account_position(){
       return $this->hasOne('App\AccountPosition');
     }
 }

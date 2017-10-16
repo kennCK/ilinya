@@ -1,8 +1,9 @@
 <template>
   <div>
      <div class="personal-info profile-cover text-center">
-        <img src="../../assets/img/sample.jpg" height="150" width="150" class="profile-picture rounded-circle">
-        <h4>{{userInfo[0].first_name + ' ' + userInfo[0].last_name}}</h4>
+        <img v-bind:src="accountProfileDirectory + profilePicture" height="150" width="150" class="profile-picture rounded-circle" v-if="profilePicture !== ''">
+        <i v-else class="fa fa-user-circle-o"></i>
+        <h4>{{username}}</h4>
       </div>
       <div class="personal-info common">
         <span class="header">
@@ -14,26 +15,6 @@
         <span class="content row" v-for="(item,index) in userInfoTitle">
           <label class="title col-xs-6 col-sm-3">{{item}}</label>
           <label class="value col-xs-6 col-sm-9">{{userInfoValue[index]}}</label>
-        </span>
-      </div>
-      <div class="personal-info common">
-        <span class="header">
-          Work
-        </span>
-        <span class="row company-info" v-for="item in userCompany">
-          <span class="col-sm-12 col-md-3 text-center">
-            <img src="../../assets/img/sample.jpg" height="80" width="80" class="company-logo rounded">
-          </span>
-          <span class="col-sm-12 col-md-9">
-            <span class="company-more-info">
-              <i class="fa fa-info-circle pull-right"></i>
-            </span>
-            <label>{{item.company_branch.name}}</label>
-            <p>Employee ID: {{item.employee_id}} <br />
-            Date Started: {{item.created_at}}</p>
-          </span>
-        </span>
-        <span class="content">
         </span>
       </div>
       <div class="personal-info common">
@@ -53,6 +34,7 @@
 </template>
 <script>
 import AUTH from '../../services/auth'
+import CONFIG from '../../config'
 export default{
   name: '',
   components: {
@@ -72,7 +54,10 @@ export default{
       userInfoValue: [],
       userCompany: [],
       accountInfoTitle: [],
-      accountInfoValue: []
+      accountInfoValue: [],
+      accountProfileDirectory: CONFIG.BACKEND_URL + '/file/account_profiles/',
+      profilePicture: '',
+      username: ''
     }
   },
   props: {
@@ -81,42 +66,44 @@ export default{
     getAccountInformations(){
       let parameter = {
         'condition': [{
-          'column': 'account_id',
+          'column': 'id',
           'value': this.user.userID,
           'clause': '='
         }],
         'with_foreign_table': [
-          'account'
+          'account_information',
+          'account_profile_picture'
         ]
       }
-      this.APIRequest('account_information/retrieve', parameter).then(response => {
+      this.APIRequest('account/retrieve', parameter).then(response => {
         this.userInfo = response.data
-        this.getAccountCompanies(response.data)
-        this.manageData(response.data)
+        this.username = this.userInfo[0].username
+        this.manageData()
+        if(this.userInfo[0].account_profile_picture !== null){
+          this.profilePicture = this.userInfo[0].account_profile_picture.source
+        }
       })
     },
-    getAccountCompanies(data){
-      let parameter = {
-        'condition': [{
-          'column': 'account_information_id',
-          'value': data[0].id,
-          'clause': '='
-        }],
-        'with_foreign_table': [
-          'company_branch'
-        ]
-      }
-      this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
-        this.userCompany = response.data
-        console.log(response.data)
-      })
-    },
-    manageData(data){
+    manageData(){
       this.userInfoTitle.push('Name', 'Birth Date', 'Sex', 'Marital Status', 'Telephone Number', 'Cellular Number', 'Current Address', 'Home Address')
-      let name = data[0].first_name + ' ' + data[0].middle_name + ' ' + data[0].last_name
-      this.userInfoValue.push(name, data[0].birth_date, data[0].sex, data[0].marital_status, data[0].telephone_number, data[0].cellular_number, data[0].current_address, data[0].home_address)
+      let info = this.userInfo[0].account_information
+      let account = this.userInfo[0]
+      let name = this.setName(info)
+      this.userInfoValue.push(name, this.setText(info.birth_date), this.setText(info.sex), this.setText(info.marital_status), this.setText(info.telephone_number), this.setText(info.cellular_number), this.setText(info.current_address), this.setText(info.home_address))
       this.accountInfoTitle.push('Username', 'Email Address', 'Date Started')
-      this.accountInfoValue.push(data[0].account.username, data[0].account.email, data[0].created_at)
+      this.accountInfoValue.push(account.username, account.email, account.created_at)
+    },
+    setText(parameter){
+      return (parameter === null) ? 'Update your Account Information' : parameter
+    },
+    setName(parameter){
+      if(parameter.first_name === null && parameter.middle_name === null && parameter.last_name === null){
+        return 'Update your Account Information'
+      }else if(parameter.middle_name === null){
+        return parameter.first_name + ' ' + parameter.last_name
+      }else{
+        return parameter.first_name + ' ' + parameter.middle_name + ' ' + parameter.last_name
+      }
     }
   }
 }
