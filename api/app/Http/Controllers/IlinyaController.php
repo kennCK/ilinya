@@ -11,7 +11,7 @@ use App\Jobs\ChatbotBroadcast;
 use App\Ilinya\ImageGenerator;
 use App\Ilinya\Response\Facebook\SurveyResponse;
 
-class IlinyaController extends Controller
+class IlinyaController extends APIController
 {
     public function hook(Request $request){
         $entries = Entry::getEntries($request);
@@ -24,7 +24,8 @@ class IlinyaController extends Controller
         return response("", 200);
     }
 
-    public function broadcast($companyId, $message){
+    public function broadcast($message){
+        $companyId = $this->getUserCompanyID();
         dispatch(new ChatbotBroadcast($companyId, $message));
     }
 
