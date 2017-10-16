@@ -62,7 +62,44 @@ class FormsResponse{
   }
 
   public function selectForms($forms){
-      return ['text'  => "Select form:"];
+      /*
+        1. loop form
+        2. generic template
+        3. return template
+      */
+      $elements = [];
+      foreach($forms as $form) {
+        $formId = $form['id'];
+        $title =  $form['detail'].' is '.$this->getAvailability($form['availability']);
+        $subtitle = 'Currently '.QueueCard::totalCurrentDayFinished($formId) .'/'. QueueCard::totalOnQueue($formId);
+        $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
+        $buttons = [];
+
+        $buttons[] = (intval($form['availability']) == 1) ?ButtonElement::title("Get QCard")
+                    ->type('postback')
+                    ->payload($formId.'@pGetQueueCard')
+                    ->toArray():ButtonElement::title("Back to Categories")
+                    ->type('postback')
+                    ->payload('@pCategories')
+                    ->toArray();
+        $elements[] = GenericElement::title($title)
+                            ->imageUrl($imageUrl)
+                            ->subtitle($subtitle)
+                            ->buttons($buttons)
+                            ->toArray();
+      }
+     return GenericTemplate::toArray($elements);
+  }
+
+  public function getAvailability($status){
+    switch (intval($status)) {
+      case 1:
+        return "Open";
+      case 2:
+        return "Closed";
+      case 3: 
+        return "Busy";
+    }
   }
 
  public function confirmation($form, $companyDataF = null){
