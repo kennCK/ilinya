@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row">
+    <div class="row mb-2">
       <div class="col-sm-12 text-right">
         <button @click="createEntry" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Create</button>
       </div>

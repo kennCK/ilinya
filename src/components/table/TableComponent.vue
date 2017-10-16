@@ -9,8 +9,8 @@
         ></table-excel-export>
       </div>
     </div>
-    <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter', true)" :filter_setting="filter_setting" ref="tableFilter"></table-filter>
-    <table class="table table-bordered table-condensed table-hover" >
+    <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter', true)" :filter_setting="filter_setting" ref="tableFilter" class="mb-2"></table-filter>
+    <table class="table table-bordered table-condensed table-hover table-responsive" >
       <thead>
         <tr>
           <th v-for="(column, index) in columnSetting[0]"
@@ -50,6 +50,7 @@
               :value="columnSetting['value_function'](tableEntry, columnSetting['db_name'])"
               :setting="columnSetting['setting']"
               :row_data="tableEntry"
+              :row_index="index"
               :if_condition="columnSetting['if_condition']"
               >
             </table-cell>
@@ -58,7 +59,7 @@
       </tbody>
     </table>
     <div class="row">
-      <div class="col-sm-6 ">
+      <div class="col-sm-6  mb-2">
         <strong>Results: {{totalResult}}</strong>
       </div>
       <div class="col-sm-6">

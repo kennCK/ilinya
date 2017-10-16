@@ -30,6 +30,7 @@
         option_lookup: {},
         defaultValue: null,
         defaultFormat: 'MM/DD/YYYY',
+        defaultTimeValue: '',
         dateInputTrueValue: null,
         changeTriggered: false
       }
@@ -61,11 +62,9 @@
           showClose: true
         })
         .on('dp.change', (e) => {
-          console.log('changed : ')
-          console.log(e.date)
           this.changeTriggered = true
           if(e.date){
-            $(this.$refs.dateInput).val(this.dateInputTrueValue = e.date.year() + '-' + this.padNumber(e.date.month() + 1, 2) + '-' + this.padNumber(e.date.date(), 2))
+            $(this.$refs.dateInput).val(this.dateInputTrueValue = e.date.year() + '-' + this.padNumber(e.date.month() + 1, 2) + '-' + this.padNumber(e.date.date(), 2) + ' ' + this.defaultTimeValue)
           }else{
             $(this.$refs.dateInput).val(null)
           }
@@ -84,6 +83,11 @@
         $(this.$refs.dateInput).on('change', (e) => {
           this.valueChanged(e)
         })
+        if(this.input_setting){
+          if(this.input_setting['time_setting']){
+            typeof this.input_setting['time_setting']['default_time'] !== 'undefined' ? this.defaultTimeValue = this.input_setting['time_setting']['default_time'] : ''
+          }
+        }
       },
       valueChanged(e){
         this.$emit('change', e)

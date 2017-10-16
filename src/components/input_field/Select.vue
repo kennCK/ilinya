@@ -3,6 +3,7 @@
     <select class="form-control"
       v-if="form_status !== 'view'"
       v-bind:name="db_name"
+      v-bind:field_name="field_name"
       v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
       @change="valueChanged"
     >
@@ -36,6 +37,7 @@
       input_setting: Object,
       default_value: [String, Number],
       db_name: String,
+      field_name: String,
       form_data: Object,
       form_status: String
     },
@@ -52,11 +54,9 @@
     },
     methods: {
       initInputSetting(){
-        console.debug('Select option initializing...!')
         typeof this.input_setting['options'] !== 'undefined' ? this.setOption(this.input_setting['options']) : null
         this.defaultValue = this.default_value ? this.default_value : null
         if(typeof this.input_setting['option_function'] !== 'undefined'){
-          console.debug('option_function_fired!')
           this.input_setting['option_function'](this)
         }
       },

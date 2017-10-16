@@ -32,6 +32,7 @@
     props: {
       input_setting: Object,
       default_value: String,
+      field_name: String,
       db_name: String,
       form_data: Object,
       form_status: String

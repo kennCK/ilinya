@@ -85,9 +85,9 @@
           let dbName = this.inputList[key]['field_name']
 
           if(typeof this.valueFunctionList[fieldName] !== 'undefined'){
-            let newFormData = this.valueFunctionList[dbName](this.form_data)
+            let newFormData = this.valueFunctionList[fieldName](this.form_data)
             for(let formKey in newFormData){
-              this.formDataChanged(this.fieldNameList[formKey], newFormData[formKey])
+              this.formDataChanged(formKey, newFormData[formKey])
             }
           }else{
             this.formDataChanged(fieldName, this.form_data[dbName])
@@ -99,20 +99,20 @@
       formGroupDataChanged(fieldname, value){
         this.$emit('form_data_changed', fieldname, value)
       },
-      valueChanged(e, customName){
+      valueChanged(e, customName){ // custom name is useful for dummies
         let dbName = typeof customName !== 'undefined' ? customName : $(e.target).attr('name')
-        if(typeof this.valueFunctionList[dbName] !== 'undefined'){
-          this.formDataChanged(this.fieldNameList[dbName], $(e.target).val())
-          let newFormData = this.valueFunctionList[dbName](this.form_data)
+        let fieldName = $(e.target).attr('field_name')
+        if(typeof this.valueFunctionList[fieldName] !== 'undefined'){
+          this.formDataChanged(fieldName, $(e.target).val())
+          let newFormData = this.valueFunctionList[fieldName](this.form_data)
           for(let formKey in newFormData){
-            this.formDataChanged(this.fieldNameList[formKey], newFormData[formKey])
+            this.formDataChanged(fieldName, newFormData[formKey])
           }
         }else{
-          this.formDataChanged(this.fieldNameList[dbName], $(e.target).val())
+          this.formDataChanged(fieldName, $(e.target).val())
         }
       },
       formDataChanged(fieldName, value){
-
         this.$emit('form_data_changed', fieldName, this.dataFormat(fieldName, value))
       },
       initializeInput(){
@@ -150,7 +150,7 @@
             }
             Vue.set(this.inputList[key], 'data_format', defaultDataFormat)
           }
-          this.formDataChanged(this.inputList[key]['field_name'], this.inputList[key]['default_value'])
+          this.formDataChanged(key, this.inputList[key]['default_value'])
           if(typeof this.inputList[key]['value_function'] !== 'undefined'){
             this.valueFunctionList[key] = this.inputList[key]['value_function']
           }
