@@ -195,7 +195,7 @@ class QueueCardsResponse{
           foreach ($result as $card) {
             $cardId = $card['id'];
             $title =  ($title != null) ? $title : "QCard #:".$cardId."(".$this->getStatus($card['status']).")";
-            $subtitle = 'Currently '.QueueCard::totalCurrentDayFinished($card['queue_form_id']) .'/'. QueueCard::totalOnQueue($card['queue_form_id']).PHP_EOL.$this->getFormName($card['queue_form_id']);
+            $subtitle = 'Currently '.QueueCard::totalCurrentDayFinished($card['queue_form_id']) .'/'. QueueCard::totalOnQueue($card['queue_form_id']).PHP_EOL.$this->getEstimatedTime($card['queue_form_id']).PHP_EOL.$this->getFormName($card['queue_form_id']);
             $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
             $buttons = [];
 
@@ -224,6 +224,16 @@ class QueueCardsResponse{
       return ['text' => 'No Cards Found!'];
     }
 
+    public function getEstimatedTime($formId){
+      $current = QueueCard::totalCurrentDayFinished($formId);
+      $last    = QueueCard::totalOnQueue($formId);
+      $minimumTime = 2; // Minutes
+      $totalTime = floatval($minimumTime) * (intval($last) - intval($current));
+      echo $totalTime;
+      $time = \Carbon\Carbon::now('Asia/Singapore')->addMinutes($totalTime);
+      echo $time."<br />";
+      return "Est. Time: ".$time->format('h:i A');
+    }
     public function getFormName($formId){
       $data = [
         "column"  => "id",
