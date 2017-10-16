@@ -51,7 +51,7 @@ class IlinyaController extends APIController
         ImageGenerator::create();
     }
 
-    public function test($size){
+    public function test1($size){
         dispatch(new TestDatabaseQueryEffect($size));
     }
 }
