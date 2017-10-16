@@ -20,9 +20,9 @@
       <div class="row">
           <div class="col-sm-6 offset-sm-3">
               <div class="input-group">
-                <select class="form-control" v-model="selectCompany">
+                <select class="form-control" v-model="selectedBranch">
                   <option value='' selected hidden>Select a Company or Branches</option>
-                  <option v-for="(item, index) in company" v-bind:value="item.id">{{item.name}}</option>
+                  <option v-for="(item, index) in branches" v-bind:value="index">{{index}}</option>
                 </select>
               </div>
               <br>
@@ -46,8 +46,9 @@ export default {
     return{
       user: AUTH.user,
       tokenData: AUTH.tokenData,
+      branches: [],
       company: [],
-      selectCompany: ''
+      selectedBranch: ''
     }
   },
   methods: {
@@ -57,14 +58,35 @@ export default {
           'column': 'account_id',
           'value': this.user.userID,
           'clause': '='
-        }]
+        }],
+        'with_foreign_table': [
+          'company_branch'
+        ]
       }
-      this.APIRequest('company/retrieve', parameter).then(response => {
-        this.company = response.data
+      this.APIRequest('company_branch_employee/retrieve', parameter).then(response => {
+        this.branches = response.data
+        console.log(this.branches)
+        this.getCompanyDetails()
       })
     },
+    getCompanyDetails(){
+      for(let x = 0; x < this.branches.length; x++){
+        let parameter = {
+          'condition': [{
+            'column': 'id',
+            'clause': '=',
+            'value': this.branches[x].company_branch.company_id
+          }]
+        }
+        this.APIRequest('company/retrieve', parameter).then(response => {
+          this.company[x] = response.data
+        })
+      }
+      console.log(this.company)
+    },
     loadSelectedBranch(){
-      AUTH.setCompany(1, this.selectCompany)
+      console.log(this.company[this.selectedBranch][0].id + ' / ' + this.branches[this.selectedBranch].company_branch_id)
+      AUTH.setCompany(this.company[this.selectedBranch][0].id, this.branches[this.selectedBranch].company_branch_id)
       ROUTER.push('dashboard')
     }
   }

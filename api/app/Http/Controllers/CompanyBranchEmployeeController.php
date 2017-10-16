@@ -12,5 +12,9 @@ class CompanyBranchEmployeeController extends APIController
         $this->notRequired = array(
           "identification_number"
         );
+
+        $this->foreignTable = array(
+          "company_branch"
+        );
     }
 }

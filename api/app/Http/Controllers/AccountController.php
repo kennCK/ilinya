@@ -19,7 +19,8 @@ class AccountController extends APIController
           'account_information'
         );
         $this->foreignTable = array(
-          'account_information'
+          'account_information',
+          'account_profile_picture'
         );
     } 
 

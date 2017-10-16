@@ -84,7 +84,7 @@ class SendResponse{
 
         $queueCard = QueueCard::retrieveById($this->cardId, null);
         $this->user();
-        $title =  "Hi ".$this->user->getFirstName()." :) Here's your Queue Card #:".$this->cardId;
+        $title =  "Hi ".$this->user->getFirstName()." :) Here's your ".PHP_EOL."QCard #:".$this->cardId."(On Queue)";
 
         if(sizeof($queueCard) > 0)
         return $this->qc->manageResult($queueCard, $title);

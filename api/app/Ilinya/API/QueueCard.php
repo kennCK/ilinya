@@ -8,6 +8,39 @@ use Illuminate\Http\Request;
 use App\Ilinya\API\Controller;
 
 class QueueCard{
+    
+
+    public static function totalCurrentDayFinished($queueFormId){
+      $controller = 'App\Http\Controllers\QueueCardController';
+      $request = new Request();
+      $condition[] = [
+        "column"  => "queue_form_id",
+        "clause"  => "=",
+        "value"   => $queueFormId
+      ];
+
+      $condition[] = [
+        "column"  => "status",
+        "clause"  => "=",
+        "value"   => 3
+      ];
+      $request['condition'] = $condition;
+      $qc = Controller::retrieve($request, $controller);
+      return sizeof($qc);
+    }
+    public static function totalOnQueue($queueFormId){
+      $controller = 'App\Http\Controllers\QueueCardController';
+      $request = new Request();
+      $condition[] = [
+        "column"  => "queue_form_id",
+        "clause"  => "=",
+        "value"   => $queueFormId
+      ];
+      $request['condition'] = $condition;
+      $qc = Controller::retrieve($request, $controller);
+      return sizeof($qc);
+    }
+
     public static function retrieve($data, $column = null){
       $controller = 'App\Http\Controllers\QueueCardController';
       $request = new Request();
