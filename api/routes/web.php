@@ -53,6 +53,18 @@ Route::get('file/q_card/{filename}', function ($filename)
   $response->header("Content-Type", $type);
   return $response;
 });
+Route::get('file/account_profiles/{filename}', function ($filename)
+{
+  $path = storage_path('/account_profiles/' . $filename);
+  if (!File::exists($path)) {
+      abort(404);
+  }
+  $file = File::get($path);
+  $type = File::mimeType($path);
+  $response = Response::make($file, 200);
+  $response->header("Content-Type", $type);
+  return $response;
+});
 Route::get('/cache', function () {
     $exitCode = Artisan::call('config:cache');
     return 'hey'.$exitCode;
@@ -78,7 +90,7 @@ Route::get('/migrate', function () {
 */
 Route::get("/bot/hook","IlinyaController@hook")->middleware("verify");
 Route::post("/bot/hook","IlinyaController@hook");
-Route::get("/bot/broadcast/{companyId}/{message}","IlinyaController@broadcast");
+Route::get("/bot/broadcast/{message}","IlinyaController@broadcast");
 Route::get("/bot/paging/{recipientId}/{message}/{surveyMode}","IlinyaController@paging");
 Route::get("/bot/reminder/{recipientId}/{message}/{surveyMode}","IlinyaController@reminder");
 Route::get("/bot/image","IlinyaController@createImage");

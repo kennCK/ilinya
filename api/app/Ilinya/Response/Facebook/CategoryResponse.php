@@ -124,15 +124,28 @@ class CategoryResponse{
         $buttons = [];
         if($data['id'] != '6' || intval($data['id']) != 6){
           $availability = $this->availability($data['id']);
-          $buttons[] = ($availability == true)?ButtonElement::title("Get QCard")
+          if(intval($availability['result']) == 1){
+            $buttons[] = ($availability['response'] == true)?ButtonElement::title("Get QCard")
                       ->type('postback')
                       ->payload($data['id'].'@pGetQueueCard')
                       ->toArray():ButtonElement::title("View Location")
                       ->type('web_url')
                       ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
                       ->ratio('full')
-                      ->toArray();
-          $buttons[] = ($availability == true)?ButtonElement::title("View Location")
+                      ->toArray();  
+          }
+          else if(intval($availability['result']) > 1){
+            $buttons[] = ($availability['response'] == true)?ButtonElement::title("View Forms")
+                      ->type('postback')
+                      ->payload($data['id'].'@pGetQueueCard')
+                      ->toArray():ButtonElement::title("View Location")
+                      ->type('web_url')
+                      ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
+                      ->ratio('full')
+                      ->toArray();  
+          }else{}
+          
+          $buttons[] = ($availability['response'] == true)?ButtonElement::title("View Location")
                       ->type('web_url')
                       ->url('https://www.instantstreetview.com/@'.$data['lat'].','.$data['lng'].',11z,1t')
                       ->ratio('full')
@@ -141,7 +154,7 @@ class CategoryResponse{
                       ->payload('@pCategories')
                       ->toArray();
          
-          $availabilityText = ($availability == true)? ' is Available':' is not Available';
+          $availabilityText = ($availability['response'] == true)? ' is Available':' is not Available';
           $availabilityText .= ' for Transaction!';
           $elements[] = GenericElement::title($data['name'].$availabilityText)
                               ->imageUrl($imgUrl)
@@ -195,32 +208,35 @@ class CategoryResponse{
     $request['condition'] = $condition;
 
     $result = Controller::retrieve($request, $controller);
-    if(sizeof($result) > 0){
-      $flag = true;
+    if($result != null){
+      $notAvailable = 0;
       foreach ($result as $row) {
         if(intval($row['availability']) >= 2){
-          $flag = false;
-          break;
+          $notAvailable++;
         }
       }
-      if ($flag == false) {
+      if(sizeof($result) == $notAvailable){
         $response = false;
-      }
-      else{
+      }else if(sizeof($result) > $notAvailable){
         $response = true;
       }
     }
     else{
-       $response = true;
+       $response = false;
     }
-    return $response;
+    
+    $data = [
+      "response" => $response,
+      "result"   => sizeof($result)
+    ];
+
+    return $data;
   }
 
    public function informAboutQCard(){
         $this->user();
         return ['text' => "Hi ".$this->user->getFirstName()." :) To get Reservation, Ticket or Priority Number kindly click the Get QCard Button. Thank You :)"];
     }
-
 
 }
 

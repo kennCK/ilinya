@@ -26,4 +26,18 @@ class QueueForm{
       $request['condition'] = $condition;
       return Controller::retrieve($request, $controller);
   }
+
+  public static function retrieveByCustomField($data){
+      $controller = 'App\Http\Controllers\QueueFormController';
+        $request = new Request();
+
+         $condition[] = [
+            "column"  => $data['column'],
+            "clause"  => "=",
+            "value"   => $data['value']
+         ];
+
+        $request['condition'] = $condition;
+        return Controller::retrieve($request, $controller);
+  }
 }
