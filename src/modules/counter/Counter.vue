@@ -89,6 +89,7 @@
 </template>
 <script>
   import CONFIG from '../../config'
+  import AUTH from '../../services/auth'
   export default{
     name: '',
     components: {
@@ -106,7 +107,7 @@
     data(){
       let formSelectInputSetting = {
         option_function: (instance) => {
-          this.APIRequest('queue_form/retrieve', {}, (response) => {
+          this.APIRequest('queue_form/retrieve', {condition: [{column: 'company_id', value: AUTH.user.company_id}]}, (response) => {
             if(response['data']){
               let options = []
               options.push({
@@ -131,7 +132,7 @@
           input_type: 'select',
           input_setting: {
             option_function: (instance) => {
-              this.APIRequest('queue_form/retrieve', {}, (response) => {
+              this.APIRequest('queue_form/retrieve', {condition: [{column: 'company_id', value: AUTH.user.company_id}]}, (response) => {
                 if(response['data']){
                   let options = []
                   options.push({
@@ -149,6 +150,9 @@
               })
             }
           }
+        },
+        id: {
+          label: 'Q-Card Number'
         },
         number: {
         },
@@ -313,6 +317,10 @@
           }
         },
         retrieveParameter: {
+          condition: [{
+            column: 'company_id',
+            value: AUTH.user.company_id
+          }],
           with_foreign_table: [
             'facebook_user',
             'queue_card_fields'

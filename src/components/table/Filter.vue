@@ -67,21 +67,21 @@
         if(this.filterList[fieldName]['is_dummy'] === 'undefined'){
           return false
         }
+        console.log('filter ' + fieldName + ' : ' + value)
         Vue.set(this.formData, fieldName, value)
         // this.formDataChanged = !this.formDataChanged
       },
       getFilter(){
-        console.log(this.condition)
         return this.condition
       },
       filterForm(){
         let condition = []
+
         let formInputs = this.formData
         for(let x in formInputs){
 
           if(formInputs[x] !== '' && formInputs[x] !== null && !this.filterList[x]['is_dummy']){
             let value = formInputs[x]
-            console.log(x)
             if(this.filterList[x]['clause'] === 'like'){
               value = '%' + value + '%'
             }
