@@ -8,7 +8,7 @@
       <div class="personal-info common">
         <span class="header">
           Basic and Contact Information
-          <span>
+          <span v-on:click="editInfo()">
             <i class="fa fa-pencil pull-right" aria-hidden="true"></i>
           </span>
         </span>
@@ -29,6 +29,14 @@
           <label class="value col-xs-6 col-sm-9">{{accountInfoValue[index]}}</label>
         </span>
       </div>
+      <modal :modal_size="modalSize" ref="modal" >
+        <div slot="header">
+          {{modalTitle}}
+        </div>
+        <div slot="body">
+          <common-form ref="commonForm" :api="api" :inputs="form_setting.inputs" v-on:form_close="formClose" v-on:form_deleted="formDeleted" v-on:form_updated="formUpdated" :retrieve_parameter="form_setting.retrieveParameter"></common-form>
+        </div>
+      </modal>
     </div>
   </div>
 </template>
@@ -38,14 +46,46 @@ import CONFIG from '../../config'
 export default{
   name: '',
   components: {
-    'module': require('components/common_module/CommonModule.vue')
+    'modal': require('components/modal/Modal.vue'),
+    'common-form': require('components/form/CommonForm.vue')
   },
   create(){
   },
   mounted(){
     this.getAccountInformations()
+    this.initSettings()
   },
   data(){
+    let formSetting = {
+      api: 'account',
+      modal_size: 'modal-md',
+      retrieveParameter: {
+        with_foreign_table: [
+          'account_information',
+          'account_profile_picture'
+        ]
+      },
+      inputs: {
+        first_name: {
+          db_name: 'account_information[first_name]'
+        },
+        middle_name: {
+          db_name: 'account_information[middle_name]'
+        },
+        last_name: {
+          db_name: 'account_information[last_name]'
+        },
+        birth_date: {
+          db_name: 'account_information[birth_date]'
+        },
+        sex: {
+          db_name: 'account_information[sex]'
+        },
+        address: {
+          db_name: 'account_information[address]'
+        }
+      }
+    }
     return {
       user: AUTH.user,
       tokenData: AUTH.tokenData,
@@ -57,12 +97,33 @@ export default{
       accountInfoValue: [],
       accountProfileDirectory: CONFIG.BACKEND_URL + '/file/account_profiles/',
       profilePicture: '',
-      username: ''
+      username: '',
+      api: 'account',
+      form_setting: formSetting,
+      modalTitle: '',
+      modalSize: ''
     }
   },
-  props: {
-  },
   methods: {
+    initSettings(){
+      if(typeof this.form_setting.form_title === 'undefined'){
+        this.modalTitle = this.StringUnderscoreToPhrase(this.api) + ' Details'
+      }else{
+        this.modalTitle = this.form_setting.form_title
+      }
+      this.modalSize = typeof this.form_setting.modal_size !== 'undefined' ? this.form_setting.modal_size : ''
+    },
+    formClose(){
+      this.$refs.modal.closeModal()
+    },
+    formUpdated(){
+    },
+    formDeleted(){
+    },
+    editInfo(){
+      this.$refs.commonForm.viewForm(this.user.userID)
+      this.$refs.modal.showModal()
+    },
     getAccountInformations(){
       let parameter = {
         'condition': [{
@@ -85,11 +146,11 @@ export default{
       })
     },
     manageData(){
-      this.userInfoTitle.push('Name', 'Birth Date', 'Sex', 'Marital Status', 'Telephone Number', 'Cellular Number', 'Current Address', 'Home Address')
+      this.userInfoTitle.push('Name', 'Birth Date', 'Sex', 'Contact Number', 'Address')
       let info = this.userInfo[0].account_information
       let account = this.userInfo[0]
       let name = this.setName(info)
-      this.userInfoValue.push(name, this.setText(info.birth_date), this.setText(info.sex), this.setText(info.marital_status), this.setText(info.telephone_number), this.setText(info.cellular_number), this.setText(info.current_address), this.setText(info.home_address))
+      this.userInfoValue.push(name, this.setText(info.birth_date), this.setText(info.sex), this.setText(info.cellular_number), this.setText(info.address))
       this.accountInfoTitle.push('Username', 'Email Address', 'Date Started')
       this.accountInfoValue.push(account.username, account.email, account.created_at)
     },

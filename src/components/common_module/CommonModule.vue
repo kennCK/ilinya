@@ -50,7 +50,6 @@
           this.modalTitle = this.form_setting.form_title
         }
         this.modalSize = typeof this.form_setting.modal_size !== 'undefined' ? this.form_setting.modal_size : ''
-
       },
       createEntry(){
         this.currentIndex = -1
