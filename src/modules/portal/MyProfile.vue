@@ -8,13 +8,25 @@
       <div class="personal-info common">
         <span class="header">
           Basic and Contact Information
-          <span v-on:click="editInfo()">
+          <span v-on:click="editInfo('account_information')">
             <i class="fa fa-pencil pull-right" aria-hidden="true"></i>
           </span>
         </span>
         <span class="content row" v-for="(item,index) in userInfoTitle">
           <label class="title col-xs-6 col-sm-3">{{item}}</label>
           <label class="value col-xs-6 col-sm-9">{{userInfoValue[index]}}</label>
+        </span>
+      </div>
+      <div class="personal-info common">
+        <span class="header">
+          Company Information
+          <span v-on:click="editInfo('company')">
+            <i class="fa fa-pencil pull-right" aria-hidden="true"></i>
+          </span>
+        </span>
+        <span class="content row" v-for="(item,index) in userCompanyTitle">
+          <label class="title col-xs-6 col-sm-3">{{item}}</label>
+          <label class="value col-xs-6 col-sm-9">{{userCompanyValue[index]}}</label>
         </span>
       </div>
       <div class="personal-info common">
@@ -34,7 +46,8 @@
           {{modalTitle}}
         </div>
         <div slot="body">
-          <common-form ref="commonForm" :api="api" :inputs="form_setting.inputs" v-on:form_close="formClose" v-on:form_deleted="formDeleted" v-on:form_updated="formUpdated" :retrieve_parameter="form_setting.retrieveParameter"></common-form>
+          <common-form ref="commonForm" :api="api_account_information" :inputs="form_setting_account_information.inputs" v-on:form_close="formClose" v-on:form_deleted="formDeleted" v-on:form_updated="formUpdated" :retrieve_parameter="form_setting_account_information.retrieveParameter" v-if="modalParameter === 'account_information'"></common-form>
+          <common-form ref="commonForm" :api="api_company" :inputs="form_setting_company.inputs" v-on:form_close="formClose" v-on:form_deleted="formDeleted" v-on:form_updated="formUpdated" :retrieve_parameter="form_setting_company.retrieveParameter" v-if="modalParameter === 'company'"></common-form>
         </div>
       </modal>
     </div>
@@ -53,10 +66,9 @@ export default{
   },
   mounted(){
     this.getAccountInformations()
-    this.initSettings()
   },
   data(){
-    let formSetting = {
+    let formSettingAccountInformation = {
       modal_size: 'modal-md',
       inputs: {
         first_name: {},
@@ -70,22 +82,33 @@ export default{
         address: {}
       }
     }
+    let formSettingCompany = {
+      modal_size: 'modal-md',
+      inputs: {
+        name: {},
+        address: {}
+      }
+    }
     return {
       user: AUTH.user,
       tokenData: AUTH.tokenData,
       userInfo: [],
       userInfoTitle: [],
       userInfoValue: [],
-      userCompany: [],
+      userCompanyTitle: [],
+      userCompanyValue: [],
       accountInfoTitle: [],
       accountInfoValue: [],
       accountProfileDirectory: CONFIG.BACKEND_URL + '/file/account_profiles/',
       profilePicture: '',
       username: '',
-      api: 'account_information',
-      form_setting: formSetting,
+      api_account_information: 'account_information',
+      api_company: 'company',
+      form_setting_account_information: formSettingAccountInformation,
+      form_setting_company: formSettingCompany,
       modalTitle: '',
-      modalSize: ''
+      modalSize: '',
+      modalParameter: ''
     }
   },
   methods: {
@@ -104,7 +127,9 @@ export default{
     },
     formDeleted(){
     },
-    editInfo(){
+    editInfo(parameter){
+      this.modalParameter = parameter
+      this.modalTitle = this.StringUnderscoreToPhrase(parameter) + ' Details'
       this.$refs.commonForm.viewForm(this.user.userID)
       this.$refs.modal.showModal()
     },
@@ -124,6 +149,7 @@ export default{
         this.userInfo = response.data
         this.username = this.userInfo[0].username
         this.manageData()
+        this.getCompany()
         if(this.userInfo[0].account_profile_picture !== null){
           this.profilePicture = this.userInfo[0].account_profile_picture.source
         }
@@ -149,6 +175,19 @@ export default{
       }else{
         return parameter.first_name + ' ' + parameter.middle_name + ' ' + parameter.last_name
       }
+    },
+    getCompany(){
+      let parameter = {
+        'condition': [{
+          'column': 'id',
+          'value': this.user.company_id,
+          'clause': '='
+        }]
+      }
+      this.APIRequest('company/retrieve', parameter).then(response => {
+        this.userCompanyTitle.push('Name', 'Address')
+        this.userCompanyValue.push(response.data[0].name, response.data[0].address)
+      })
     }
   }
 }
