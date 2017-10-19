@@ -50,7 +50,7 @@ class ChatbotBroadcast implements ShouldQueue
                   "id"  => $this->companyId
                 ];
                 $companyName = Company::retrieve($companyRequest, "name");
-                $newMessage = "From ".$companyName.": Hi ".$facebookInfo[0]['full_name'].'!'.$this->message;
+                $newMessage = "From ".$companyName.": Hi ".$facebookInfo[0]['full_name']." :) ".$this->message;
                 Bot::notify($facebookInfo[0]['account_number'], $newMessage);
             }
            
