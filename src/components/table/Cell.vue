@@ -20,7 +20,7 @@
     </div>
     <div v-else-if="type === 'multiple-button'" >
       <template v-for="button in setting['buttons']">
-          <button v-if="button.if_condition(row_data)" @click="button.on_click($event, row_data, row_index)" v-html="button['label']" v-bind:class="button['class']"  @click.stop type="button" class="btn ml-2"></button>
+          <button v-if="button.if_condition(row_data)" @click="button.on_click($event, row_data, row_index)" v-html="button['label']" v-bind:class="button['class']"  @click.stop type="button" class="btn ml-2 mb-2"></button>
       </template>
     </div>
     <div v-else>
