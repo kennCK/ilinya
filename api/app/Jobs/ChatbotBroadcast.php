@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Ilinya\Bot;
 use App\Ilinya\API\Controller;
 use Illuminate\Http\Request;
+use App\Ilinya\API\Company;
+
 class ChatbotBroadcast implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -44,8 +46,12 @@ class ChatbotBroadcast implements ShouldQueue
 
             foreach ($activeUsers as $user) {
                 $facebookInfo = $this->getFacebookUserInfo($user['facebook_user_id']);
-                 $newMessage = "Hi ".$facebookInfo[0]['full_name'].'!'.$this->message;
-                 Bot::notify($facebookInfo[0]['account_number'], $newMessage);
+                $companyRequest = [
+                  "id"  => $this->companyId
+                ];
+                $companyName = Company::retrieve($companyRequest, "name");
+                $newMessage = "From ".$companyName.": Hi ".$facebookInfo[0]['full_name'].'!'.$this->message;
+                Bot::notify($facebookInfo[0]['account_number'], $newMessage);
             }
            
     }
