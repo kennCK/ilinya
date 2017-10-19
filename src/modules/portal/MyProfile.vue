@@ -1,10 +1,10 @@
 <template>
   <div>
-     <div class="personal-info profile-cover text-center">
+<!--      <div class="personal-info profile-cover text-center">
         <img v-bind:src="accountProfileDirectory + profilePicture" height="150" width="150" class="profile-picture rounded-circle" v-if="profilePicture !== ''">
         <i v-else class="fa fa-user-circle-o"></i>
         <h4>{{username}}</h4>
-      </div>
+      </div> -->
       <div class="personal-info common">
         <span class="header">
           Basic and Contact Information
@@ -20,9 +20,9 @@
       <div class="personal-info common">
         <span class="header">
           Account Information
-          <span>
+<!--           <span>
             <i class="fa fa-pencil pull-right" aria-hidden="true"></i>
-          </span>
+          </span> -->
         </span>
         <span class="content row" v-for="(item,index) in accountInfoTitle">
           <label class="title col-xs-6 col-sm-3">{{item}}</label>
@@ -57,33 +57,17 @@ export default{
   },
   data(){
     let formSetting = {
-      api: 'account',
       modal_size: 'modal-md',
-      retrieveParameter: {
-        with_foreign_table: [
-          'account_information',
-          'account_profile_picture'
-        ]
-      },
       inputs: {
-        first_name: {
-          db_name: 'account_information[first_name]'
+        first_name: {},
+        middle_name: {},
+        last_name: {},
+        birth_date: {},
+        sex: {},
+        contact_number: {
+          db_name: 'cellular_number'
         },
-        middle_name: {
-          db_name: 'account_information[middle_name]'
-        },
-        last_name: {
-          db_name: 'account_information[last_name]'
-        },
-        birth_date: {
-          db_name: 'account_information[birth_date]'
-        },
-        sex: {
-          db_name: 'account_information[sex]'
-        },
-        address: {
-          db_name: 'account_information[address]'
-        }
+        address: {}
       }
     }
     return {
@@ -98,7 +82,7 @@ export default{
       accountProfileDirectory: CONFIG.BACKEND_URL + '/file/account_profiles/',
       profilePicture: '',
       username: '',
-      api: 'account',
+      api: 'account_information',
       form_setting: formSetting,
       modalTitle: '',
       modalSize: ''
