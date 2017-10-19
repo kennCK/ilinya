@@ -71,6 +71,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/ai',
+    name: 'ai',
+    component: resolve => require(['modules/chatbot/Ai.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }

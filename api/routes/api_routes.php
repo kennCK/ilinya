@@ -18,6 +18,7 @@ $apiResources = [
   'queue_card',
   'queue_card_field',
   'announcement',
+  'ai'
 ];
 api_resource($apiResources);
 

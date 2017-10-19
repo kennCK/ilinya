@@ -97,10 +97,4 @@ class Text{
           break;
       }
   }
-  public function checkShortCodes($text){
-    if($text[0] == '@'){
-      return true;
-    }
-    return false;
-  }
 }

@@ -50,7 +50,7 @@ class Postback{
         $action = $this->code->getCode($custom);
         switch ($action) {
           case $this->code->pStart:
-            $this->bot->reply($this->post->testMessage(), false);
+            // $this->bot->reply($this->post->testMessage(), false);
             $this->bot->reply($this->post->start(), false);
             $this->bot->reply($this->post->categories(), false);
             break;

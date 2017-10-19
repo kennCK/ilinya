@@ -21,11 +21,8 @@ class AccountInformationsTableSeeder extends Seeder
             "last_name"   => "Canales",
             "birth_date"  => date("2017-07-19"),
             "sex"         => "Male",
-            "marital_status"    => "Single",
-            "telephone_number"  => "09423873602",
             "cellular_number"   => "09423873602",
-            "current_address"   => "Cebu City",
-            "home_address"      => "Cebu City",
+            "address"      => "Cebu City",
             "created_at"        => date("2017-07-10")
           ),
           array(
@@ -37,11 +34,8 @@ class AccountInformationsTableSeeder extends Seeder
             "last_name"   => "Plenos",
             "birth_date"  =>  date("2017-07-19"),
             "sex"         => "Male",
-            "marital_status"    => "Single",
-            "telephone_number"  => "1234",
             "cellular_number"   => "1234",
-            "current_address"   => "Cebu City",
-            "home_address"      => "Cebu City",
+            "address"      => "Cebu City",
             "created_at"        => date("2017-07-10")
           ),
 
