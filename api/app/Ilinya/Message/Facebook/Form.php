@@ -242,7 +242,7 @@ class Form{
       $field = Controller::retrieve($request, $controller);
     }
     else{
-      $field = $this->request($controller,'queue_form_id', $formId, 1, 'sequence');
+      $field = $this->requestField($controller,'queue_form_id', $formId, 1, 'sequence');
     }  
 
     if($field){
@@ -310,7 +310,22 @@ class Form{
   }
 
 
-   public function request($controller,$column, $vaue, $limit = null, $sort = null){
+  public function requestField($controller,$column, $vaue, $limit = null, $sort = null){
+    $request = new Request();
+    $condition[] = [
+      "column"  => $column,
+      "clause"  => "=",
+      "value"   => $vaue
+    ];
+    
+    $request['condition'] = $condition;
+    if($limit)$request['limit'] = $limit;
+    if($sort)$request['sort'] = [$sort => "asc"]; 
+    $result = Controller::retrieve($request, $controller);
+    return $result;
+  }
+
+  public function request($controller,$column, $vaue, $limit = null, $sort = null){
     $request = new Request();
     $condition[] = [
       "column"  => $column,
