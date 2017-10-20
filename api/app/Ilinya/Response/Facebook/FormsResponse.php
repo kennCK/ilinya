@@ -77,7 +77,7 @@ class FormsResponse{
 
         $buttons[] = (intval($form['availability']) == 1) ?ButtonElement::title("Get QCard")
                     ->type('postback')
-                    ->payload($formId.'@pGetQueueCard')
+                    ->payload($formId.'@pQCardFromMultiple')
                     ->toArray():ButtonElement::title("Back to Categories")
                     ->type('postback')
                     ->payload('@pCategories')

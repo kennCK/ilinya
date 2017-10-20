@@ -34,7 +34,7 @@ class Codes{
   public $pPostponeQC  = 214;
   public $pQCViewDetails = 215;
   public $pEditDetails = 216;
-
+  public $pQCardFromMultiple = 217;
 
 
   /**
@@ -99,7 +99,8 @@ class Codes{
       "@pCancelQC"  => $this->pCancelQC,
       "@pPostponeQC"=> $this->pPostponeQC,
       "@pQCViewDetails" => $this->pQCViewDetails,
-      "@pEditDetails" => $this->pEditDetails
+      "@pEditDetails" => $this->pEditDetails,
+      "@pQCardFromMultiple" => $this->pQCardFromMultiple
     );
 
     $this->quickReplyPayloads = array(

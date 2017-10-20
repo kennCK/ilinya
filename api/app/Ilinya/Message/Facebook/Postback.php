@@ -72,6 +72,10 @@ class Postback{
           case $this->code->pGetQueueCard:
             $this->forms->retrieveForms($custom['parameter']);
             break;
+
+          case $this->code->pQCardFromMultiple:
+            $this->forms->getQCard($custom['parameter']);
+            break;
           case $this->code->pLocate:
             //Do Something
             break;

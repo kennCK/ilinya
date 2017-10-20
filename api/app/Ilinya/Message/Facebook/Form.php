@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Ilinya\API\Controller;
 use App\Ilinya\API\Company;
+use App\Ilinya\API\QueueForm;
 
 class Form{
 
@@ -75,6 +76,18 @@ class Form{
     }
     else{
       $this->bot->reply($this->response->emptyForm(), false);
+    }
+  }
+
+  public function getQCard($formId){
+    $condition = [
+      "column"  => "id",
+      "value"   => $formId
+    ];
+    $form = QueueForm::retrieveByCustomField($condition);
+
+    if($form){
+      $this->bot->reply($this->response->confirmation($form[0], null), false);
     }
   }
 
@@ -304,11 +317,17 @@ class Form{
       "clause"  => "=",
       "value"   => $vaue
     ];
+    $condition[] = [
+      "column"  => "availability",
+      "clause"  => "=",
+      "value"   => '1'
+    ];
     
     $request['condition'] = $condition;
     if($limit)$request['limit'] = $limit;
     if($sort)$request['sort'] = [$sort => "asc"]; 
-    return Controller::retrieve($request, $controller);
+    $result = Controller::retrieve($request, $controller);
+    return $result;
   }
   
 }

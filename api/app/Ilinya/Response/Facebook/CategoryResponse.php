@@ -122,6 +122,7 @@ class CategoryResponse{
       $this->bot->reply($this->informAboutQCard(), false);
       foreach ($datas as $data) {
         $buttons = [];
+        $subtitleForm = '';
         if($data['id'] != '6' || intval($data['id']) != 6){
           $availability = $this->availability($data['id']);
           if(intval($availability['result']) == 1){
@@ -204,6 +205,12 @@ class CategoryResponse{
           "clause"  => "=",
           "value"   => $companyId
        ];
+
+    $condition[] = [
+      "column"  => "availability",
+      "clause"  => "=",
+      "value"   => '1'
+    ];
 
     $request['condition'] = $condition;
 
