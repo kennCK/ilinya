@@ -33,7 +33,7 @@ class IlinyaController extends APIController
     public function paging($recepientId, $message, $surveyMode){
         $companyId = $this->getUserCompanyID();
         $name = Company::retrieve(['id' => $companyId], "name");
-        $message = $name.': '.$message;
+        $message = 'From '.$name.': '.$message;
         Bot::notify($recepientId, $message);
         if(intval($surveyMode) == 1 || $surveyMode == '1'){    
             //Set to survey mode
@@ -45,7 +45,7 @@ class IlinyaController extends APIController
     public function reminder($recepientId, $message, $surveyMode){
         $companyId = $this->getUserCompanyID();
         $name = Company::retrieve(['id' => $companyId], "name");
-        $message = $name.': '.$message;
+        $message = 'From '.$name.': '.$message;
         Bot::notify($recepientId, $message);
         if(intval($surveyMode) == 1 || $surveyMode == '1'){    
             //Set to survey mode
