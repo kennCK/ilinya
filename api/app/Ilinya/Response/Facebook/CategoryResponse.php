@@ -116,7 +116,7 @@ class CategoryResponse{
 
   public function manageResult($datas){
     $size = sizeof($datas);
-    $imgUrl = "http://www.gocentralph.com/gcssc/wp-content/uploads/2017/04/Services.png";
+    $imgUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
     if($size < 9 && $datas){
       $elements = [];
       $this->bot->reply($this->informAboutQCard(), false);
