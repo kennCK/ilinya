@@ -4,7 +4,7 @@
       v-bind:name="db_name"
       v-bind:placeholder="placeholder"
       v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
-
+      v-bind:class="feedback_status_class"
     >
 
     </textarea>
@@ -30,7 +30,8 @@
       placeholder: String,
       form_data: Object,
       form_status: String,
-      default_value: [String, Number]
+      default_value: [String, Number],
+      feedback_status_class: String
 
     },
     methods: {

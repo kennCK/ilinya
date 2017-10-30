@@ -5,6 +5,7 @@
       v-bind:name="db_name"
       v-bind:field_name="field_name"
       v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
+      v-bind:class="feedback_status_class"
       @change="valueChanged"
     >
       <option v-for="option in options" v-bind:value="option['value']"
@@ -39,7 +40,8 @@
       db_name: String,
       field_name: String,
       form_data: Object,
-      form_status: String
+      form_status: String,
+      feedback_status_class: String
     },
     watch: {
       form_status(value){

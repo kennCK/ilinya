@@ -16,6 +16,15 @@ Vue.mixin({
       })
       return request
     },
+    APIGetRequest(link, parameter, callback, errorCallback){
+      let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token + '&selected_company_id=' + AUTH.user.company_id + '&selected_company_branch_id=' + AUTH.user.company_branch_id : ''
+      let request = jQuery.get(link + tokenStringParam, parameter, (response) => {
+        this.APISuccessRequestHandler(response, callback)
+      }).fail((jqXHR) => {
+        this.APIFailRequestHandler(link, jqXHR, errorCallback)
+      })
+      return request
+    },
     APIFormRequest(link, formRef, callback, errorCallback){
       let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token + '&selected_company_id=' + AUTH.user.company_id + '&selected_company_branch_id=' + AUTH.user.company_branch_id : ''
       let formData = new FormData($(formRef)[0])

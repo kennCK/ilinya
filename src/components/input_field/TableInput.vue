@@ -1,6 +1,6 @@
 /v  <template>
   <div>
-    <table class="table">
+    <table class="table table-responsive-md">
       <thead>
         <tr>
           <th v-for="(column, index) in columnSetting[0]"

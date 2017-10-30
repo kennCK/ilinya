@@ -31,7 +31,6 @@
         },
         created_at: {}
       }
-      console.debug('company: ' + AUTH.user.company_id)
       let tableSetting = {
         retrieveParameter: {
           condition: [{
@@ -53,7 +52,7 @@
             read_only: true,
             value_function: (formData) => {
               return {
-                code: formData['company_id'] ? (this.padNumber((formData['company_id'] * 1 + 29).toString(16), 3).split('').reverse().join('') + '-' + this.padNumber((formData['id']).toString(16), 4)).toUpperCase() : null
+                code: formData['company_id'] ? (this.padNumber((formData['company_id'] * 1).toString(16), 3).split('').reverse().join('') + '-' + this.padNumber((formData['id']).toString(16), 4)).toUpperCase() : null
               }
             }
           },

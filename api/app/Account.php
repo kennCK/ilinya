@@ -21,4 +21,7 @@ class Account extends APIModel
     public function account_position(){
       return $this->hasOne('App\AccountPosition');
     }
+    public function company_branch_employee(){
+      return $this->hasOne('App\CompanyBranchEmployee');
+    }
 }

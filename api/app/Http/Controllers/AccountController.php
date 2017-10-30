@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\CompanyBranchEmployee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class AccountController extends APIController
 {
-     function __construct(){  
+     function __construct(){
         $this->model = new Account();
-        $this->validation = array(  
+        $this->validation = array(
           "email" => "unique:accounts",
           "username"  => "unique:accounts",
           "account_information.account_type_id" => "required"
@@ -20,9 +21,10 @@ class AccountController extends APIController
         );
         $this->foreignTable = array(
           'account_information',
-          'account_profile_picture'
+          'account_profile_picture',
+          'company_branch_employee'
         );
-    } 
+    }
 
     /*
       1. account
@@ -32,11 +34,23 @@ class AccountController extends APIController
     public function create(Request $request){
      $request = $request->all();
      $request['password'] = Hash::make($request['password']);
-     $this->createEntry($request);
+     $result = $this->createEntry($request);
+     if($this->response['data']){
+        $accountTypeID = isset($request['account_information']['account_type_id']) ? $request['account_information']['account_type_id'] : false;
+        if($accountTypeID){
+          $accountResponseData = $this->response['data'];
+          $this->model = new CompanyBranchEmployee();
+          $companyBranchRequest = array(
+            'company_branch_id' => $this->getUserCompanyBranchID(),
+            'account_id' => $accountResponseData['data']
+          );
+          $this->createEntry($request);
+        }
+     }
      return $this->output();
     }
 
-    public function update(Request $request){ 
+    public function update(Request $request){
       $this->updateEntry($this->hashPassword($request));
       return $this->output();
     }

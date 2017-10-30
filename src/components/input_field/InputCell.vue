@@ -14,6 +14,7 @@
           :db_name="dbName"
           :field_name="field_name"
           :default_value="default_value"
+          :feedback_status_class="feedbackStatusClass"
           >
         </radio-button>
         <check-list
@@ -21,6 +22,7 @@
           :input_setting="input_setting"
           :db_name="dbName"
           :field_name="field_name"
+          :feedback_status_class="feedbackStatusClass"
 
           >
         </check-list>
@@ -33,6 +35,7 @@
           :form_status="form_status"
           :default_value="default_value"
           v-on:change="valueChanged"
+          :feedback_status_class="feedbackStatusClass"
 
           >
         </select-input>
@@ -45,6 +48,7 @@
           :form_status="form_status"
           :default_value="default_value"
           v-on:change="valueChanged"
+          :feedback_status_class="feedbackStatusClass"
 
           >
         </date-picker>
@@ -70,6 +74,7 @@
           :form_status="form_status"
           :form_data_updated="form_data_updated"
           v-on:change="valueChanged"
+          :feedback_status_class="feedbackStatusClass"
 
           >
         </textarea-input>
@@ -82,6 +87,7 @@
           :form_status="form_status"
           :default_value="default_value"
           v-on:change="valueChanged"
+          :feedback_status_class="feedbackStatusClass"
           >
         </check-box>
         <select2
@@ -94,6 +100,7 @@
           :default_value="default_value"
           :placeholder="placeholder"
           v-on:change="valueChanged"
+          :feedback_status_class="feedbackStatusClass"
           >
         </select2>
         <table-input
@@ -121,18 +128,21 @@
             v-bind:placeholder="inputPlaceholder"
             v-bind:type="inputType"
             class="form-control"
+            v-bind:class="feedbackStatusClass"
             v-on:change="valueChanged"
-            v-bind:value="form_data[db_name] ? form_data[db_name] : default_value"
+            v-bind:value="form_data|getFormDataFilter(db_name, default_value)"
             >
-          <span v-else class="form-control">{{form_data[db_name]}}&nbsp;</span>
+          <span v-else class="form-control">{{form_data|getFormDataFilter(db_name, default_value)}}&nbsp;</span>
         </template>
-        <div v-if="feedbackMessage" class="form-control-feedback">{{feedbackMessage}}</div>
+        <input class="form-control" v-bind:class="feedbackStatusClass" type="hidden"> 
+        <div v-if="feedbackMessage" class="invalid-feedback">{{feedbackMessage}}</div>
         <small v-if="muted_text" class="form-text text-muted">{{muted_text}}</small>
       </div>
     </template>
   </div>
 </template>
 <script>
+  // form_data[db_name] ? form_data[db_name] : default_value
   export default{
     name: '',
     components: {
@@ -210,10 +220,10 @@
         this.feedbackMessage = this.feedbackMessage
         switch(value * 1){
           case 1:
-            this.feedbackStatusClass = 'has-success'
+            this.feedbackStatusClass = 'is-valid'
             break
           case 2:
-            this.feedbackStatusClass = 'has-danger'
+            this.feedbackStatusClass = 'is-invalid'
             break
           case 3:
             this.feedbackStatusClass = 'has-warning'
