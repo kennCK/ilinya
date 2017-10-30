@@ -44,7 +44,8 @@ class ChatbotBroadcast implements ShouldQueue
         */
             $activeUsers = $this->retrieve();
 
-            foreach ($activeUsers as $user) {
+            if($activeUsers != null){
+              foreach ($activeUsers as $user) {
                 $facebookInfo = $this->getFacebookUserInfo($user['facebook_user_id']);
                 $companyRequest = [
                   "id"  => $this->companyId
@@ -52,8 +53,8 @@ class ChatbotBroadcast implements ShouldQueue
                 $companyName = Company::retrieve($companyRequest, "name");
                 $newMessage = "From ".$companyName.": Hi ".$facebookInfo[0]['full_name']." :) ".$this->message;
                 Bot::notify($facebookInfo[0]['account_number'], $newMessage);
+              }  
             }
-           
     }
 
     public function retrieve(){

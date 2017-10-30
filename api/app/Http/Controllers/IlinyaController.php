@@ -10,6 +10,7 @@ use App\Jobs\TestDatabaseQueryEffect;
 use App\Jobs\ChatbotBroadcast;
 use App\Ilinya\ImageGenerator;
 use App\Ilinya\Response\Facebook\SurveyResponse;
+use App\Ilinya\API\Company;
 
 class IlinyaController extends APIController
 {
@@ -30,6 +31,9 @@ class IlinyaController extends APIController
     }
 
     public function paging($recepientId, $message, $surveyMode){
+        $companyId = $this->getUserCompanyID();
+        $name = Company::retrieve(['id' => $companyId], "name");
+        $message = $name.': '.$message;
         Bot::notify($recepientId, $message);
         if(intval($surveyMode) == 1 || $surveyMode == '1'){    
             //Set to survey mode
@@ -39,6 +43,9 @@ class IlinyaController extends APIController
     }
 
     public function reminder($recepientId, $message, $surveyMode){
+        $companyId = $this->getUserCompanyID();
+        $name = Company::retrieve(['id' => $companyId], "name");
+        $message = $name.': '.$message;
         Bot::notify($recepientId, $message);
         if(intval($surveyMode) == 1 || $surveyMode == '1'){    
             //Set to survey mode
@@ -46,7 +53,6 @@ class IlinyaController extends APIController
             Bot::survey($recepientId, $surveyMessage);
         }   
     }
-
     public function createImage(){
         ImageGenerator::create();
     }
