@@ -343,7 +343,7 @@
       pageUser(accountNumber, message, callback, finish){
         this.isCalling = true
         finish = (typeof finish === 'undefined') ? 0 : finish
-        $.get(CONFIG.BACKEND_URL + '/bot/reminder/' + accountNumber + '/' + message + '/' + finish, {}, (response) => {
+        this.APIGetRequest(CONFIG.BACKEND_URL + '/bot/reminder/' + accountNumber + '/' + message + '/' + finish, {}, (response) => {
           this.isCalling = false
           if(callback){
             callback()

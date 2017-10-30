@@ -10,7 +10,7 @@
       </div>
     </div>
     <table-filter v-if="filter_setting" v-on:filter="retrieveData('filter', true)" :filter_setting="filter_setting" ref="tableFilter" class="mb-2"></table-filter>
-    <table class="table table-bordered table-condensed table-hover table-responsive" >
+    <table class="table table-bordered table-condensed table-hover table-responsive-sm" >
       <thead>
         <tr>
           <th v-for="(column, index) in columnSetting[0]"
@@ -202,7 +202,6 @@
         this.isLoadingData = true
         let requestOption = {} // this.retrieve_parameter
         let retrieveParameter = this.cloneObject(this.retrieve_parameter)
-        console.log(retrieveParameter)
         for(let x in retrieveParameter){
           requestOption[x] = retrieveParameter[x]
         }
@@ -253,7 +252,7 @@
       initColumnSetting(){
         for(let dbName in this.column_setting){
           let column = this.column_setting[dbName]
-          Vue.set(column, 'db_name', dbName)
+          Vue.set(column, 'db_name', typeof this.column_setting[dbName]['db_name'] === 'undefined' ? dbName : this.column_setting[dbName]['db_name'])
 
           this.initColumn(column)
           this.columnSetting[0].push(column)
@@ -284,7 +283,9 @@
           return true
         }) : null
         typeof column['value_function'] === 'undefined' ? Vue.set(column, 'value_function', (row, dbName) => {
+
           let dbNameSegment = dbName.split('.')
+          console.log(dbName)
           let value
           if(dbNameSegment.length > 1){
             value = row

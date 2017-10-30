@@ -553,16 +553,27 @@ class APIController extends Controller
       $user = $userRaw->toArray();
       $this->userSession = $user;
     }
-    public function getUserCompanyID(){
+    public function getUserCompanyDetail(){
       if(!$this->userSession){
         $this->getAuthenticatedUser();
       }
       if(!isset($this->userSession['company_id']) && $this->userSession){
         $company = (new CompanyBranchEmployee())->with(['company_branch'])->where('account_id', $this->userSession['id'])->get()->toArray();
         $this->userSession['company_id'] = $company ? $company[0]['company_branch']['company_id'] : 0;
+        $this->userSession['company_branch_id'] = $company ? $company[0]['company_branch']['id'] : 0;
+      }else{
+        $this->userSession['company_id'] = NULL;
+        $this->userSession['company_branch_id'] = NULL;
+        return false;
       }
-      $this->response['debug'][] = $this->userSession;
+    }
+    public function getUserCompanyID(){
+      $this->getUserCompanyDetail();
       return $this->userSession['company_id'];
+    }
+    public function getUserCompanyBranchID(){
+      $this->getUserCompanyDetail();
+      return $this->userSession['company_branch_id'];
     }
     public function getUserID(){
       if(!$this->userSession){

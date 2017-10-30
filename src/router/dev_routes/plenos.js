@@ -17,6 +17,14 @@ export default{
     }
   },
   {
+    path: '/account_management',
+    name: 'account_management',
+    component: resolve => require(['modules/account_management/AccountManagement.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
     path: '/auth',
     name: 'auth',
     component: resolve => require(['modules/test/Auth.vue'], resolve),

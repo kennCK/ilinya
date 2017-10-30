@@ -14,5 +14,23 @@ Vue.mixin({
       })
     }
 
+  },
+  filters: {
+    getFormDataFilter(formData, dbName, defaultValue){
+      let explodedDBName = dbName.split('.')
+      if(explodedDBName.length === 1){
+        return formData[dbName] ? formData[dbName] : defaultValue
+      }else{ // nested form data
+        let currentForm = formData
+        for(let dbNameIndex = 0; dbNameIndex < explodedDBName.length; dbNameIndex++){
+          if(typeof currentForm[explodedDBName[dbNameIndex]] === 'undefined'){
+            return defaultValue
+          }else{
+            currentForm = currentForm[explodedDBName[dbNameIndex]]
+          }
+        }
+        return currentForm
+      }
+    }
   }
 })

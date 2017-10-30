@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-
+  import AUTH from '../../services/auth'
   export default{
     name: '',
     components: {
@@ -78,7 +78,8 @@
         })
       },
       getLatestAnnouncement(){
-        this.APIRequest('announcement/retrieve', {limit: 5, sort: {created_at: 'desc'}}, (response) => {
+
+        this.APIRequest('announcement/retrieve', {limit: 5, sort: {created_at: 'desc'}, condition: [{column: 'company_id', value: AUTH.user.company_id}]}, (response) => {
           if(response['data']){
             this.latestAnnouncements = response['data']
           }
