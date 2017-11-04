@@ -89,7 +89,7 @@ class SearchResponse{
             $this->form->manageForms($formResult);
           }
           else{
-            return $this->error();
+            return ["text" => "Code Not Found :'( Please enter again the code given to you: "];
           }
         }
     }
@@ -100,7 +100,7 @@ class SearchResponse{
 
 
   public function error(){
-    return ["text" => "Invalid Code :'( Please Enter the Code again(e.q. 111-1111):"];
+    return ["text" => "Invalid Code :'( Please enter the code again(e.q. 111-1111) given to you:"];
   }
 
   public function searchOption(){
