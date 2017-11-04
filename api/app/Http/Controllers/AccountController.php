@@ -42,7 +42,7 @@ class AccountController extends APIController
           $this->model = new CompanyBranchEmployee();
           $companyBranchRequest = array(
             'company_branch_id' => $this->getUserCompanyBranchID(),
-            'account_id' => $accountResponseData['data']
+            'account_id' => $accountResponseData['id']
           );
           $this->createEntry($request);
         }
