@@ -16,6 +16,5 @@ class QueueFormController extends APIController
         'availability' => 1,
         'is_private' => 0
       );
-      $this->response['debug'][] = $this->getUserCompanyID();
     }
 }
