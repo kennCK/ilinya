@@ -191,7 +191,7 @@ class CategoryResponse{
       return $response;
     }
     else{
-      return ["text" => "Search not found :'( Enter again: "];
+      return ["text" => "Comming Soon! :) Try different category."];
     }
   }
   

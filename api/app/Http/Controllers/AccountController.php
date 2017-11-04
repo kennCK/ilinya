@@ -46,7 +46,7 @@ class AccountController extends APIController
           );
           $this->createEntry($request);
         }
-     }
+     }else{}
      return $this->output();
     }
 
