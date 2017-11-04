@@ -132,7 +132,7 @@ export default {
     register(){
       if(this.passwordFlag === true && this.usernameFlag === true){
         this.APIFormRequest('company/create', this.$refs.registration, response => {
-          this.result = JSON.parse(response)
+          this.result = response
           if(this.result.error.status !== null){
             if('email' in this.result.error.message && ('username' in this.result.error.message)){
               this.errorStatus = 'Username and Email Address are already taken.'
