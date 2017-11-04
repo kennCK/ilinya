@@ -65,12 +65,9 @@ class SearchResponse{
         if(strlen($companyCode) != 3 || strlen($formCode) != 4){
           return $this->error();
         }
-        else if($this->validation->validateNumber(["number" => $formCode]) == false){
-          return $this->error();
-        }
         else{
           $companyId = intval(hexdec(strrev($companyCode)));
-          $formId    = intval($formCode);
+          $formId    = intval(hexdec($formCode));
 
           $data = [
             "id"    => $formId,
