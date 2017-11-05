@@ -35,11 +35,11 @@ class IlinyaController extends APIController
         $name = Company::retrieve(['id' => $companyId], "name");
         $message = 'From '.$name.': '.$message;
         Bot::notify($recepientId, $message);
-        if(intval($surveyMode) == 1 || $surveyMode == '1'){    
-            //Set to survey mode
-            $surveyMessage = SurveyResponse::requestForSurvey($recepientId);
-            Bot::survey($recepientId, $surveyMessage);
-        }       
+        // if(intval($surveyMode) == 1 || $surveyMode == '1'){    
+        //     //Set to survey mode
+        //     $surveyMessage = SurveyResponse::requestForSurvey($recepientId);
+        //     Bot::survey($recepientId, $surveyMessage);
+        // }       
     }
 
     public function reminder($recepientId, $message, $surveyMode){
@@ -47,11 +47,11 @@ class IlinyaController extends APIController
         $name = Company::retrieve(['id' => $companyId], "name");
         $message = 'From '.$name.': '.$message;
         Bot::notify($recepientId, $message);
-        if(intval($surveyMode) == 1 || $surveyMode == '1'){    
-            //Set to survey mode
-            $surveyMessage = SurveyResponse::requestForSurvey($recepientId);
-            Bot::survey($recepientId, $surveyMessage);
-        }   
+        // if(intval($surveyMode) == 1 || $surveyMode == '1'){    
+        //     //Set to survey mode
+        //     $surveyMessage = SurveyResponse::requestForSurvey($recepientId);
+        //     Bot::survey($recepientId, $surveyMessage);
+        // }   
     }
     public function createImage(){
         ImageGenerator::create();
