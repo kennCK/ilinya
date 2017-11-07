@@ -330,29 +330,31 @@ class APIController extends Controller
       //   }
       // }
       $condition = isset($request['condition']) ? $this->initCondition($request['condition']) : array('main_table' => array(), 'foreign_table' => array());
-      if(isset($request['with_foreign_table'])){
+      if(!empty($condition['foreign_table'])){
         $foreignTable = array();
-        foreach($request['with_foreign_table'] as $tempForeignTable){
-          if(in_array($tempForeignTable, $allowedForeignTable)){ // check if
-            $foreignTable[] = $tempForeignTable;
-            if(isset($condition['foreign_table'][str_plural($tempForeignTable)])){
+        // TODO revise this to a recursive function
+        foreach($condition['foreign_table'] as $foreignTable => $foreignCondition){
+          $this->model = $this->model->whereHas($foreignTable, function($q) use($foreignCondition, $foreignTable){
+            $tempForeignTablePlural = str_plural($foreignTable);
+            for($x = 0; $x < count($foreignCondition); $x++){ // loop each
+              $column = explode('.', $foreignCondition[$x]['column']);
+              $value = $foreignCondition[$x]['value'];
+              $clause = isset($foreignCondition[$x]['clause']) ? $foreignCondition[$x]['clause'] : '=';
 
-              $this->model = $this->model->whereHas($tempForeignTable, function($q) use($condition, $tempForeignTable){
-                $tempForeignTablePlural = str_plural($tempForeignTable);
-                for($x = 0; $x < count($condition['foreign_table'][$tempForeignTablePlural]); $x++){
-                  $column = $condition['foreign_table'][$tempForeignTablePlural][$x]['column'];
-                  $value = $condition['foreign_table'][$tempForeignTablePlural][$x]['value'];
-                  $clause = isset($condition['foreign_table'][$tempForeignTablePlural][$x]['clause']) ? $condition['foreign_table'][$tempForeignTablePlural][$x]['clause'] : '=';
-                  $q->where($column, $clause, $value);
-                }
-              });
-
+              if(count($column) <= 2){ // level 1 relation
+                $q->where($column[1], $clause, $value);
+              }else{ // level 2 relation. maybe more
+                $column2 = $column[2];
+                $q->whereHas($column[1], function($q2) use($column2, $clause, $value){
+                  $q2->where($column2, $clause, $value);
+                });
+              }
             }
-          }
+          });
         }
-        if(count($foreignTable)){
-          $this->model = $this->model->with($foreignTable);
-        }
+      }
+      if(isset($request['with_foreign_table'])){
+          $this->model = $this->model->with($request['with_foreign_table']);
       }
       if(count($condition['main_table'])){
         $this->addCondition($condition['main_table']);

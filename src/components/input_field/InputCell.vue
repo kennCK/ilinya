@@ -1,9 +1,9 @@
 <template>
   <div class="form-group row" v-bind:class="[feedbackStatus ? 'has-feedback' :'', feedbackStatusClass]">
     <input v-if="inputType === 'hidden'" type="text"
-    v-bind:name="dbName"
+    v-bind:name="inputName"
     v-on:change="valueChanged"
-    v-bind:value="form_data[db_name] ? form_data[db_name] : default_value"
+    v-bind:value="form_data|getFormDataFilter(db_name, default_value)"
     >
     <template v-else>
       <label v-if="labelColspan" class="col-form-label" v-bind:class="'col-sm-' + labelColspan">{{labelText}} :</label>
@@ -12,6 +12,7 @@
           v-if="inputType === 'radio'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :default_value="default_value"
           :feedback_status_class="feedbackStatusClass"
@@ -21,6 +22,7 @@
           v-else-if="inputType === 'checklist'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :feedback_status_class="feedbackStatusClass"
 
@@ -30,6 +32,7 @@
           v-else-if="inputType === 'select'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :form_data="form_data"
           :form_status="form_status"
@@ -43,6 +46,7 @@
           v-else-if="inputType === 'date'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :form_data="form_data"
           :form_status="form_status"
@@ -56,6 +60,7 @@
           v-else-if="inputType === 'single_image'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :form_data="form_data"
           :form_status="form_status"
@@ -68,6 +73,7 @@
           v-else-if="inputType === 'textarea'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :placeholder="placeholder"
           :field_name="field_name"
           :form_data="form_data"
@@ -82,6 +88,7 @@
           v-else-if="inputType === 'checkbox'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :form_data="form_data"
           :form_status="form_status"
@@ -94,6 +101,7 @@
           v-else-if="inputType === 'select2'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :form_data="form_data"
           :form_status="form_status"
@@ -107,6 +115,7 @@
           v-else-if="inputType === 'table-input'"
           :input_setting="input_setting"
           :db_name="dbName"
+          :input_name="inputName"
           :field_name="field_name"
           :form_data="form_data"
           :form_status="form_status"
@@ -124,7 +133,7 @@
         <template v-else>
           <input
             v-if="form_status !== 'view' && !read_only"
-            v-bind:name="db_name"
+            v-bind:name="inputName"
             v-bind:placeholder="inputPlaceholder"
             v-bind:type="inputType"
             class="form-control"
@@ -134,7 +143,7 @@
             >
           <span v-else class="form-control">{{form_data|getFormDataFilter(db_name, default_value)}}&nbsp;</span>
         </template>
-        <input class="form-control" v-bind:class="feedbackStatusClass" type="hidden"> 
+        <input class="form-control" v-bind:class="feedbackStatusClass" type="hidden">
         <div v-if="feedbackMessage" class="invalid-feedback">{{feedbackMessage}}</div>
         <small v-if="muted_text" class="form-text text-muted">{{muted_text}}</small>
       </div>
@@ -189,6 +198,7 @@
     data(){
       return {
         dbName: null,
+        inputName: '',
         labelText: null,
         labelStyle: {},
         labelColspan: 3,
@@ -237,12 +247,22 @@
     methods: {
       initSetting(){
         this.dbName = this.db_name
+        this.inputName = this.inputName ? this.input_name : this.dbName
         this.labelText = this.label ? this.label : this.input_name
         this.labelStyle = this.label_style
         this.labelColspan = typeof this.label_colspan !== 'undefined' ? this.label_colspan : 4
         this.inputType = this.input_type ? this.input_type : 'text'
         this.inputStyle = this.input_style
         this.inputPlaceholder = this.placeholder ? this.placeholder : this.labelText
+
+        let dbNameTemp = this.inputName.split('.')
+        if(dbNameTemp.length > 1){
+          this.inputName = dbNameTemp[0]
+          for(let x = 1; x < dbNameTemp.length; x++){
+            this.inputName += (dbNameTemp[x] === '*' ? '[]' : '[' + dbNameTemp[x] + ']')
+          }
+        }
+        console.log(this.inputName)
       },
       formDataUpdated(){
       },

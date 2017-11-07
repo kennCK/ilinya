@@ -19,8 +19,11 @@
         username: {
 
         },
-        first_name: {
-          db_name: 'account_information.first_name'
+        last_name: {
+          name: 'Full Name',
+          value_function: (row) => {
+            return row['account_information']['last_name'] + ', ' + row['account_information']['first_name']
+          }
         }
       }
       let tableSetting = {
@@ -30,7 +33,7 @@
             'company_branch_employee'
           ],
           condition: [{
-            column: 'company.company_id',
+            column: 'company_branch_employee.company_branch.company_id',
             value: AUTH.user.company_id
           }]
         },
@@ -53,8 +56,21 @@
           password: {
             col: 6
           },
-          first_name: {
-            db_name: 'account_information.first_name'
+          'account_information.id': {
+            input_type: 'hidden'
+          },
+          'account_information.account_type_id': {
+            input_type: 'hidden',
+            default_value: '1'
+          },
+          'account_information.first_name': {
+            label: 'First Name'
+          },
+          'account_information.middle_name': {
+            label: 'Middle Name'
+          },
+          'account_information.last_name': {
+            label: 'Last Name'
           }
 
         }

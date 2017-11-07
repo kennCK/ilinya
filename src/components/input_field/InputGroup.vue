@@ -118,20 +118,13 @@
       },
       initializeInput(){
         this.inputList = {}
-
+        let dbName = ''
         for(let key in this.inputs){
           Vue.set(this.inputList, key, this.inputs[key])
-          let dbNameTemp = key.split('.')
-          let dbName = key
-          if(dbNameTemp.length > 1){
-            let dbName = dbNameTemp[0]
-            for(let x = 1; x < dbNameTemp.length; x++){
-              dbName += (dbNameTemp[x] === '*' ? '[]' : '[' + dbNameTemp[x] + ']')
-            }
-          }
+
           Vue.set(this.inputList[key], 'field_name', key)
-          typeof this.inputList[key]['db_name'] === 'undefined' ? Vue.set(this.inputList[key], 'db_name', dbName) : ''
-          typeof this.inputList[key]['input_name'] === 'undefined' ? Vue.set(this.inputList[key], 'input_name', this.StringUnderscoreToPhrase(key)) : ''
+          typeof this.inputList[key]['db_name'] === 'undefined' ? Vue.set(this.inputList[key], 'db_name', key) : ''
+          typeof this.inputList[key]['input_name'] === 'undefined' ? Vue.set(this.inputList[key], 'input_name', this.StringUnderscoreToPhrase((key).replace('.', '_'))) : ''
           typeof this.inputList[key]['read_only'] === 'undefined' ? Vue.set(this.inputList[key], 'read_only', false) : ''
           typeof this.inputList[key]['input_type'] === 'undefined' ? Vue.set(this.inputList[key], 'input_type', 'text') : ''
           typeof this.inputList[key]['col'] === 'undefined' ? Vue.set(this.inputList[key], 'col', '12') : ''
