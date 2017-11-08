@@ -236,6 +236,10 @@
         let requestOption = {
           id: rowIndex !== -1 ? this.tableEntries[rowIndex]['id'] : entryID
         }
+        let retrieveParameter = this.cloneObject(this.retrieve_parameter)
+        for(let x in retrieveParameter){
+          requestOption[x] = retrieveParameter[x]
+        }
         this.APIRequest(this.api + '/retrieve', requestOption, (response) => {
           if(response['data']){
             if(rowIndex !== -1){
@@ -285,7 +289,6 @@
         typeof column['value_function'] === 'undefined' ? Vue.set(column, 'value_function', (row, dbName) => {
 
           let dbNameSegment = dbName.split('.')
-          console.log(dbName)
           let value
           if(dbNameSegment.length > 1){
             value = row

@@ -3,7 +3,7 @@
     <div class="form-check">
       <label class="form-check-label">
         <input type="hidden"
-        v-bind:name="db_name"
+        v-bind:name="input_name"
         v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
         >
         <input class="form-check-input" type="checkbox"
@@ -32,6 +32,7 @@
     props: {
       input_setting: Object,
       default_value: String,
+      input_name: String,
       field_name: String,
       db_name: String,
       form_data: Object,

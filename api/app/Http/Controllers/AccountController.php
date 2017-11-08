@@ -22,7 +22,8 @@ class AccountController extends APIController
         $this->foreignTable = array(
           'account_information',
           'account_profile_picture',
-          'company_branch_employee'
+          'company_branch_employee',
+          'company_branch'
         );
     }
 
@@ -42,9 +43,11 @@ class AccountController extends APIController
           $this->model = new CompanyBranchEmployee();
           $companyBranchRequest = array(
             'company_branch_id' => $this->getUserCompanyBranchID(),
+            'identification_number' => $accountResponseData['id'],
             'account_id' => $accountResponseData['id']
           );
-          $this->createEntry($request);
+          $this->validation = array();
+          $this->createEntry($companyBranchRequest);
         }
      }else{}
      return $this->output();

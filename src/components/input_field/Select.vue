@@ -2,7 +2,7 @@
   <div>
     <select class="form-control"
       v-if="form_status !== 'view'"
-      v-bind:name="db_name"
+      v-bind:name="input_name"
       v-bind:field_name="field_name"
       v-bind:value="form_data[db_name] ? form_data[db_name] : defaultValue"
       v-bind:class="feedback_status_class"
@@ -38,6 +38,7 @@
       input_setting: Object,
       default_value: [String, Number],
       db_name: String,
+      input_name: String,
       field_name: String,
       form_data: Object,
       form_status: String,
