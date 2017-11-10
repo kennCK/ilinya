@@ -43,7 +43,7 @@ class AccountController extends APIController
           $this->model = new CompanyBranchEmployee();
           $companyBranchRequest = array(
             'company_branch_id' => $this->getUserCompanyBranchID(),
-            'identification_number' => $accountResponseData['id'],
+            'identification_number' => $accountResponseData['id'], // dummy id
             'account_id' => $accountResponseData['id']
           );
           $this->validation = array();

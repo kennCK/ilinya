@@ -554,19 +554,17 @@ class APIController extends Controller
       // the token is valid and we have found the user via the sub claim
       $user = $userRaw->toArray();
       $this->userSession = $user;
+      $this->userSession['company_id'] = NULL;
+      $this->userSession['company_branch_id'] = NULL;
     }
     public function getUserCompanyDetail(){
       if(!$this->userSession){
         $this->getAuthenticatedUser();
       }
-      if(!isset($this->userSession['company_id']) && $this->userSession){
+      if(!$this->userSession['company_id'] && $this->userSession){
         $company = (new CompanyBranchEmployee())->with(['company_branch'])->where('account_id', $this->userSession['id'])->get()->toArray();
         $this->userSession['company_id'] = $company ? $company[0]['company_branch']['company_id'] : 0;
         $this->userSession['company_branch_id'] = $company ? $company[0]['company_branch']['id'] : 0;
-      }else{
-        $this->userSession['company_id'] = NULL;
-        $this->userSession['company_branch_id'] = NULL;
-        return false;
       }
     }
     public function getUserCompanyID(){
