@@ -2,7 +2,7 @@
   <div>
     
     <div class="system-header">
-      <a class="navbar-brand" v-on:click="redirect('dashboard')">
+      <a class="navbar-brand" v-on:click="redirect('admin_home')">
         <label class="navbar-brand"><b>i</b>Linya</label>
       </a>
     </div>

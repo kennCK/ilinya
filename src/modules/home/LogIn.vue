@@ -99,7 +99,7 @@ export default {
             this.branches = response.data
             if(this.branches.length === 1){
               AUTH.setCompany(this.branches[0].company_id, this.branchesEmployees[0].company_branch_id)
-              ROUTER.push('dashboard')
+              ROUTER.push('admin_home')
             }
           })
         }
