@@ -33,6 +33,14 @@ export default{
     }
   },
   {
+    path: '/admin_home',
+    name: 'admin_home',
+    component: resolve => require(['modules/home/AdminHome.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
     path: '/mockup',
     name: 'mockup',
     component: resolve => require(['modules/test/Mockup.vue'], resolve),
