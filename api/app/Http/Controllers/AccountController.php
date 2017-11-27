@@ -6,6 +6,7 @@ use App\Account;
 use App\CompanyBranchEmployee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AccountController extends APIController
 {
@@ -35,6 +36,7 @@ class AccountController extends APIController
     public function create(Request $request){
      $request = $request->all();
      $request['password'] = Hash::make($request['password']);
+     $request['created_at'] = Carbon::now();
      $result = $this->createEntry($request);
      if($this->response['data']){
         $accountTypeID = isset($request['account_information']['account_type_id']) ? $request['account_information']['account_type_id'] : false;

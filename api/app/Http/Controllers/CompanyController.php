@@ -49,10 +49,10 @@ class CompanyController extends APIController
        $request['account']['account_information']['account_type_id'] = 1; // 1 => ADMIN
        $accountRequest = new Request($request['account']);
        $accountResult = $this->sendCustomRequestByCreate('App\Http\Controllers\AccountController',$accountRequest);
-
        if($accountResult['data'] == NULL){
         $flag["account"] = false;
         $flag["account_message"] = $accountResult;
+        return $accountResult;
        }
        else{
         $flag["account"] = true;
@@ -71,22 +71,31 @@ class CompanyController extends APIController
           if($branchResult['data'] != NULL){
             $this->company_branch_id = $branchResult['data'];
             $flag["branch"] = true;
+            return $this->checkFlag($flag);
           }else{
             $flag["branch"] = false;
             $flag["branch_message"] = $branchResult;
+            return $branchResult;
           }
         }else{
           $flag["company"] = false;
           $flag["company_message"] = $companyResult;
+          return $companyResult;
         }
        }
-       $this->checkFlag($flag);
      }
+     else{
+      return array(
+        "error" => array(
+          "status"  => "100",
+          "message" => "Please fill up the required information!"
+        )
+      );
+    }
   }
 
   public function checkFlag($flag){
       if($flag["account"] == true && $flag["branch"] == true && $flag["company"] == true){
-        
         $request["company_branch_id"] = $this->company_branch_id;
         $request["account_id"] = $this->account_id;
         $branchEmployeeRequest = new Request($request);
@@ -105,18 +114,18 @@ class CompanyController extends APIController
               "message" => null
             ),
             "debug" => null
-          );   
-          echo json_encode($thisOutput);
+          );
           return $thisOutput;
         }else{
           return $branchEmployeesResult;
         }
-      }else if($flag["account"] == false){
-        return $flag["account_message"];
-      }else if($flag["company"] ==  false){
-        return $flag["company_message"];
-      }else if($flag["branch"] == false){
-        return $flag["branch_message"];
+      }else{
+       return array(
+        "error" => array(
+          "status"  => "101",
+          "message" => "Flag not completed!"
+        )
+      );
       }
   }
 
