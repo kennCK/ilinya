@@ -155,7 +155,7 @@ export default {
     login(){
       AUTH.authenticate(this.myData.username, this.myData.password, (response) => {
         AUTH.setCompany(this.result.data.company_id, this.result.data.company_branch_id)
-        ROUTER.push('dashboard')
+        ROUTER.push('admin_home')
       }, (response, status) => {
         this.errorStatus = (status === 401) ? 'Your Username and password didnot matched.' : 'Cannot log in? Contact us through email: support@ilinya.com'
       })

@@ -92,6 +92,11 @@ class QueueCardsResponse{
         'clause'  => '=',
         'value'   => $userId
       ];
+      $condition [] = [
+        'column'  => 'status',
+        'clause'  => '!=',
+        'value'   => 3
+      ];
 
       $request['condition'] = $condition;
       $request['sort'] = ['created_at' => 'asc'];
@@ -193,13 +198,13 @@ class QueueCardsResponse{
           $queueCards = '';
           $elements = [];
           foreach ($result as $card) {
-            $cardId = $card['id'];
-            $title =  ($title != null) ? $title : "QCard #:".$cardId."(".$this->getStatus($card['status']).")";
+            if($card['status'] == 1 || $card['status'] == 2){
+            $cardId = $card['id'];  
+            $newTitle =  ($title != null) ? $title : "QCard #:".$cardId."(".$this->getStatus($card['status']).")";
             $subtitle = 'Currently '.QueueCard::totalCurrentDayFinished($card['queue_form_id']) .'/'. QueueCard::totalOnQueue($card['queue_form_id']).PHP_EOL.$this->getEstimatedTime($card['queue_form_id']).PHP_EOL.$this->getFormName($card['queue_form_id']);
             $imageUrl = "http://ilinya.com/wp-content/uploads/2017/08/cropped-logo-copy-copy.png";
             $buttons = [];
 
-            if($card['status'] == 1 || $card['status'] == 2){
               $buttons[] = ButtonElement::title("View Details")
                         ->type('postback')
                         ->payload($cardId.'@pQCViewDetails')
@@ -212,12 +217,13 @@ class QueueCardsResponse{
                         ->type('postback')
                         ->payload($cardId.'@pPostponeQC')
                         ->toArray();
-            }
-            $elements[] = GenericElement::title($title)
+            
+              $elements[] = GenericElement::title($newTitle)
                                 ->imageUrl($imageUrl)
                                 ->subtitle($subtitle)
                                 ->buttons($buttons)
                                 ->toArray();
+            }
           }
         return GenericTemplate::toArray($elements);
       }

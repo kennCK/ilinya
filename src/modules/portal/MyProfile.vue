@@ -8,9 +8,6 @@
       <div class="personal-info common">
         <span class="header">
           Basic and Contact Information
-          <span v-on:click="editInfo('account_information')">
-            <i class="fa fa-pencil pull-right" aria-hidden="true"></i>
-          </span>
         </span>
         <span class="content row" v-for="(item,index) in userInfoTitle">
           <label class="title col-xs-6 col-sm-3">{{item}}</label>
@@ -20,9 +17,6 @@
       <div class="personal-info common">
         <span class="header">
           Company Information
-          <span v-on:click="editInfo('company')">
-            <i class="fa fa-pencil pull-right" aria-hidden="true"></i>
-          </span>
         </span>
         <span class="content row" v-for="(item,index) in userCompanyTitle">
           <label class="title col-xs-6 col-sm-3">{{item}}</label>
