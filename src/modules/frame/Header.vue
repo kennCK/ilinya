@@ -1,6 +1,5 @@
  <template>
   <div>
-    
     <div class="system-header">
       <a class="navbar-brand" v-on:click="redirect('admin_home')">
         <label class="navbar-brand"><b>i</b>Linya</label>
@@ -42,9 +41,17 @@
 import ROUTER from '../../router'
 import AUTH from '../../services/auth'
 import CONFIG from '../../config'
+import Vue from 'vue'
+import VueIntercom from 'vue-intercom'
+Vue.use(VueIntercom, {AppId: 'r3tkqvex'})
 export default {
   mounted(){
     this.getProfilePicture()
+    this.$intercom.boot({
+      user_id: this.user.userID,
+      name: this.user.username
+    })
+    this.$intercom.show()
   },
   created(){
     // this.getProfilePicture()
